@@ -81,7 +81,7 @@ namespace hass_desktop_service.Communication
                     PropertyNameCaseInsensitive = true
                 };
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/sensor/{config.Device.Identifiers}/config")
+                .WithTopic($"homeassistant/sensor/{config.Name}/config")
                 .WithPayload(clearPreviousConfig ? "" : JsonSerializer.Serialize(config, options))
                 .WithRetainFlag()
                 .Build();

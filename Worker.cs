@@ -50,7 +50,10 @@ namespace hass_desktop_service
                 // announce autodiscovery every 30 seconds
                 if (_mqttPublisher.LastConfigAnnounce < DateTime.UtcNow.AddSeconds(-30))
                 {
-                    // TODO: make every sensor publish its auto discovery config
+                    foreach (AbstractSensor sensor in _configuredSensorsService.ConfiguredSensors)
+                    {
+                        await sensor.PublishAutoDiscoveryConfigAsync();
+                    }
                 }
                 await Task.Delay(1000, stoppingToken);
             }

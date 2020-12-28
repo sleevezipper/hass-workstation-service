@@ -9,6 +9,7 @@ namespace hass_desktop_service.Domain.Sensors
     {
         public Guid Id { get; protected set; }
         public string Name { get; protected set; }
+        public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
         protected AutoDiscoveryConfigModel _autoDiscoveryConfigModel;
         protected AutoDiscoveryConfigModel SetAutoDiscoveryConfigModel(AutoDiscoveryConfigModel config)
@@ -22,13 +23,20 @@ namespace hass_desktop_service.Domain.Sensors
 
         public async Task PublishStateAsync()
         {
+            string state = this.GetState();
+            if (this.PreviousPublishedState == state)
+            {
+                // don't publish the state if it hasn't changed
+                return;
+            }
             var message = new MqttApplicationMessageBuilder()
             .WithTopic(this.GetAutoDiscoveryConfig().State_topic)
-            .WithPayload(this.GetState())
+            .WithPayload(state)
             .WithExactlyOnceQoS()
             .WithRetainFlag()
             .Build();
             await Publisher.Publish(message);
+            this.PreviousPublishedState = state;
         }
         public async Task PublishAutoDiscoveryConfigAsync()
         {

@@ -37,10 +37,11 @@ namespace hass_desktop_service
                     .Build();
                     var deviceConfig = new DeviceConfigModel
                     {
-                        Name = "hass-workstation-service3",
-                        //TODO: make this more dynamic
-                        Identifiers = "hass-workstation-service_unique4",
-                        Sw_version = "0.0.4"
+                        Name = Environment.MachineName,
+                        Identifiers = "hass-workstation-service",
+                        Manufacturer = Environment.UserName,
+                        Model = Environment.OSVersion.ToString(),
+                        Sw_version = "0.0.5"
                     };
                     services.AddSingleton(configuration);
                     services.AddSingleton(deviceConfig);
