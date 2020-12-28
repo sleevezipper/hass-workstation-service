@@ -1,10 +1,54 @@
+using System;
 using System.Runtime.InteropServices;
-using PInvoke;
-using static PInvoke.Shell32;
+using System.Threading.Tasks;
+using hass_desktop_service.Communication;
 
-namespace hass_desktop_service.StateDetectors.Windows.Fullscreen
+namespace hass_desktop_service.Domain.Sensors
 {
-public enum UserNotificationState
+    public class UserNotificationStateSensor : AbstractSensor
+    {
+        public UserNotificationStateSensor(MqttPublisher publisher, string name = "NotificationState")
+        {
+            this.Id = new Guid();
+            this.Name = name;
+            this.Publisher = publisher;
+        }
+
+        public UserNotificationStateSensor(MqttPublisher publisher, string name, Guid id)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Publisher = publisher;
+        }
+        public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
+        {
+            return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new AutoDiscoveryConfigModel()
+            {
+                Name = this.Name,
+                Unique_id = this.Id.ToString(),
+                Device = this.Publisher.DeviceConfigModel,
+                State_topic = $"homeassistant/sensor/{this.Name}/state",
+                Icon = "mdi:laptop",
+            });
+        }
+
+        public override string GetState()
+        {
+            return GetStateEnum().ToString();
+        }
+
+        [DllImport("shell32.dll")]
+        static extern int SHQueryUserNotificationState(out UserNotificationState state);
+
+        public UserNotificationState GetStateEnum()
+        {
+            SHQueryUserNotificationState(out UserNotificationState state);
+
+            return state;
+        }
+    }
+
+    public enum UserNotificationState
     {
         /// <summary>
         /// A screen saver is displayed, the machine is locked,
@@ -43,17 +87,4 @@ public enum UserNotificationState
         /// </summary>
         QuietTime = 6
     };
-
-    public class UserNotificationStateDetector
-    {
-        [DllImport("shell32.dll")]
-        static extern int SHQueryUserNotificationState(out UserNotificationState state);
-
-        public UserNotificationState GetState(){
-            UserNotificationState state;
-            SHQueryUserNotificationState(out state);
-
-            return state;
-        }
-    }
 }
