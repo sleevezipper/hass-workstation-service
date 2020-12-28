@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using hass_desktop_service.Communication;
-using hass_desktop_service.Data;
-using hass_desktop_service.Domain.Sensors;
+using hass_workstation_service.Communication;
+using hass_workstation_service.Data;
+using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Client;
 
-namespace hass_desktop_service
+namespace hass_workstation_service
 {
     public class Worker : BackgroundService
     {

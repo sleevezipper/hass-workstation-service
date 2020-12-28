@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "hass_desktop_service": {
+    "hass_workstation_service": {
       "commandName": "Project",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"

@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using hass_desktop_service.Communication;
+using hass_workstation_service.Communication;
 
-namespace hass_desktop_service.Domain.Sensors
+namespace hass_workstation_service.Domain.Sensors
 {
     public class UserNotificationStateSensor : AbstractSensor
     {

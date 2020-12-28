@@ -2,12 +2,12 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using hass_desktop_service.Communication;
+using hass_workstation_service.Communication;
 using Microsoft.Extensions.Configuration;
 using MQTTnet.Client.Options;
-using hass_desktop_service.Data;
+using hass_workstation_service.Data;
 
-namespace hass_desktop_service
+namespace hass_workstation_service
 {
     public class Program
     {

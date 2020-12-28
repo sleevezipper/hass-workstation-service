@@ -1,6 +1,6 @@
 using System;
 
-namespace hass_desktop_service.Data
+namespace hass_workstation_service.Data
 {
     public class ConfiguredSensor
     {

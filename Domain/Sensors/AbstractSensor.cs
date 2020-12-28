@@ -1,10 +1,13 @@
 using System;
 using System.Threading.Tasks;
-using hass_desktop_service.Communication;
+using hass_workstation_service.Communication;
 using MQTTnet;
 
-namespace hass_desktop_service.Domain.Sensors
+namespace hass_workstation_service.Domain.Sensors
 {
+    /// <summary>
+    /// This 
+    /// </summary>
     public abstract class AbstractSensor
     {
         public Guid Id { get; protected set; }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace hass_desktop_service.Communication
+namespace hass_workstation_service.Communication
 {
     public class AutoDiscoveryConfigModel
     {

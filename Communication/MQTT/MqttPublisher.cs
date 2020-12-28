@@ -2,13 +2,13 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using hass_desktop_service.Communication.Util;
+using hass_workstation_service.Communication.Util;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 
-namespace hass_desktop_service.Communication
+namespace hass_workstation_service.Communication
 {
 
     public class MqttPublisher

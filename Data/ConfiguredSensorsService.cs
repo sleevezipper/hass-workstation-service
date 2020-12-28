@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Text.Json;
-using hass_desktop_service.Communication;
-using hass_desktop_service.Domain.Sensors;
+using hass_workstation_service.Communication;
+using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Configuration;
 
-namespace hass_desktop_service.Data
+namespace hass_workstation_service.Data
 {
     public class ConfiguredSensorsService
     {

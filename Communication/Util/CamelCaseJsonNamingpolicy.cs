@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace hass_desktop_service.Communication.Util
+namespace hass_workstation_service.Communication.Util
 {
     public class CamelCaseJsonNamingpolicy : JsonNamingPolicy
     {

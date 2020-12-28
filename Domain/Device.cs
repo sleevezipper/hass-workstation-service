@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using hass_desktop_service.Domain.Sensors;
+using hass_workstation_service.Domain.Sensors;
 
-namespace hass_desktop_service.Domain
+namespace hass_workstation_service.Domain
 {
     public abstract class Device
     {
