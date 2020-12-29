@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
-using System.Reflection;
 using System.Text.Json;
 using hass_workstation_service.Communication;
 using hass_workstation_service.Domain.Sensors;
@@ -30,10 +29,7 @@ namespace hass_workstation_service.Data
         public async void ReadSettings()
         {
             IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate);
-            String filePath = stream.GetType().GetField("m_FullPath",
-            BindingFlags.Instance | BindingFlags.NonPublic).GetValue(stream).ToString();
-            Console.WriteLine(filePath);
-            Log.Logger.Information($"reading configured sensors from: {filePath}");
+            Log.Logger.Information($"reading configured sensors from: {stream.Name}");
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
             if (stream.Length > 0)
             {
@@ -43,7 +39,7 @@ namespace hass_workstation_service.Data
             foreach (ConfiguredSensor configuredSensor in sensors)
             {
                 AbstractSensor sensor;
-#pragma warning disable IDE0066
+                #pragma warning disable IDE0066
                 switch (configuredSensor.Type)
                 {
                     case "UserNotificationStateSensor":
@@ -68,7 +64,7 @@ namespace hass_workstation_service.Data
 
             foreach (AbstractSensor sensor in this.ConfiguredSensors)
             {
-                configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name });
+                configuredSensorsToSave.Add(new ConfiguredSensor(){Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name});
             }
 
             await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);

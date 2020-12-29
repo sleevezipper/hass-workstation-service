@@ -10,12 +10,12 @@ using hass_workstation_service.Data;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using hass_workstation_service.ServiceHost;
 using Serilog;
 using Serilog.Formatting.Compact;
 using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.IO;
+using Microsoft.Win32;
 
 namespace hass_workstation_service
 {
@@ -28,20 +28,34 @@ namespace hass_workstation_service
             .WriteTo.Console()
             .WriteTo.File(new RenderedCompactJsonFormatter(), "logs/log.ndjson")
             .CreateLogger();
+
+
             try
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    var isService = !(Debugger.IsAttached || args.Contains("--console"));
+                    if (args.Contains("--autostart=true"))
+                    {
+                        Log.Logger.Information("configuring autostart");
+                        // The path to the key where Windows looks for startup applications
+                        RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
 
-                    if (isService)
-                    {
-                        await CreateHostBuilder(args).RunAsServiceAsync();
+                        //Path to launch shortcut
+                        string startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\hass-workstation-service\hass-workstation-service.appref-ms";
+
+                        rkApp.SetValue("hass-workstation-service", startPath);
+                        rkApp.Close();
                     }
-                    else
+                    else if (args.Contains("--autostart=false"))
                     {
-                        await CreateHostBuilder(args).RunConsoleAsync();
+                        Log.Logger.Information("removing autostart");
+                        RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                        rkApp.DeleteSubKey("hass-workstation-service");
+                        rkApp.Close();
                     }
+
+                    await CreateHostBuilder(args).RunConsoleAsync();
+
                 }
                 else
                 {
@@ -82,7 +96,7 @@ namespace hass_workstation_service
                         Identifiers = "hass-workstation-service",
                         Manufacturer = Environment.UserName,
                         Model = Environment.OSVersion.ToString(),
-                        Sw_version = "0.0.5"
+                        Sw_version = Assembly.GetExecutingAssembly().GetName().Version.ToString()
                     };
                     services.AddSingleton(configuration);
                     services.AddSingleton(deviceConfig);
