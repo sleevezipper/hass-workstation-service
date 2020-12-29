@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using Serilog;
 
 namespace hass_workstation_service.Communication
 {
@@ -39,8 +40,7 @@ namespace hass_workstation_service.Communication
             this._mqttClient = factory.CreateMqttClient();
 
             // connect to the broker
-            this._mqttClient.ConnectAsync(options);
-
+            var result = this._mqttClient.ConnectAsync(options).Result;
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(async e =>
             {
@@ -51,9 +51,9 @@ namespace hass_workstation_service.Communication
                 {
                     await this._mqttClient.ConnectAsync(options, CancellationToken.None);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _logger.LogError("Reconnecting failed");
+                    _logger.LogError(ex, "Reconnecting failed");
                 }
             });
         }

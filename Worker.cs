@@ -31,10 +31,16 @@ namespace hass_workstation_service
         {
             while (!_mqttPublisher.IsConnected)
             {
-                _logger.LogInformation("Connecting to MQTT broker...");
+                _logger.LogInformation($"Connecting to MQTT broker...");
                 await Task.Delay(2000);
             }
             _logger.LogInformation("Connected. Sending auto discovery messages.");
+            // if there are no configured sensors we add a dummy sensor
+            if (_configuredSensorsService.ConfiguredSensors.Count == 0)
+            {
+                _configuredSensorsService.AddConfiguredSensor(new DummySensor(_mqttPublisher));
+                _configuredSensorsService.AddConfiguredSensor(new UserNotificationStateSensor(_mqttPublisher));
+            }
             foreach (AbstractSensor sensor in _configuredSensorsService.ConfiguredSensors)
             {
                 await sensor.PublishAutoDiscoveryConfigAsync();

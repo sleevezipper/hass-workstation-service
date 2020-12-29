@@ -9,7 +9,7 @@ namespace hass_workstation_service.Domain.Sensors
     {
         public UserNotificationStateSensor(MqttPublisher publisher, string name = "NotificationState")
         {
-            this.Id = new Guid();
+            this.Id = Guid.NewGuid();
             this.Name = name;
             this.Publisher = publisher;
         }

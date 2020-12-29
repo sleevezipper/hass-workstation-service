@@ -4,28 +4,69 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using hass_workstation_service.Communication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using MQTTnet.Client.Options;
 using hass_workstation_service.Data;
+using System.Linq;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using hass_workstation_service.ServiceHost;
+using Serilog;
+using Serilog.Formatting.Compact;
+using System.IO.IsolatedStorage;
+using System.Reflection;
+using System.IO;
 
 namespace hass_workstation_service
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File(new RenderedCompactJsonFormatter(), "logs/log.ndjson")
+            .CreateLogger();
+            try
             {
-                CreateHostBuilder(args).Build().Run();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    var isService = !(Debugger.IsAttached || args.Contains("--console"));
+
+                    if (isService)
+                    {
+                        await CreateHostBuilder(args).RunAsServiceAsync();
+                    }
+                    else
+                    {
+                        await CreateHostBuilder(args).RunConsoleAsync();
+                    }
+                }
+                else
+                {
+                    // we only support MS Windows for now
+                    throw new NotImplementedException("Your platform is not yet supported");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // we only support MS Windows for now
-                throw new NotImplementedException("Your platform is not yet supported");
+                Log.Fatal(ex, "Application start-up failed");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
             }
         }
-
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseSerilog()
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                    {
+                        config
+                        .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+                        .AddJsonFile("appsettings.json");
+                    })
                 .ConfigureServices((hostContext, services) =>
                 {
                     IConfiguration configuration = hostContext.Configuration;
