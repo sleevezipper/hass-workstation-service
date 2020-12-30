@@ -75,21 +75,8 @@ namespace hass_workstation_service
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog()
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                    {
-                        config
-                        .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
-                        .AddJsonFile("appsettings.json");
-                    })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    IConfiguration configuration = hostContext.Configuration;
-                    IConfigurationSection mqttSection = configuration.GetSection("MqttBroker");
-                    var mqttClientOptions = new MqttClientOptionsBuilder()
-                    .WithTcpServer(mqttSection.GetValue<string>("Host"))
-                    // .WithTls()
-                    .WithCredentials(mqttSection.GetValue<string>("Username"), mqttSection.GetValue<string>("Password"))
-                    .Build();
                     var deviceConfig = new DeviceConfigModel
                     {
                         Name = Environment.MachineName,
@@ -98,10 +85,8 @@ namespace hass_workstation_service
                         Model = Environment.OSVersion.ToString(),
                         Sw_version = Assembly.GetExecutingAssembly().GetName().Version.ToString()
                     };
-                    services.AddSingleton(configuration);
                     services.AddSingleton(deviceConfig);
-                    services.AddSingleton(mqttClientOptions);
-                    services.AddSingleton<ConfiguredSensorsService>();
+                    services.AddSingleton<ConfigurationService>();
                     services.AddSingleton<MqttPublisher>();
                     services.AddHostedService<Worker>();
                 });

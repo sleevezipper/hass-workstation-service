@@ -15,20 +15,23 @@ namespace hass_workstation_service
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly ConfiguredSensorsService _configuredSensorsService;
+        private readonly ConfigurationService _configurationService;
         private readonly MqttPublisher _mqttPublisher;
 
         public Worker(ILogger<Worker> logger,
-            ConfiguredSensorsService configuredSensorsService,
+            ConfigurationService configuredSensorsService,
             MqttPublisher mqttPublisher)
         {
             _logger = logger;
-            this._configuredSensorsService = configuredSensorsService;
+            this._configurationService = configuredSensorsService;
             this._mqttPublisher = mqttPublisher;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _configurationService.ReadSensorSettings(_mqttPublisher);
+
+
             while (!_mqttPublisher.IsConnected)
             {
                 _logger.LogInformation($"Connecting to MQTT broker...");
@@ -36,12 +39,11 @@ namespace hass_workstation_service
             }
             _logger.LogInformation("Connected. Sending auto discovery messages.");
             // if there are no configured sensors we add a dummy sensor
-            if (_configuredSensorsService.ConfiguredSensors.Count == 0)
+            if (_configurationService.ConfiguredSensors.Count == 0)
             {
-                _configuredSensorsService.AddConfiguredSensor(new DummySensor(_mqttPublisher));
-                _configuredSensorsService.AddConfiguredSensor(new UserNotificationStateSensor(_mqttPublisher));
+                _configurationService.AddConfiguredSensors(new List<AbstractSensor>() { new DummySensor(_mqttPublisher), new UserNotificationStateSensor(_mqttPublisher) });
             }
-            foreach (AbstractSensor sensor in _configuredSensorsService.ConfiguredSensors)
+            foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
             {
                 await sensor.PublishAutoDiscoveryConfigAsync();
             }
@@ -49,14 +51,14 @@ namespace hass_workstation_service
             {
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
-                foreach (AbstractSensor sensor in _configuredSensorsService.ConfiguredSensors)
+                foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
                 {
                     await sensor.PublishStateAsync();
                 }
                 // announce autodiscovery every 30 seconds
                 if (_mqttPublisher.LastConfigAnnounce < DateTime.UtcNow.AddSeconds(-30))
                 {
-                    foreach (AbstractSensor sensor in _configuredSensorsService.ConfiguredSensors)
+                    foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
                     {
                         await sensor.PublishAutoDiscoveryConfigAsync();
                     }
