@@ -10,6 +10,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
+    <ApplicationIcon>hass-workstation-logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
