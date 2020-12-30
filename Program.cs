@@ -83,12 +83,21 @@ namespace hass_workstation_service
                         Identifiers = "hass-workstation-service",
                         Manufacturer = Environment.UserName,
                         Model = Environment.OSVersion.ToString(),
-                        Sw_version = Assembly.GetExecutingAssembly().GetName().Version.ToString()
+                        Sw_version = GetVersion()
                     };
                     services.AddSingleton(deviceConfig);
                     services.AddSingleton<ConfigurationService>();
                     services.AddSingleton<MqttPublisher>();
                     services.AddHostedService<Worker>();
                 });
+        static internal string GetVersion()
+        {
+            if (!Debugger.IsAttached)
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            }
+
+            return "Debug";
+        }
     }
 }

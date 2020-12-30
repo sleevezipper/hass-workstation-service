@@ -12,3 +12,7 @@ It will try to futher accomplish this goal in the future by:
 - Being platform independent
 - Being easy to configure
 - Using secure communication
+
+## Deployments
+
+1. 
