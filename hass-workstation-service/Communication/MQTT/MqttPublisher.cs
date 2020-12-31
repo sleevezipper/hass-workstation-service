@@ -17,7 +17,7 @@ namespace hass_workstation_service.Communication
     {
         private readonly IMqttClient _mqttClient;
         private readonly ILogger<MqttPublisher> _logger;
-        private readonly ConfigurationService _configurationService;
+        private readonly IConfigurationService _configurationService;
         public DateTime LastConfigAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
         public bool IsConnected
@@ -38,7 +38,7 @@ namespace hass_workstation_service.Communication
         public MqttPublisher(
             ILogger<MqttPublisher> logger,
             DeviceConfigModel deviceConfigModel,
-            ConfigurationService configurationService)
+            IConfigurationService configurationService)
         {
 
             this._logger = logger;
@@ -46,6 +46,7 @@ namespace hass_workstation_service.Communication
             this._configurationService = configurationService;
 
             var options = _configurationService.ReadMqttSettings().Result;
+            _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
 
             var factory = new MqttFactory();
             this._mqttClient = factory.CreateMqttClient();
@@ -54,17 +55,21 @@ namespace hass_workstation_service.Communication
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(async e =>
             {
-                _logger.LogWarning("Disconnected from server");
-                await Task.Delay(TimeSpan.FromSeconds(5));
+                if (e.ReasonCode != MQTTnet.Client.Disconnecting.MqttClientDisconnectReason.NormalDisconnection)
+                {
+                    _logger.LogWarning("Disconnected from server");
+                    await Task.Delay(TimeSpan.FromSeconds(5));
 
-                try
-                {
-                    await this._mqttClient.ConnectAsync(options, CancellationToken.None);
+                    try
+                    {
+                        await this._mqttClient.ConnectAsync(options, CancellationToken.None);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Reconnecting failed");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Reconnecting failed");
-                }
+
             });
         }
 
@@ -76,7 +81,7 @@ namespace hass_workstation_service.Communication
             }
             else
             {
-                this._logger.LogInformation($"message dropped because mqtt not connected: {message}");
+                this._logger.LogInformation($"Message dropped because mqtt not connected: {message}");
             }
         }
 
@@ -98,6 +103,25 @@ namespace hass_workstation_service.Communication
                 await this.Publish(message);
                 LastConfigAnnounce = DateTime.UtcNow;
             }
+        }
+
+        public async void ReplaceMqttClient(IMqttClientOptions options)
+        {
+            this._logger.LogInformation($"Replacing Mqtt client with new config");
+            await _mqttClient.DisconnectAsync();
+            try
+            {
+                await _mqttClient.ConnectAsync(options);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error("Could not connect to broker: " + ex.Message);
+            }
+            finally
+            {
+                Log.Logger.Information("Connected to new broker");
+            }
+            
         }
     }
 }

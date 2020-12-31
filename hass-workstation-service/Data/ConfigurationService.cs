@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
+using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Configuration;
 using MQTTnet;
@@ -14,9 +16,11 @@ using Serilog;
 
 namespace hass_workstation_service.Data
 {
-    public class ConfigurationService
+    public class ConfigurationService : ServiceContractInterfaces, IConfigurationService
     {
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
+        public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+
         private readonly IsolatedStorageFile _fileStorage;
 
         public ConfigurationService()
@@ -64,8 +68,9 @@ namespace hass_workstation_service.Data
                 configuredBroker = await JsonSerializer.DeserializeAsync<ConfiguredMqttBroker>(stream);
             }
             stream.Close();
-            if (configuredBroker != null)
+            if (configuredBroker != null && configuredBroker.Host != null)
             {
+
                 var mqttClientOptions = new MqttClientOptionsBuilder()
                     .WithTcpServer(configuredBroker.Host)
                     // .WithTls()
@@ -109,6 +114,39 @@ namespace hass_workstation_service.Data
         {
             sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));
             WriteSettings();
+        }
+
+        public async void WriteMqttBrokerSettings(string host, string username, string password)
+        {
+            IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate);
+            Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
+            ConfiguredMqttBroker configuredBroker = new ConfiguredMqttBroker()
+            {
+                Host = host,
+                Username = username,
+                Password = password
+            };
+
+            await JsonSerializer.SerializeAsync(stream, configuredBroker);
+            stream.Close();
+
+            this.MqqtConfigChangedHandler.Invoke(await this.ReadMqttSettings());
+        }
+
+        
+
+        /// <summary>
+        /// You can use this to check if the application responds.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public string Ping(string str)
+        {
+            if (str == "ping")
+            {
+                return "pong";
+            }
+            return "what?";
         }
     }
 }

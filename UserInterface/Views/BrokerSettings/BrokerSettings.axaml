@@ -1,0 +1,17 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UserInterface.Views.BrokerSettings">
+  <StackPanel Margin="30" HorizontalAlignment="Left">
+    <ContentControl FontSize="18" FontWeight="Bold">Mqtt broker</ContentControl>
+    <ContentControl FontSize="18" Margin="0 30 0 10">IP or hostname</ContentControl>
+    <TextBox Text="{Binding Host}" HorizontalAlignment="Left" Width="100" Watermark="192.168.1.200"/>
+    <ContentControl FontSize="18" Margin="0 30 0 10">Username</ContentControl>
+    <TextBox Text="{Binding Username}" Width="200"/>
+    <ContentControl FontSize="18" Margin="0 30 0 10">Password</ContentControl>
+    <TextBox Text="{Binding Password}" Width="200" PasswordChar="•"/>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Configure">Save</Button>
+  </StackPanel>
+</UserControl>

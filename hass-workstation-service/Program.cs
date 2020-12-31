@@ -16,6 +16,8 @@ using System.IO.IsolatedStorage;
 using System.Reflection;
 using System.IO;
 using Microsoft.Win32;
+using JKang.IpcServiceFramework.Hosting;
+using hass_workstation_service.Communication.NamedPipe;
 
 namespace hass_workstation_service
 {
@@ -86,9 +88,15 @@ namespace hass_workstation_service
                         Sw_version = GetVersion()
                     };
                     services.AddSingleton(deviceConfig);
-                    services.AddSingleton<ConfigurationService>();
+                    ConfigurationService configurationService = new ConfigurationService();
+                    services.AddSingleton<ServiceContractInterfaces>(configurationService);
+                    services.AddSingleton<IConfigurationService>(configurationService);
                     services.AddSingleton<MqttPublisher>();
                     services.AddHostedService<Worker>();
+                }).ConfigureIpcHost(builder =>
+                {
+                    // configure IPC endpoints
+                    builder.AddNamedPipeEndpoint<ServiceContractInterfaces>(pipeName: "pipeinternal");
                 });
         static internal string GetVersion()
         {

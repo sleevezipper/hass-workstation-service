@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hass-workstation-service", "hass-workstation-service\hass-workstation-service.csproj", "{78EC7ACA-8826-4A0A-AA8E-664D03ACBE88}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserInterface", "UserInterface\UserInterface.csproj", "{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{78EC7ACA-8826-4A0A-AA8E-664D03ACBE88}.Release|Any CPU.Build.0 = Release|Any CPU
 		{78EC7ACA-8826-4A0A-AA8E-664D03ACBE88}.Release|x86.ActiveCfg = Release|Any CPU
 		{78EC7ACA-8826-4A0A-AA8E-664D03ACBE88}.Release|x86.Build.0 = Release|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Debug|x86.Build.0 = Debug|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Release|x86.ActiveCfg = Release|Any CPU
+		{8ECB6FEE-1AD2-40E3-897D-E75EDB637BB5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

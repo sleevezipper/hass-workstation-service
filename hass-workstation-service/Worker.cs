@@ -15,11 +15,11 @@ namespace hass_workstation_service
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly ConfigurationService _configurationService;
+        private readonly IConfigurationService _configurationService;
         private readonly MqttPublisher _mqttPublisher;
 
         public Worker(ILogger<Worker> logger,
-            ConfigurationService configuredSensorsService,
+            IConfigurationService configuredSensorsService,
             MqttPublisher mqttPublisher)
         {
             _logger = logger;

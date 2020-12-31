@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>dotnet-hass_workstation_service-C65C2EBE-1977-4C24-AC6B-6921877E1390</UserSecretsId>
     <RootNamespace>hass_workstation_service</RootNamespace>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <Authors>Sleevezipper</Authors>
     <RepositoryUrl>https://github.com/sleevezipper/hass-workstation-service</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -30,7 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.10" />
+    <PackageReference Include="JKang.IpcServiceFramework.Hosting.NamedPipe" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MQTTnet" Version="3.0.13" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
