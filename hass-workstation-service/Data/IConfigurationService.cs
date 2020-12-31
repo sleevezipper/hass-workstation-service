@@ -1,4 +1,5 @@
 ﻿using hass_workstation_service.Communication;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Domain.Sensors;
 using MQTTnet.Client.Options;
 using System;
@@ -15,10 +16,10 @@ namespace hass_workstation_service.Data
 
         void AddConfiguredSensor(AbstractSensor sensor);
         void AddConfiguredSensors(List<AbstractSensor> sensors);
-        string Ping(string str);
-        Task<IMqttClientOptions> ReadMqttSettings();
+        Task<IMqttClientOptions> GetMqttClientOptionsAsync();
         void ReadSensorSettings(MqttPublisher publisher);
-        void WriteMqttBrokerSettings(string host, string username, string password);
-        void WriteSettings();
+        void WriteMqttBrokerSettingsAsync(MqttSettings settings);
+        void WriteSettingsAsync();
+        Task<MqttSettings> GetMqttBrokerSettings();
     }
 }

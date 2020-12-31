@@ -9,22 +9,20 @@ using Avalonia.Interactivity;
 using System.Reactive.Linq;
 using UserInterface.ViewModels;
 using System.Security;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 
 namespace UserInterface.Views
 {
-    public class BrokerSettings : UserControl
+    public class SensorSettings : UserControl
     {
         private readonly IIpcClient<ServiceContractInterfaces> client;
-        private string _host { get; set; }
-        private string _username { get; set; }
-        private string _password { get; set; }
-        public BrokerSettings()
+
+        public SensorSettings()
         {
-            DataContext = new BrokerSettingsViewModel();
             this.InitializeComponent();
-                        // register IPC clients
+            // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("client1", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<ServiceContractInterfaces>("sensors", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
@@ -32,7 +30,10 @@ namespace UserInterface.Views
                 .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
 
             // create client
-            this.client = clientFactory.CreateClient("client1");
+            this.client = clientFactory.CreateClient("sensors");
+
+
+            DataContext = new BrokerSettingsViewModel();
 
         }
         public void Ping(object sender, RoutedEventArgs args) {
@@ -42,10 +43,8 @@ namespace UserInterface.Views
         public void Configure(object sender, RoutedEventArgs args)
         {
             var model = (BrokerSettingsViewModel)this.DataContext;
-            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettings(model.Host, model.Username, model.Password));
+            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password }));
         }
-
-
 
 
         private void InitializeComponent()

@@ -21,7 +21,13 @@
     <ProjectReference Include="..\hass-workstation-service\hass-workstation-service.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\BrokerSettings\BrokerSettings.axaml.cs">
+    <Compile Update="Views\BackgroundServiceSettings.axaml.cs">
+      <DependentUpon>BackgroundServiceSettings.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SensorSettings.axaml.cs">
+      <DependentUpon>SensorSettings.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\BrokerSettings.axaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ namespace hass_workstation_service.Communication
         private readonly IMqttClient _mqttClient;
         private readonly ILogger<MqttPublisher> _logger;
         private readonly IConfigurationService _configurationService;
+        private string _mqttClientMessage { get; set; }
         public DateTime LastConfigAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
         public bool IsConnected
@@ -45,16 +47,22 @@ namespace hass_workstation_service.Communication
             this.DeviceConfigModel = deviceConfigModel;
             this._configurationService = configurationService;
 
-            var options = _configurationService.ReadMqttSettings().Result;
+            var options = _configurationService.GetMqttClientOptionsAsync().Result;
             _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
 
             var factory = new MqttFactory();
             this._mqttClient = factory.CreateMqttClient();
 
             this._mqttClient.ConnectAsync(options);
+
+            this._mqttClient.UseConnectedHandler(e => {
+                this._mqttClientMessage = "All good";
+            });
+
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(async e =>
             {
+                this._mqttClientMessage = e.ReasonCode.ToString();
                 if (e.ReasonCode != MQTTnet.Client.Disconnecting.MqttClientDisconnectReason.NormalDisconnection)
                 {
                     _logger.LogWarning("Disconnected from server");
@@ -115,13 +123,15 @@ namespace hass_workstation_service.Communication
             }
             catch (Exception ex)
             {
+                this._mqttClientMessage = ex.Message;
                 Log.Logger.Error("Could not connect to broker: " + ex.Message);
             }
-            finally
-            {
-                Log.Logger.Information("Connected to new broker");
-            }
             
+        }
+
+        public MqqtClientStatus GetStatus()
+        {
+            return new MqqtClientStatus() { IsConnected = _mqttClient.IsConnected, Message = _mqttClientMessage };
         }
     }
 }

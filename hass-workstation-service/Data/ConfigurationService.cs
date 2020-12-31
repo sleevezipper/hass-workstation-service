@@ -6,6 +6,7 @@ using System.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ using Serilog;
 
 namespace hass_workstation_service.Data
 {
-    public class ConfigurationService : ServiceContractInterfaces, IConfigurationService
+    public class ConfigurationService : IConfigurationService
     {
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
@@ -32,14 +33,16 @@ namespace hass_workstation_service.Data
 
         public async void ReadSensorSettings(MqttPublisher publisher)
         {
-            IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate);
-            Log.Logger.Information($"reading configured sensors from: {stream.Name}");
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
-            if (stream.Length > 0)
+            using (var stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate))
             {
-                sensors = await JsonSerializer.DeserializeAsync<List<ConfiguredSensor>>(stream);
+                Log.Logger.Information($"reading configured sensors from: {stream.Name}");
+                if (stream.Length > 0)
+                {
+                    sensors = await JsonSerializer.DeserializeAsync<List<ConfiguredSensor>>(stream);
+                }
             }
-            stream.Close();
+
             foreach (ConfiguredSensor configuredSensor in sensors)
             {
                 AbstractSensor sensor;
@@ -58,16 +61,9 @@ namespace hass_workstation_service.Data
             }
         }
 
-        public async Task<IMqttClientOptions> ReadMqttSettings()
+        public async Task<IMqttClientOptions> GetMqttClientOptionsAsync()
         {
-            IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate);
-            Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
-            ConfiguredMqttBroker configuredBroker = null;
-            if (stream.Length > 0)
-            {
-                configuredBroker = await JsonSerializer.DeserializeAsync<ConfiguredMqttBroker>(stream);
-            }
-            stream.Close();
+            ConfiguredMqttBroker configuredBroker = await ReadMqttSettingsAsync();
             if (configuredBroker != null && configuredBroker.Host != null)
             {
 
@@ -89,64 +85,84 @@ namespace hass_workstation_service.Data
             }
         }
 
-        public async void WriteSettings()
+        /// <summary>
+        /// Gets the saved broker settings from configfile. Null if not found.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ConfiguredMqttBroker> ReadMqttSettingsAsync()
         {
-            IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate);
-            Log.Logger.Information($"writing configured sensors to: {stream.Name}");
-            List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
-
-            foreach (AbstractSensor sensor in this.ConfiguredSensors)
+            ConfiguredMqttBroker configuredBroker = null;
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate))
             {
-                configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name });
+                Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
+                if (stream.Length > 0)
+                {
+                    configuredBroker = await JsonSerializer.DeserializeAsync<ConfiguredMqttBroker>(stream);
+                }
             }
 
-            await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
-            stream.Close();
+            return configuredBroker;
+        }
+
+        public async void WriteSettingsAsync()
+        {
+            List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate))
+            {
+                Log.Logger.Information($"writing configured sensors to: {stream.Name}");
+                foreach (AbstractSensor sensor in this.ConfiguredSensors)
+                {
+                    configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name });
+                }
+
+                await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
+            }
         }
 
         public void AddConfiguredSensor(AbstractSensor sensor)
         {
             this.ConfiguredSensors.Add(sensor);
-            WriteSettings();
+            WriteSettingsAsync();
         }
 
         public void AddConfiguredSensors(List<AbstractSensor> sensors)
         {
             sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));
-            WriteSettings();
+            WriteSettingsAsync();
         }
-
-        public async void WriteMqttBrokerSettings(string host, string username, string password)
-        {
-            IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate);
-            Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
-            ConfiguredMqttBroker configuredBroker = new ConfiguredMqttBroker()
-            {
-                Host = host,
-                Username = username,
-                Password = password
-            };
-
-            await JsonSerializer.SerializeAsync(stream, configuredBroker);
-            stream.Close();
-
-            this.MqqtConfigChangedHandler.Invoke(await this.ReadMqttSettings());
-        }
-
-        
 
         /// <summary>
-        /// You can use this to check if the application responds.
+        /// Writes provided settings to the config file and invokes a reconfigure to the current mqqtClient
         /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public string Ping(string str)
+        /// <param name="settings"></param>
+        public async void WriteMqttBrokerSettingsAsync(MqttSettings settings)
         {
-            if (str == "ping")
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate))
             {
-                return "pong";
+                Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
+
+                ConfiguredMqttBroker configuredBroker = new ConfiguredMqttBroker()
+                {
+                    Host = settings.Host,
+                    Username = settings.Username,
+                    Password = settings.Password
+                };
+
+                await JsonSerializer.SerializeAsync(stream, configuredBroker);
             }
-            return "what?";
+
+            this.MqqtConfigChangedHandler.Invoke(await this.GetMqttClientOptionsAsync());
+        }
+
+        public async Task<MqttSettings> GetMqttBrokerSettings()
+        {
+            ConfiguredMqttBroker broker = await ReadMqttSettingsAsync();
+            return new MqttSettings
+            {
+                Host = broker?.Host,
+                Username = broker?.Username,
+                Password = broker?.Password
+            };
         }
     }
 }
