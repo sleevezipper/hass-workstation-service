@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using MangaReader.Avalonia.Platform.Win;
 
 namespace UserInterface.Views
 {
@@ -12,6 +13,7 @@ namespace UserInterface.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            WindowsTrayIcon icon = new WindowsTrayIcon();
         }
 
         private void InitializeComponent()

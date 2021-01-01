@@ -53,8 +53,16 @@ namespace hass_workstation_service.Communication
             var factory = new MqttFactory();
             this._mqttClient = factory.CreateMqttClient();
 
-            this._mqttClient.ConnectAsync(options);
-
+            if (options != null)
+            {
+                this._mqttClient.ConnectAsync(options);
+                this._mqttClientMessage = "Connecting...";
+            }
+            else
+            {
+                this._mqttClientMessage = "Not configured";
+            }
+           
             this._mqttClient.UseConnectedHandler(e => {
                 this._mqttClientMessage = "All good";
             });

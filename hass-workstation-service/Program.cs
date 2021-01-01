@@ -31,29 +31,37 @@ namespace hass_workstation_service
             .WriteTo.Console()
             .WriteTo.File(new RenderedCompactJsonFormatter(), "logs/log.ndjson")
             .CreateLogger();
-
-
-            try
+            // We do it this way because there is currently no way to pass an argument to a dotnet core app when using clickonce
+            if (Process.GetProcessesByName("hass-workstation-service").Count() > 1) //bg service running
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                StartUI();
+            }
+            else
+            {
+                try
                 {
-                    await CreateHostBuilder(args).RunConsoleAsync();
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        await CreateHostBuilder(args).RunConsoleAsync();
 
+                    }
+                    else
+                    {
+                        // we only support MS Windows for now
+                        throw new NotImplementedException("Your platform is not yet supported");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // we only support MS Windows for now
-                    throw new NotImplementedException("Your platform is not yet supported");
+                    Log.Fatal(ex, "Application start-up failed");
+                }
+                finally
+                {
+                    Log.CloseAndFlush();
                 }
             }
-            catch (Exception ex)
-            {
-                Log.Fatal(ex, "Application start-up failed");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
+
+            
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
@@ -86,6 +94,12 @@ namespace hass_workstation_service
             }
 
             return "Debug";
+        }
+
+        public static void StartUI()
+        {
+            Log.Logger.Information(Environment.CurrentDirectory + "\\UserInterface.exe");
+            Process.Start(Environment.CurrentDirectory + "\\UserInterface.exe");
         }
     }
 }

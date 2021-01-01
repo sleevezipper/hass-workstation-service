@@ -78,12 +78,8 @@ namespace hass_workstation_service.Data
             }
             else
             {
-                //for now we return defaults until we can actually configure this
-                return new MqttClientOptionsBuilder()
-                    .WithTcpServer("192.168.2.6")
-                    // .WithTls()
-                    .WithCredentials("tester", "tester")
-                    .Build();
+                Program.StartUI();
+                return null;
             }
         }
 

@@ -13,6 +13,9 @@ It will try to futher accomplish this goal in the future by:
 - Being easy to configure
 - Using secure communication
 
-## Deployments
+## Installation
 
-1. 
+You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup.
+Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing.
+
+Alternatively, you can find releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases).

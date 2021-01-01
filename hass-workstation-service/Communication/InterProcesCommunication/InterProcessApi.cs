@@ -31,7 +31,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
 
         /// <summary>
         /// You can use this to check if the application responds.
-        /// </summary>
+        /// </summary> 
         /// <param name="str"></param>
         /// <returns></returns>
         public string Ping(string str)

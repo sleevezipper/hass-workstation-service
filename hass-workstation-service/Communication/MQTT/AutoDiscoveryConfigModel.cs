@@ -89,6 +89,9 @@ namespace hass_workstation_service.Communication
         public string Value_template { get; set; }
     }
 
+    /// <summary>
+    /// This information will be used when announcing this device on the mqtt topic
+    /// </summary>
     public class DeviceConfigModel
     {
         /// <summary>
