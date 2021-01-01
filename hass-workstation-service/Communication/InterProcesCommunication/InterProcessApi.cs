@@ -47,5 +47,15 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         {
             this._configurationService.WriteMqttBrokerSettingsAsync(settings);
         }
+
+        public void EnableAutostart(bool enable)
+        {
+            this._configurationService.EnableAutoStart(enable);
+        }
+
+        public bool IsAutoStartEnabled()
+        {
+            return this._configurationService.IsAutoStartEnabled();
+        }
     }
 }

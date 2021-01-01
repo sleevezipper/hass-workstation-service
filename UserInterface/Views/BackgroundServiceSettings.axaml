@@ -4,11 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.BackgroundServiceSettings">
-  <StackPanel Margin="30" HorizontalAlignment="Left">
-    <ContentControl FontSize="18" FontWeight="Bold">Background service</ContentControl>
-    <TextBlock IsVisible="{Binding IsRunning}" Foreground="Green" Text="{Binding Message}"></TextBlock >
-    <TextBlock IsVisible="{Binding !IsRunning}" Foreground="Red" Text="{Binding Message}"></TextBlock >
+  <StackPanel Margin="30">
+    <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
+      <ContentControl FontSize="18" FontWeight="Bold">Background service</ContentControl>
+      <TextBlock IsVisible="{Binding IsRunning}" Foreground="Green" Text="{Binding Message}"></TextBlock >
+      <TextBlock IsVisible="{Binding !IsRunning}" Foreground="Red" Text="{Binding Message}"></TextBlock >
 
-    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Start">Start</Button>
+      <Button IsVisible="{Binding !IsRunning}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Start">Start</Button>
+
+
+    </StackPanel>
+    <StackPanel HorizontalAlignment="Stretch">
+      <ContentControl FontSize="14" FontWeight="Bold">Autostart</ContentControl>
+      <TextBlock IsVisible="{Binding IsAutoStartEnabled}" Foreground="Green" Text="Autostart is enabled"></TextBlock >
+      <TextBlock IsVisible="{Binding !IsAutoStartEnabled}" Foreground="Red" Text="Autostart is NOT enabled"></TextBlock >
+
+      <Button IsVisible="{Binding !IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="EnableAutostart">Enable</Button>
+      <Button IsVisible="{Binding IsAutoStartEnabled}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="DisableAutostart">Disable</Button>
+    </StackPanel>
   </StackPanel>
 </UserControl>

@@ -37,26 +37,6 @@ namespace hass_workstation_service
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    if (args.Contains("--autostart=true"))
-                    {
-                        Log.Logger.Information("configuring autostart");
-                        // The path to the key where Windows looks for startup applications
-                        RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
-                        //Path to launch shortcut
-                        string startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\hass-workstation-service\hass-workstation-service.appref-ms";
-
-                        rkApp.SetValue("hass-workstation-service", startPath);
-                        rkApp.Close();
-                    }
-                    else if (args.Contains("--autostart=false"))
-                    {
-                        Log.Logger.Information("removing autostart");
-                        RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-                        rkApp.DeleteSubKey("hass-workstation-service");
-                        rkApp.Close();
-                    }
-
                     await CreateHostBuilder(args).RunConsoleAsync();
 
                 }

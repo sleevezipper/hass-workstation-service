@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using System.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
@@ -163,6 +165,39 @@ namespace hass_workstation_service.Data
                 Username = broker?.Username,
                 Password = broker?.Password
             };
+        }
+
+        /// <summary>
+        /// Enable or disable autostarting the background service. It does this by adding the application shortcut (appref-ms) to the registry run key for the current user
+        /// </summary>
+        /// <param name="enable"></param>
+        public void EnableAutoStart(bool enable)
+        {
+            if (enable)
+            {
+                Log.Logger.Information("configuring autostart");
+                // The path to the key where Windows looks for startup applications
+                RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+                //Path to launch shortcut
+                string startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\hass-workstation-service\hass-workstation-service.appref-ms";
+
+                rkApp.SetValue("hass-workstation-service", startPath);
+                rkApp.Close();
+            }
+            else
+            {
+                Log.Logger.Information("removing autostart");
+                RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                rkApp.DeleteValue("hass-workstation-service");
+                rkApp.Close();
+            }
+        }
+
+        public bool IsAutoStartEnabled()
+        {
+            RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+            return rkApp.GetValue("hass-workstation-service") != null;
         }
     }
 }

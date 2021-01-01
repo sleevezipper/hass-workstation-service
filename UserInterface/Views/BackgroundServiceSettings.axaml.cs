@@ -55,9 +55,10 @@ namespace UserInterface.Views
                 {
                     ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(false, "Not running");
                 }
-               
-                
-                
+
+                var autostartresult = await this.client.InvokeAsync(x => x.IsAutoStartEnabled());
+                ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateAutostartStatus(autostartresult);
+
                 await Task.Delay(1000);
             }
         }
@@ -66,6 +67,15 @@ namespace UserInterface.Views
         {
             //TODO: fix the path. This will depend on the deployment structure.
             System.Diagnostics.Process.Start("hass-worstation-service.exe");
+        }
+
+        public void EnableAutostart(object sender, RoutedEventArgs args)
+        {
+            this.client.InvokeAsync(x => x.EnableAutostart(true));
+        }
+        public void DisableAutostart(object sender, RoutedEventArgs args)
+        {
+            this.client.InvokeAsync(x => x.EnableAutostart(false));
         }
 
         private void InitializeComponent()

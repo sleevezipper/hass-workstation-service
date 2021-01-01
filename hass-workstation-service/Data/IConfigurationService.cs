@@ -21,5 +21,7 @@ namespace hass_workstation_service.Data
         void WriteMqttBrokerSettingsAsync(MqttSettings settings);
         void WriteSettingsAsync();
         Task<MqttSettings> GetMqttBrokerSettings();
+        void EnableAutoStart(bool enable);
+        bool IsAutoStartEnabled();
     }
 }

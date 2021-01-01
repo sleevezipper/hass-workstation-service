@@ -12,5 +12,7 @@ namespace hass_workstation_service.Communication.NamedPipe
         public string Ping(string str);
         void WriteMqttBrokerSettingsAsync(MqttSettings settings);
         MqqtClientStatus GetMqqtClientStatus();
+        void EnableAutostart(bool enable);
+        bool IsAutoStartEnabled();
     }
 }
