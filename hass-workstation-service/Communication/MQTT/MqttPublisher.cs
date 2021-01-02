@@ -7,6 +7,7 @@ using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
+using MQTTnet.Adapter;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using Serilog;
@@ -101,7 +102,7 @@ namespace hass_workstation_service.Communication
             }
         }
 
-        public async Task PublishAutoDiscoveryConfig(AutoDiscoveryConfigModel config, bool clearPreviousConfig = false)
+        public async Task AnnounceAutoDiscoveryConfig(AutoDiscoveryConfigModel config, bool clearConfig = false)
         {
             if (this._mqttClient.IsConnected)
             {
@@ -113,7 +114,7 @@ namespace hass_workstation_service.Communication
                 };
                 var message = new MqttApplicationMessageBuilder()
                 .WithTopic($"homeassistant/sensor/{config.Name}/config")
-                .WithPayload(clearPreviousConfig ? "" : JsonSerializer.Serialize(config, options))
+                .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(config, options))
                 .WithRetainFlag()
                 .Build();
                 await this.Publish(message);
@@ -129,10 +130,10 @@ namespace hass_workstation_service.Communication
             {
                 await _mqttClient.ConnectAsync(options);
             }
-            catch (Exception ex)
+            catch (MqttConnectingFailedException ex)
             {
-                this._mqttClientMessage = ex.Message;
-                Log.Logger.Error("Could not connect to broker: " + ex.Message);
+                this._mqttClientMessage = ex.ResultCode.ToString();
+                Log.Logger.Error("Could not connect to broker: " + ex.ResultCode.ToString());
             }
             
         }

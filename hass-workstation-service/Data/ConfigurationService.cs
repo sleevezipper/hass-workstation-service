@@ -24,6 +24,9 @@ namespace hass_workstation_service.Data
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
 
+        public bool _brokerSettingsFileLocked { get; set; }
+        public bool _sensorsSettingsFileLocked { get; set; }
+
         private readonly IsolatedStorageFile _fileStorage;
 
         public ConfigurationService()
@@ -31,18 +34,35 @@ namespace hass_workstation_service.Data
             this._fileStorage = IsolatedStorageFile.GetUserStoreForApplication();
 
             ConfiguredSensors = new List<AbstractSensor>();
+
+            if (!this._fileStorage.FileExists("mqttbroker.json"))
+            {
+                this._fileStorage.CreateFile("mqttbroker.json");
+            }
+
+            if (!this._fileStorage.FileExists("configured-sensors.json"))
+            {
+                this._fileStorage.CreateFile("configured-sensors.json");
+            }
         }
 
         public async void ReadSensorSettings(MqttPublisher publisher)
         {
+            while (this._sensorsSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this._sensorsSettingsFileLocked = true;
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
-            using (var stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate))
+            using (var stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.Open))
             {
                 Log.Logger.Information($"reading configured sensors from: {stream.Name}");
                 if (stream.Length > 0)
                 {
                     sensors = await JsonSerializer.DeserializeAsync<List<ConfiguredSensor>>(stream);
                 }
+                stream.Close();
+                this._sensorsSettingsFileLocked = false;
             }
 
             foreach (ConfiguredSensor configuredSensor in sensors)
@@ -89,24 +109,37 @@ namespace hass_workstation_service.Data
         /// <returns></returns>
         public async Task<ConfiguredMqttBroker> ReadMqttSettingsAsync()
         {
+            while (this._brokerSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this._brokerSettingsFileLocked = true;
             ConfiguredMqttBroker configuredBroker = null;
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate))
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.Open))
             {
                 Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
                 if (stream.Length > 0)
                 {
                     configuredBroker = await JsonSerializer.DeserializeAsync<ConfiguredMqttBroker>(stream);
                 }
+                stream.Close();
             }
 
+            this._brokerSettingsFileLocked = false;
             return configuredBroker;
         }
 
         public async void WriteSettingsAsync()
         {
-            List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.OpenOrCreate))
+            while (this._sensorsSettingsFileLocked)
             {
+                await Task.Delay(500);
+            }
+            this._sensorsSettingsFileLocked = true;
+            List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.Open))
+            {
+                stream.SetLength(0);
                 Log.Logger.Information($"writing configured sensors to: {stream.Name}");
                 foreach (AbstractSensor sensor in this.ConfiguredSensors)
                 {
@@ -114,7 +147,9 @@ namespace hass_workstation_service.Data
                 }
 
                 await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
+                stream.Close();
             }
+            this._sensorsSettingsFileLocked = false;
         }
 
         public void AddConfiguredSensor(AbstractSensor sensor)
@@ -123,9 +158,10 @@ namespace hass_workstation_service.Data
             WriteSettingsAsync();
         }
 
-        public void DeleteConfiguredSensor(Guid id)
+        public async void DeleteConfiguredSensor(Guid id)
         {
             var sensorToRemove = this.ConfiguredSensors.FirstOrDefault(s => s.Id == id);
+            await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
             this.ConfiguredSensors.Remove(sensorToRemove);
             WriteSettingsAsync();
         }
@@ -142,8 +178,14 @@ namespace hass_workstation_service.Data
         /// <param name="settings"></param>
         public async void WriteMqttBrokerSettingsAsync(MqttSettings settings)
         {
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.OpenOrCreate))
+            while (this._brokerSettingsFileLocked)
             {
+                await Task.Delay(500);
+            }
+            this._brokerSettingsFileLocked = true;
+            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.Open))
+            {
+                stream.SetLength(0);
                 Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
 
                 ConfiguredMqttBroker configuredBroker = new ConfiguredMqttBroker()
@@ -154,8 +196,9 @@ namespace hass_workstation_service.Data
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);
+                stream.Close();
             }
-
+            this._brokerSettingsFileLocked = false;
             this.MqqtConfigChangedHandler.Invoke(await this.GetMqttClientOptionsAsync());
         }
 

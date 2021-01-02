@@ -41,7 +41,11 @@ namespace hass_workstation_service.Domain.Sensors
         }
         public async Task PublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.PublishAutoDiscoveryConfig(this.GetAutoDiscoveryConfig());
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig());
+        }
+        public async Task UnPublishAutoDiscoveryConfigAsync()
+        {
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), true);
         }
 
     }
