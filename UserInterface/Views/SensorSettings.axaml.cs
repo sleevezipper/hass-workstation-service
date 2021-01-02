@@ -10,12 +10,17 @@ using System.Reactive.Linq;
 using UserInterface.ViewModels;
 using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using System.Collections.Generic;
+using System.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace UserInterface.Views
 {
     public class SensorSettings : UserControl
     {
         private readonly IIpcClient<ServiceContractInterfaces> client;
+        private DataGrid _dataGrid { get; set; }
+        private bool sensorsNeedToRefresh { get; set; }
 
         public SensorSettings()
         {
@@ -33,23 +38,61 @@ namespace UserInterface.Views
             this.client = clientFactory.CreateClient("sensors");
 
 
-            DataContext = new BrokerSettingsViewModel();
+            DataContext = new SensorSettingsViewModel();
+            GetConfiguredSensors();
 
-        }
-        public void Ping(object sender, RoutedEventArgs args) {
-            var result = this.client.InvokeAsync(x => x.Ping("ping")).Result;
+            this._dataGrid = this.FindControl<DataGrid>("Grid");
         }
 
-        public void Configure(object sender, RoutedEventArgs args)
+
+        public async void GetConfiguredSensors()
         {
-            var model = (BrokerSettingsViewModel)this.DataContext;
-            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password }));
+            sensorsNeedToRefresh = false;
+            List<ConfiguredSensorModel> status = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
+
+            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s => new SensorViewModel() { Name = s.Name, Type = s.Type, Value = s.Value, Id = s.Id }).ToList();
+            while (!sensorsNeedToRefresh)
+            {
+                await Task.Delay(2000);
+                List<ConfiguredSensorModel> statusUpdated = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
+                var configuredSensors = ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors;
+                statusUpdated.ForEach(s =>
+                {
+                    var configuredSensor = configuredSensors.FirstOrDefault(cs => cs.Id == s.Id);
+                    if (configuredSensor != null)
+                    {
+                        configuredSensor.Value = s.Value;
+
+                        configuredSensors.FirstOrDefault(cs => cs.Id == s.Id).Value = s.Value;
+                    }
+                });
+            }
+
+        }
+        public void Delete(object sender, RoutedEventArgs args)
+        {
+            var item = ((SensorViewModel)this._dataGrid.SelectedItem);
+            this.client.InvokeAsync(x => x.RemoveSensorById(item.Id));
+            // TODO: improve this. it is not working well.
+            sensorsNeedToRefresh = true;
+            GetConfiguredSensors();
         }
 
+        public async void AddSensor(object sender, RoutedEventArgs args)
+        {
+            AddSensorDialog dialog = new AddSensorDialog();
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await dialog.ShowDialog(desktop.MainWindow);
+                GetConfiguredSensors();
+            }
+        }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
         }
+
+
     }
 }

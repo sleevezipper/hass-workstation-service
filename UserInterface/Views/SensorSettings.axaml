@@ -4,17 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              MaxWidth="500"
-             x:Class="UserInterface.Views.SensorSettings">
+             x:Class="UserInterface.Views.SensorSettings" >
   <StackPanel Margin="30" HorizontalAlignment="Left" >
-    <ContentControl FontSize="18" FontWeight="Bold">Mqtt broker</ContentControl>
-    <TextBlock IsVisible="{Binding IsConnected}" Foreground="Green" Text="{Binding Message}"></TextBlock >
-    <TextBlock IsVisible="{Binding !IsConnected}" Foreground="Red" Text="{Binding Message}"></TextBlock >
-    <ContentControl FontSize="18" Margin="0 30 0 10">IP or hostname</ContentControl>
-    <TextBox Text="{Binding Host}" HorizontalAlignment="Left" Width="100" Watermark="192.168.1.200"/>
-    <ContentControl FontSize="18" Margin="0 30 0 10">Username</ContentControl>
-    <TextBox Text="{Binding Username}" Width="200"/>
-    <ContentControl FontSize="18" Margin="0 30 0 10">Password</ContentControl>
-    <TextBox Text="{Binding Password}" Width="200" PasswordChar="•"/>
-    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Configure">Save</Button>
+    <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredSensors}">
+
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Name"
+                            Binding="{Binding Name}"
+                            Width="1*" />
+        <DataGridTextColumn Header="Type"
+                            Binding="{Binding Type}"
+                            Width="1*" />
+        <DataGridTextColumn Header="Value"
+                            Binding="{Binding Value}"
+                            Width="1*" />
+      </DataGrid.Columns>
+    </DataGrid>
+    <TextBlock IsVisible="{Binding !ConfiguredSensors.Count}">Add some sensors by clicking the "Add" button. </TextBlock>
+
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="AddSensor">Add</Button>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Delete">Delete</Button>
   </StackPanel>
 </UserControl>

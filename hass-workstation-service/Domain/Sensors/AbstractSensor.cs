@@ -5,9 +5,7 @@ using MQTTnet;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    /// <summary>
-    /// This 
-    /// </summary>
+
     public abstract class AbstractSensor
     {
         public Guid Id { get; protected set; }

@@ -34,7 +34,9 @@ namespace hass_workstation_service
             // We do it this way because there is currently no way to pass an argument to a dotnet core app when using clickonce
             if (Process.GetProcessesByName("hass-workstation-service").Count() > 1) //bg service running
             {
+#if !DEBUG
                 StartUI();
+#endif
             }
             else
             {
@@ -61,7 +63,7 @@ namespace hass_workstation_service
                 }
             }
 
-            
+
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)

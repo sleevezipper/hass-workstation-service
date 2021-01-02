@@ -88,11 +88,7 @@ namespace hass_workstation_service.Domain.Sensors
         QuietTime = 6,
 
         /// <summary>
-        /// Introduced in Windows 7. The current user is in "quiet time", which is the first hour after
-        /// a new user logs into his or her account for the first time. During this time, most notifications
-        /// should not be sent or shown. This lets a user become accustomed to a new computer system
-        /// without those distractions.
-        /// Quiet time also occurs for each user after an operating system upgrade or clean installation.
+        /// A Windows Store app is running.
         /// </summary>
         RunningWindowsStoreApp = 7
     };

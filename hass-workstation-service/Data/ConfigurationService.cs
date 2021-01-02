@@ -123,6 +123,13 @@ namespace hass_workstation_service.Data
             WriteSettingsAsync();
         }
 
+        public void DeleteConfiguredSensor(Guid id)
+        {
+            var sensorToRemove = this.ConfiguredSensors.FirstOrDefault(s => s.Id == id);
+            this.ConfiguredSensors.Remove(sensorToRemove);
+            WriteSettingsAsync();
+        }
+
         public void AddConfiguredSensors(List<AbstractSensor> sensors)
         {
             sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));

@@ -23,5 +23,6 @@ namespace hass_workstation_service.Data
         Task<MqttSettings> GetMqttBrokerSettings();
         void EnableAutoStart(bool enable);
         bool IsAutoStartEnabled();
+        void DeleteConfiguredSensor(Guid id);
     }
 }

@@ -14,5 +14,8 @@ namespace hass_workstation_service.Communication.NamedPipe
         MqqtClientStatus GetMqqtClientStatus();
         void EnableAutostart(bool enable);
         bool IsAutoStartEnabled();
+        List<ConfiguredSensorModel> GetConfiguredSensors();
+        void RemoveSensorById(Guid id);
+        void AddSensor(AvailableSensors sensorType, string json);
     }
 }

@@ -8,17 +8,15 @@
         x:Class="UserInterface.Views.MainWindow"
         Icon="/Assets/hass-workstation-logo.ico"
         SizeToContent="WidthAndHeight"
-        Title="Settings"
-        Background="LightGray">
-
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+        Title="Settings">
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
   <Grid ColumnDefinitions="Auto,1*,Auto" RowDefinitions="Auto,Auto,Auto"  Margin="30">
 
-    <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10 0" Background="White"/>
-    <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10 0" Background="White"/>
-    <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10 0" Background="White"/>
+    <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10 0" Background="#2D2D30"/>
+    <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10 0" Background="#2D2D30"/>
+    <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10 0" Background="#2D2D30"/>
 
     <!--<views:BrokerSettings Grid.Column="1" Grid.Row="0"/>
     <views:BrokerSettings Grid.Column="2" Grid.Row="0"/>-->
@@ -28,7 +26,7 @@
     <CheckBox Content="Col2Row0" Grid.Row="0" Grid.Column="2"/>
     <Button Content="SpansCol1-2Row1-2" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2"/>-->
   </Grid>
-    <!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
-  
+  <!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
+
 
 </Window>
