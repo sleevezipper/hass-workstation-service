@@ -94,6 +94,12 @@ namespace UserInterface.Views
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
+                case AvailableSensors.ActiveWindowSensor:
+                    item.Description = "This sensor exposes the name of the currently active window.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
+                    item.ShowQueryInput = false;
+                    item.UpdateInterval = 5;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

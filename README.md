@@ -20,9 +20,15 @@ Note: You'll get a Windows Smartscreen warning because the code was self signed.
 
 Alternatively, you can find releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases).
 
+### Updating
+
+The app checks for updates on startup. If an update is available you will be prompted to install.
+
 ## Sensors
 
-The application provides several sensors.
+The application provides several sensors. Sensors can be configured with a name and this name will be used in the MQTT topic like this: `homeassistant/sensor/{Name}/state`. Sensors will expose themselves through [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/) and will automatically appear in Home assistant or any other platform that supports this type of configuration.
+
+Sensors publish their state on their own interval which you can configure and only publish when the state changes.
 
 ### UserNotificationState
 
@@ -37,6 +43,10 @@ This sensor watches the UserNotificationState. This is normally used in applicat
 |AcceptsNotifications|None of the other states are found, notifications can be freely sent.|
 |QuietTime|Introduced in Windows 7. The current user is in "quiet time", which is the first hour after a new user logs into his or her account for the first time. During this time, most notifications should not be sent or shown. This lets a user become accustomed to a new computer system without those distractions. Quiet time also occurs for each user after an operating system upgrade or clean installation.|
 |RunningWindowsStoreApp|A Windows Store app is running.|
+
+### ActiveWindow
+
+This sensor exposes the name of the currently focused window.
 
 ### CPULoad
 
