@@ -31,17 +31,19 @@ namespace hass_workstation_service.Domain.Sensors
             {
                 VideoCapture capture = new VideoCapture(0);
                 OutputArray image = OutputArray.Create(new Mat());
+
+                // capture.Read() return false if it doesn't succeed in capturing
                 if (capture.Read(image))
                 {
                     capture.Release();
                     capture.Dispose();
-                    return true;
+                    return false;
                 }
                 else
                 {
                     capture.Release();
                     capture.Dispose();
-                    return false;
+                    return true;
                 }
                 
             }
