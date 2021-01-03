@@ -13,12 +13,18 @@ It will try to futher accomplish this goal in the future by:
 - Being platform independent
 - Using secure communication
 
+## Screenshots
+
+![The settings screen](https://i.imgur.com/KXKQqMr.png)
+
+![The resulting sensors in Home Assistant](https://i.imgur.com/1Yvx2Ea.png)
+
 ## Installation
 
 You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup.
 Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing.
 
-Alternatively, you can find releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases).
+If you don't want to use the installer, you can find releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). `hass-workstation-service.exe` is the background service and you can use `UserInterface.exe` to configure the service. If you don't use the installer autostart won't work.
 
 ### Updating
 
