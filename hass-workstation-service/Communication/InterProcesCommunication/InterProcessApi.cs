@@ -106,6 +106,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.ActiveWindowSensor:
                     sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.WebcamActiveSensor:
+                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;

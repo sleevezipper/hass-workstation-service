@@ -90,7 +90,7 @@ namespace UserInterface.Views
                     break;
                 case AvailableSensors.MemoryUsageSensor:
                     item.Description = "This sensor calculates the percentage of used memory.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemorysensor";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemory";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
@@ -99,6 +99,12 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 5;
+                    break;
+                case AvailableSensors.WebcamActiveSensor:
+                    item.Description = "This sensor shows if the webcam is currently in use.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#webcamactive";
+                    item.ShowQueryInput = false;
+                    item.UpdateInterval = 10;
                     break;
                 default:
                     item.Description = null;
