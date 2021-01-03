@@ -1,14 +1,6 @@
 ﻿using hass_workstation_service.Communication;
-using Microsoft.Win32;
+using OpenCvSharp;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Management;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 
 namespace hass_workstation_service.Domain.Sensors
 {
@@ -35,25 +27,29 @@ namespace hass_workstation_service.Domain.Sensors
 
         private bool IsWebCamInUse()
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged"))
+            try
             {
-                foreach (var subKeyName in key.GetSubKeyNames())
+                VideoCapture capture = new VideoCapture(0);
+                OutputArray image = OutputArray.Create(new Mat());
+                if (capture.Read(image))
                 {
-                    using (var subKey = key.OpenSubKey(subKeyName))
-                    {
-                        if (subKey.GetValueNames().Contains("LastUsedTimeStop"))
-                        {
-                            var endTime = subKey.GetValue("LastUsedTimeStop") is long ? (long)subKey.GetValue("LastUsedTimeStop") : -1;
-                            if (endTime <= 0)
-                            {
-                                return true;
-                            }
-                        }
-                    }
+                    capture.Release();
+                    capture.Dispose();
+                    return true;
                 }
+                else
+                {
+                    capture.Release();
+                    capture.Dispose();
+                    return false;
+                }
+                
             }
+            catch (Exception)
+            {
 
-            return false;
+                return false;
+            }
         }
     }
 }
