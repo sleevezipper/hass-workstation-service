@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Security;
 using System.Text.Json;
@@ -27,23 +26,21 @@ namespace hass_workstation_service.Data
         public bool _brokerSettingsFileLocked { get; set; }
         public bool _sensorsSettingsFileLocked { get; set; }
 
-        private readonly IsolatedStorageFile _fileStorage;
+        private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
         public ConfigurationService()
         {
-            this._fileStorage = IsolatedStorageFile.GetUserStoreForApplication();
+            if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
+            {
+                File.Create(Path.Combine(path, "mqttbroker.json"));
+            }
+
+            if (!File.Exists(Path.Combine(path, "configured-sensors.json")))
+            {
+                File.Create(Path.Combine(path, "configured-sensors.json"));
+            }
 
             ConfiguredSensors = new List<AbstractSensor>();
-
-            if (!this._fileStorage.FileExists("mqttbroker.json"))
-            {
-                this._fileStorage.CreateFile("mqttbroker.json");
-            }
-
-            if (!this._fileStorage.FileExists("configured-sensors.json"))
-            {
-                this._fileStorage.CreateFile("configured-sensors.json");
-            }
         }
 
         public async void ReadSensorSettings(MqttPublisher publisher)
@@ -54,7 +51,7 @@ namespace hass_workstation_service.Data
             }
             this._sensorsSettingsFileLocked = true;
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
-            using (var stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.Open))
+            using (var stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
             {
                 Log.Logger.Information($"reading configured sensors from: {stream.Name}");
                 if (stream.Length > 0)
@@ -134,7 +131,7 @@ namespace hass_workstation_service.Data
             }
             this._brokerSettingsFileLocked = true;
             ConfiguredMqttBroker configuredBroker = null;
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
             {
                 Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
                 if (stream.Length > 0)
@@ -156,7 +153,7 @@ namespace hass_workstation_service.Data
             }
             this._sensorsSettingsFileLocked = true;
             List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("configured-sensors.json", FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
             {
                 stream.SetLength(0);
                 Log.Logger.Information($"writing configured sensors to: {stream.Name}");
@@ -171,7 +168,7 @@ namespace hass_workstation_service.Data
                     {
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name, UpdateInterval = sensor.UpdateInterval });
                     }
-                    
+
                 }
 
                 await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
@@ -220,7 +217,7 @@ namespace hass_workstation_service.Data
                 await Task.Delay(500);
             }
             this._brokerSettingsFileLocked = true;
-            using (IsolatedStorageFileStream stream = this._fileStorage.OpenFile("mqttbroker.json", FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
             {
                 stream.SetLength(0);
                 Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");

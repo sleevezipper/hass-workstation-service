@@ -26,10 +26,15 @@ namespace hass_workstation_service
     {
         public static async Task Main(string[] args)
         {
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service", "logs");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
             Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
-            .WriteTo.File(new RenderedCompactJsonFormatter(), "logs/log.ndjson")
+            .WriteTo.File(new RenderedCompactJsonFormatter(), Path.Combine(path, "log.txt"), rollingInterval: RollingInterval.Day)
             .CreateLogger();
             // We do it this way because there is currently no way to pass an argument to a dotnet core app when using clickonce
             if (Process.GetProcessesByName("hass-workstation-service").Count() > 1) //bg service running
