@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 namespace hass_workstation_service.Communication.Util
 {
     /// <summary>
@@ -125,3 +127,4 @@ namespace hass_workstation_service.Communication.Util
         }
     }
 }
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.

@@ -67,19 +67,38 @@ namespace hass_workstation_service.Data
 
             foreach (ConfiguredSensor configuredSensor in sensors)
             {
-                AbstractSensor sensor;
+                AbstractSensor sensor = null;
                 switch (configuredSensor.Type)
                 {
                     case "UserNotificationStateSensor":
-                        sensor = new UserNotificationStateSensor(publisher, configuredSensor.Name, configuredSensor.Id);
+                        sensor = new UserNotificationStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     case "DummySensor":
-                        sensor = new DummySensor(publisher, configuredSensor.Name, configuredSensor.Id);
+                        sensor = new DummySensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "CurrentClockSpeedSensor":
+                        sensor = new CurrentClockSpeedSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "WMIQuerySensor":
+                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "CPULoadSensor":
+                        sensor = new CPULoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "MemoryUsageSensor":
+                        sensor = new MemoryUsageSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "ActiveWindowSensor":
+                        sensor = new ActiveWindowSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     default:
-                        throw new InvalidOperationException("unsupported sensor type in config");
+                        Log.Logger.Error("unsupported sensor type in config");
+                        break;
                 }
-                this.ConfiguredSensors.Add(sensor);
+                if (sensor != null)
+                {
+                    this.ConfiguredSensors.Add(sensor);
+                }
             }
         }
 
@@ -143,7 +162,16 @@ namespace hass_workstation_service.Data
                 Log.Logger.Information($"writing configured sensors to: {stream.Name}");
                 foreach (AbstractSensor sensor in this.ConfiguredSensors)
                 {
-                    configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name });
+                    if (sensor is WMIQuerySensor)
+                    {
+                        var wmiSensor = (WMIQuerySensor)sensor;
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
+                    }
+                    else
+                    {
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name, UpdateInterval = sensor.UpdateInterval });
+                    }
+                    
                 }
 
                 await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
@@ -155,15 +183,24 @@ namespace hass_workstation_service.Data
         public void AddConfiguredSensor(AbstractSensor sensor)
         {
             this.ConfiguredSensors.Add(sensor);
+            sensor.PublishAutoDiscoveryConfigAsync();
             WriteSettingsAsync();
         }
 
         public async void DeleteConfiguredSensor(Guid id)
         {
             var sensorToRemove = this.ConfiguredSensors.FirstOrDefault(s => s.Id == id);
-            await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
-            this.ConfiguredSensors.Remove(sensorToRemove);
-            WriteSettingsAsync();
+            if (sensorToRemove != null)
+            {
+                await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
+                this.ConfiguredSensors.Remove(sensorToRemove);
+                WriteSettingsAsync();
+            }
+            else
+            {
+                Log.Logger.Warning($"sensor with id {id} not found");
+            }
+
         }
 
         public void AddConfiguredSensors(List<AbstractSensor> sensors)
@@ -226,7 +263,7 @@ namespace hass_workstation_service.Data
                 RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
 
                 //Path to launch shortcut
-                string startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\hass-workstation-service\hass-workstation-service.appref-ms";
+                string startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\Sleevezipper\Hass Workstation Service.appref-ms";
 
                 rkApp.SetValue("hass-workstation-service", startPath);
                 rkApp.Close();

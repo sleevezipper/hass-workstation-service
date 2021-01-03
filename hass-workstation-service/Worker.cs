@@ -37,25 +37,28 @@ namespace hass_workstation_service
                 await Task.Delay(2000);
             }
             _logger.LogInformation("Connected. Sending auto discovery messages.");
-            
-            foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
+
+            List<AbstractSensor> sensors = _configurationService.ConfiguredSensors.ToList();
+
+            foreach (AbstractSensor sensor in sensors)
             {
-                await sensor.PublishAutoDiscoveryConfigAsync();
+                sensor.PublishAutoDiscoveryConfigAsync();
             }
             while (!stoppingToken.IsCancellationRequested)
             {
+                sensors = _configurationService.ConfiguredSensors.ToList();
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
-                foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
+                foreach (AbstractSensor sensor in sensors)
                 {
                     await sensor.PublishStateAsync();
                 }
                 // announce autodiscovery every 30 seconds
                 if (_mqttPublisher.LastConfigAnnounce < DateTime.UtcNow.AddSeconds(-30))
                 {
-                    foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors)
+                    foreach (AbstractSensor sensor in sensors)
                     {
-                        await sensor.PublishAutoDiscoveryConfigAsync();
+                        sensor.PublishAutoDiscoveryConfigAsync();
                     }
                 }
                 await Task.Delay(1000, stoppingToken);

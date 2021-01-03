@@ -66,7 +66,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
 
         public List<ConfiguredSensorModel> GetConfiguredSensors()
         {
-            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id }).ToList();
+            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.GetAutoDiscoveryConfig().Unit_of_measurement }).ToList();
         }
 
         public void RemoveSensorById(Guid id)
@@ -86,10 +86,25 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             switch (sensorType)
             {
                 case AvailableSensors.UserNotificationStateSensor:
-                    sensorToCreate = new UserNotificationStateSensor(this._publisher, model.Name);
+                    sensorToCreate = new UserNotificationStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.DummySensor:
-                    sensorToCreate = new DummySensor(this._publisher, model.Name);
+                    sensorToCreate = new DummySensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.CurrentClockSpeedSensor:
+                    sensorToCreate = new CurrentClockSpeedSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.CPULoadSensor:
+                    sensorToCreate = new CPULoadSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.WMIQuerySensor:
+                    sensorToCreate = new WMIQuerySensor(this._publisher, model.Query, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.MemoryUsageSensor:
+                    sensorToCreate = new MemoryUsageSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.ActiveWindowSensor:
+                    sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");

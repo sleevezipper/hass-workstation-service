@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
-             MaxWidth="500"
+             MaxWidth="800"
              x:Class="UserInterface.Views.SensorSettings" >
   <StackPanel Margin="30" HorizontalAlignment="Left" >
     <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredSensors}">
@@ -15,9 +15,12 @@
         <DataGridTextColumn Header="Type"
                             Binding="{Binding Type}"
                             Width="1*" />
-        <DataGridTextColumn Header="Value"
-                            Binding="{Binding Value}"
+        <DataGridTextColumn Header="Update Interval"
+                            Binding="{Binding UpdateInterval}"
                             Width="1*" />
+        <DataGridTextColumn Header="Value"
+                            Binding="{Binding ValueString}"
+                            Width="2*" />
       </DataGrid.Columns>
     </DataGrid>
     <TextBlock IsVisible="{Binding !ConfiguredSensors.Count}">Add some sensors by clicking the "Add" button. </TextBlock>

@@ -7,19 +7,8 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class UserNotificationStateSensor : AbstractSensor
     {
-        public UserNotificationStateSensor(MqttPublisher publisher, string name = "NotificationState")
-        {
-            this.Id = Guid.NewGuid();
-            this.Name = name;
-            this.Publisher = publisher;
-        }
+        public UserNotificationStateSensor(MqttPublisher publisher, int? updateInterval = null, string name = "NotificationState", Guid id = default(Guid)) : base(publisher, name ?? "NotificationState", updateInterval ?? 10, id) { }
 
-        public UserNotificationStateSensor(MqttPublisher publisher, string name, Guid id)
-        {
-            this.Id = id;
-            this.Name = name;
-            this.Publisher = publisher;
-        }
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
             return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new AutoDiscoveryConfigModel()
@@ -39,6 +28,10 @@ namespace hass_workstation_service.Domain.Sensors
 
         [DllImport("shell32.dll")]
         static extern int SHQueryUserNotificationState(out UserNotificationState state);
+
+        [DllImport("shell32.dll")]
+        static extern int asdasdadsd(out int q);
+
 
         public UserNotificationState GetStateEnum()
         {

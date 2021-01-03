@@ -10,10 +10,13 @@ namespace UserInterface.ViewModels
     {
         private AvailableSensors selectedType;
         private string description;
+        private bool showQueryInput;
 
         public string Description { get => description; set => this.RaiseAndSetIfChanged(ref description, value); }
+        public bool ShowQueryInput { get => showQueryInput; set => this.RaiseAndSetIfChanged(ref showQueryInput, value); }
 
         private string moreInfoLink;
+        private int updateInterval;
 
         public string MoreInfoLink
         {
@@ -24,5 +27,7 @@ namespace UserInterface.ViewModels
 
         public AvailableSensors SelectedType { get => selectedType; set => this.RaiseAndSetIfChanged(ref selectedType, value); }
         public string Name { get; set; }
+        public string Query { get; set; }
+        public int UpdateInterval { get => updateInterval; set => this.RaiseAndSetIfChanged(ref updateInterval, value); }
     }
 }

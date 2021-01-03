@@ -50,10 +50,10 @@ namespace UserInterface.Views
             sensorsNeedToRefresh = false;
             List<ConfiguredSensorModel> status = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
 
-            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s => new SensorViewModel() { Name = s.Name, Type = s.Type, Value = s.Value, Id = s.Id }).ToList();
+            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s => new SensorViewModel() { Name = s.Name, Type = s.Type, Value = s.Value, Id = s.Id , UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.UnitOfMeasurement}).ToList();
             while (!sensorsNeedToRefresh)
             {
-                await Task.Delay(2000);
+                await Task.Delay(1000);
                 List<ConfiguredSensorModel> statusUpdated = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
                 var configuredSensors = ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors;
                 statusUpdated.ForEach(s =>
@@ -73,9 +73,9 @@ namespace UserInterface.Views
         {
             var item = ((SensorViewModel)this._dataGrid.SelectedItem);
             this.client.InvokeAsync(x => x.RemoveSensorById(item.Id));
-            // TODO: improve this. it is not working well.
-            sensorsNeedToRefresh = true;
-            GetConfiguredSensors();
+            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors.Remove(item);
+            this._dataGrid.SelectedIndex = -1;
+            ((SensorSettingsViewModel)this.DataContext).TriggerUpdate();
         }
 
         public async void AddSensor(object sender, RoutedEventArgs args)
@@ -84,6 +84,7 @@ namespace UserInterface.Views
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 await dialog.ShowDialog(desktop.MainWindow);
+                sensorsNeedToRefresh = true;
                 GetConfiguredSensors();
             }
         }

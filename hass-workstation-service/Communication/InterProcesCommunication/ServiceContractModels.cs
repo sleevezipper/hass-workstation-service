@@ -24,11 +24,18 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Type { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+        public int UpdateInterval { get; set; }
+        public string UnitOfMeasurement { get; set; }
     }
 
     public enum AvailableSensors
     {
         UserNotificationStateSensor,
-        DummySensor
+        DummySensor,
+        CurrentClockSpeedSensor,
+        CPULoadSensor,
+        WMIQuerySensor,
+        MemoryUsageSensor,
+        ActiveWindowSensor
     }
 }

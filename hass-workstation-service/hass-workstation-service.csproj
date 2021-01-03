@@ -46,5 +46,6 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MQTTnet" Version="3.0.13" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="System.Management" Version="5.0.0" />
   </ItemGroup>
 </Project>
