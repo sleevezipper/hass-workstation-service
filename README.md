@@ -54,6 +54,12 @@ This sensor watches the UserNotificationState. This is normally used in applicat
 
 This sensor exposes the name of the currently focused window.
 
+### WebcamActive
+
+This sensor shows if your webcam is currently in use. 
+
+Please note: Using this sensor will make your webcam activity light turn on every time it checks if the webcam is being used. Using an update interval lower than 30 seconds is not recommended.
+
 ### CPULoad
 
 This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.

@@ -101,10 +101,10 @@ namespace UserInterface.Views
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.WebcamActiveSensor:
-                    item.Description = "This sensor shows if the webcam is currently in use.";
+                    item.Description = "Please note: Using this sensor will make your webcam activity light turn on every time it checks if the webcam is being used. Using an update interval lower than 30 seconds is not recommended.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#webcamactive";
                     item.ShowQueryInput = false;
-                    item.UpdateInterval = 10;
+                    item.UpdateInterval = 60;
                     break;
                 default:
                     item.Description = null;
