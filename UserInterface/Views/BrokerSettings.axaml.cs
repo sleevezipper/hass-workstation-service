@@ -45,7 +45,7 @@ namespace UserInterface.Views
         public void Configure(object sender, RoutedEventArgs args)
         {
             var model = (BrokerSettingsViewModel)this.DataContext;
-            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password }));
+            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password ?? "" }));
         }
 
         public async void GetSettings()

@@ -226,7 +226,7 @@ namespace hass_workstation_service.Data
                 {
                     Host = settings.Host,
                     Username = settings.Username,
-                    Password = settings.Password
+                    Password = settings.Password ?? ""
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);
