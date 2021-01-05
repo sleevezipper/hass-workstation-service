@@ -23,6 +23,9 @@
     <TextBlock Text="{Binding UpdateInterval, StringFormat= Update every {0} seconds}" HorizontalAlignment="Left" MinWidth="150"/>
     <ContentControl IsVisible="{Binding ShowQueryInput}" Margin="0 20 0 10">Query</ContentControl>
     <TextBox IsVisible="{Binding ShowQueryInput}" Text="{Binding Query}" Watermark="SELECT Name FROM Win32_Processor" HorizontalAlignment="Left" MinWidth="300"/>
+    <ContentControl IsVisible="{Binding ShowWindowNameInput}" Margin="0 20 0 5">Window name</ContentControl>
+    <TextBlock TextWrapping="Wrap" MaxWidth="300" FontStyle="Italic" IsVisible="{Binding ShowWindowNameInput}" Margin="0 0 0 10">This is case-insensitive and loosely matched. A window called "Spotify Premium" will match "spotify" or "premium".</TextBlock>
+    <TextBox IsVisible="{Binding ShowWindowNameInput}" Text="{Binding WindowName}" Watermark="Visual Studio Code" HorizontalAlignment="Left" MinWidth="300"/>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
   </StackPanel>
 </Window>

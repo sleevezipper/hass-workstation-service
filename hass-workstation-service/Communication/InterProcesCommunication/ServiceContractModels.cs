@@ -36,6 +36,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         CPULoadSensor,
         WMIQuerySensor,
         MemoryUsageSensor,
-        ActiveWindowSensor
+        ActiveWindowSensor,
+        NamedWindowSensor
     }
 }

@@ -47,7 +47,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = ((AddSensorViewModel)this.DataContext);
-            dynamic model = new { Name = item.Name, Query = item.Query, UpdateInterval = item.UpdateInterval };
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName };
             string json = JsonSerializer.Serialize(model);
             await this.client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
             Close();
@@ -62,42 +62,56 @@ namespace UserInterface.Views
                     item.Description = "This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. \n ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usernotificationstate";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.DummySensor:
                     item.Description = "This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#dummy";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 1;
                     break;
                 case AvailableSensors.CPULoadSensor:
                     item.Description = "This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#cpuload";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.CurrentClockSpeedSensor:
                     item.Description = "This sensor returns the BIOS configured baseclock for the processor.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentclockspeed";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 3600;
                     break;
                 case AvailableSensors.WMIQuerySensor:
                     item.Description = "This advanced sensor executes a user defined WMI query and exposes the result. The query should return a single value.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#wmiquerysensor";
                     item.ShowQueryInput = true;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.MemoryUsageSensor:
                     item.Description = "This sensor calculates the percentage of used memory.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemorysensor";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.ActiveWindowSensor:
                     item.Description = "This sensor exposes the name of the currently active window.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
+                    item.UpdateInterval = 5;
+                    break;
+                case AvailableSensors.NamedWindowSensor:
+                    item.Description = "This sensor returns true if a window was found with the name you search for. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#namedwindow";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = true;
                     item.UpdateInterval = 5;
                     break;
                 default:

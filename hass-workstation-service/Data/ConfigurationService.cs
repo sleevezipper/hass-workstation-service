@@ -88,6 +88,9 @@ namespace hass_workstation_service.Data
                     case "ActiveWindowSensor":
                         sensor = new ActiveWindowSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "NamedWindowSensor":
+                        sensor = new NamedWindowSensor(publisher, configuredSensor.WindowName, configuredSensor.Name, configuredSensor.UpdateInterval, configuredSensor.Id);
+                        break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
                         break;
@@ -163,6 +166,11 @@ namespace hass_workstation_service.Data
                     {
                         var wmiSensor = (WMIQuerySensor)sensor;
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
+                    }
+                    if (sensor is NamedWindowSensor)
+                    {
+                        var namedWindowSensor = (NamedWindowSensor)sensor;
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = namedWindowSensor.Id, Name = namedWindowSensor.Name, Type = namedWindowSensor.GetType().Name, UpdateInterval = namedWindowSensor.UpdateInterval, WindowName = namedWindowSensor.WindowName });
                     }
                     else
                     {
