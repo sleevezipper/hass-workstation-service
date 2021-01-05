@@ -88,6 +88,9 @@ namespace hass_workstation_service.Data
                     case "ActiveWindowSensor":
                         sensor = new ActiveWindowSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "NamedWindowSensor":
+                        sensor = new NamedWindowSensor(publisher, configuredSensor.WindowName, configuredSensor.Name, configuredSensor.UpdateInterval, configuredSensor.Id);
+                        break;
                     case "WebcamActiveSensor":
                         sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.DetectionMode, configuredSensor.Id);
                         break;
@@ -170,6 +173,11 @@ namespace hass_workstation_service.Data
                         var wmiSensor = (WMIQuerySensor)sensor;
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
                     }
+                    if (sensor is NamedWindowSensor)
+                    {
+                        var namedWindowSensor = (NamedWindowSensor)sensor;
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = namedWindowSensor.Id, Name = namedWindowSensor.Name, Type = namedWindowSensor.GetType().Name, UpdateInterval = namedWindowSensor.UpdateInterval, WindowName = namedWindowSensor.WindowName });
+                    }
                     else
                     {
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = sensor.Id, Name = sensor.Name, Type = sensor.GetType().Name, UpdateInterval = sensor.UpdateInterval });
@@ -232,7 +240,7 @@ namespace hass_workstation_service.Data
                 {
                     Host = settings.Host,
                     Username = settings.Username,
-                    Password = settings.Password
+                    Password = settings.Password ?? ""
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);

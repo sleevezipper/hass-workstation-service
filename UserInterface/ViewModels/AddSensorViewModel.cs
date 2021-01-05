@@ -15,11 +15,13 @@ namespace UserInterface.ViewModels
 
         public string Description { get => description; set => this.RaiseAndSetIfChanged(ref description, value); }
         public bool ShowQueryInput { get => showQueryInput; set => this.RaiseAndSetIfChanged(ref showQueryInput, value); }
+        public bool ShowWindowNameInput { get => showWindowNameInput; set => this.RaiseAndSetIfChanged(ref showWindowNameInput, value); }
 
         public bool ShowDetectionModeOptions { get => showDetectionModeOptions; set => this.RaiseAndSetIfChanged(ref showDetectionModeOptions, value); }
 
         private string moreInfoLink;
         private int updateInterval;
+        private bool showWindowNameInput;
         private bool showDetectionModeOptions;
 
         public string MoreInfoLink
@@ -34,6 +36,7 @@ namespace UserInterface.ViewModels
 
         public string Name { get; set; }
         public string Query { get; set; }
+        public string WindowName { get; set; }
         public int UpdateInterval { get => updateInterval; set => this.RaiseAndSetIfChanged(ref updateInterval, value); }
     }
 }

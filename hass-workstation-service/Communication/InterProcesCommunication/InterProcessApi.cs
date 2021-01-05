@@ -125,6 +125,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.MicrophoneActiveSensor:
                     sensorToCreate = new MicrophoneActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.NamedWindowSensor:
+                    sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;

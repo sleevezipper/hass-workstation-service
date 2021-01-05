@@ -51,7 +51,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = ((AddSensorViewModel)this.DataContext);
-            dynamic model = new { Name = item.Name, Query = item.Query, UpdateInterval = item.UpdateInterval, DetectionMode = item.SelectedDetectionMode };
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName, DetectionMode = item.SelectedDetectionMode };
             string json = JsonSerializer.Serialize(model);
             await this.client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
             Close();
@@ -67,6 +67,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usernotificationstate";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.DummySensor:
@@ -74,6 +75,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#dummy";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 1;
                     break;
                 case AvailableSensors.CPULoadSensor:
@@ -81,6 +83,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#cpuload";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.CurrentClockSpeedSensor:
@@ -88,6 +91,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentclockspeed";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 3600;
                     break;
                 case AvailableSensors.WMIQuerySensor:
@@ -95,6 +99,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#wmiquerysensor";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = true;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.MemoryUsageSensor:
@@ -102,6 +107,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemory";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.ActiveWindowSensor:
@@ -109,6 +115,7 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.WebcamActiveSensor:
@@ -124,6 +131,13 @@ namespace UserInterface.Views
                     item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
+                    break;
+                case AvailableSensors.NamedWindowSensor:
+                    item.Description = "This sensor returns true if a window was found with the name you search for. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#namedwindow";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = true;
+                    item.UpdateInterval = 5;
                     break;
                 default:
                     item.Description = null;

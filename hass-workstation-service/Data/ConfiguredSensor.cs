@@ -10,6 +10,7 @@ namespace hass_workstation_service.Data
         public string Name { get; set; }
         public string Query { get; set; }
         public int? UpdateInterval { get; set; }
+        public string WindowName { get; set; }
         public DetectionMode DetectionMode { get; set; }
     }
 }
