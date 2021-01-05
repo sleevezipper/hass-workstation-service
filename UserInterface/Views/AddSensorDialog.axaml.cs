@@ -112,7 +112,7 @@ namespace UserInterface.Views
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.WebcamActiveSensor:
-                    item.Description = "This sensor shows if the webcam is currently in use.";
+                    item.Description = "This sensor shows if the webcam is currently being used.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#webcamactive";
                     item.ShowDetectionModeOptions = true;
                     item.ShowQueryInput = false;
