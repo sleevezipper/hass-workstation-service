@@ -1,17 +1,35 @@
 ﻿using hass_workstation_service.Communication;
+using Microsoft.Win32;
 using OpenCvSharp;
 using System;
+using System.Linq;
 
 namespace hass_workstation_service.Domain.Sensors
 {
+    public enum DetectionMode
+    {
+        Registry,
+        OpenCV
+    }
     public class WebcamActiveSensor : AbstractSensor
     {
-        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", Guid id = default) : base(publisher, name, updateInterval ?? 10, id)
+        public DetectionMode DetectionMode { get; private set; }
+        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", DetectionMode detectionMode = DetectionMode.Registry,  Guid id = default(Guid)) : base(publisher, name, updateInterval ?? 10, id)
         {
+            this.DetectionMode = detectionMode;
         }
         public override string GetState()
         {
-            return IsWebCamInUse() ? "True" : "False";
+            switch (this.DetectionMode)
+            {
+                case DetectionMode.Registry:
+                    return IsWebCamInUseRegistry() ? "True" : "False";
+                case DetectionMode.OpenCV:
+                    return IsWebCamInUseOpenCV() ? "True" : "False";
+                default:
+                    return "Error";
+            }
+            
         }
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -25,7 +43,7 @@ namespace hass_workstation_service.Domain.Sensors
             });
         }
 
-        private bool IsWebCamInUse()
+        private bool IsWebCamInUseOpenCV()
         {
             try
             {
@@ -35,13 +53,13 @@ namespace hass_workstation_service.Domain.Sensors
                 {
                     capture.Release();
                     capture.Dispose();
-                    return true;
+                    return false;
                 }
                 else
                 {
                     capture.Release();
                     capture.Dispose();
-                    return false;
+                    return true;
                 }
                 
             }
@@ -50,6 +68,29 @@ namespace hass_workstation_service.Domain.Sensors
 
                 return false;
             }
+        }
+
+        private bool IsWebCamInUseRegistry()
+        {
+            using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged"))
+            {
+                foreach (var subKeyName in key.GetSubKeyNames())
+                {
+                    using (var subKey = key.OpenSubKey(subKeyName))
+                    {
+                        if (subKey.GetValueNames().Contains("LastUsedTimeStop"))
+                        {
+                            var endTime = subKey.GetValue("LastUsedTimeStop") is long ? (long)subKey.GetValue("LastUsedTimeStop") : -1;
+                            if (endTime <= 0)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -9,14 +9,18 @@ namespace UserInterface.ViewModels
     public class AddSensorViewModel : ViewModelBase
     {
         private AvailableSensors selectedType;
+        private WebcamDetectionMode selectedDetectionMode;
         private string description;
         private bool showQueryInput;
 
         public string Description { get => description; set => this.RaiseAndSetIfChanged(ref description, value); }
         public bool ShowQueryInput { get => showQueryInput; set => this.RaiseAndSetIfChanged(ref showQueryInput, value); }
 
+        public bool ShowDetectionModeOptions { get => showDetectionModeOptions; set => this.RaiseAndSetIfChanged(ref showDetectionModeOptions, value); }
+
         private string moreInfoLink;
         private int updateInterval;
+        private bool showDetectionModeOptions;
 
         public string MoreInfoLink
         {
@@ -26,6 +30,8 @@ namespace UserInterface.ViewModels
 
 
         public AvailableSensors SelectedType { get => selectedType; set => this.RaiseAndSetIfChanged(ref selectedType, value); }
+        public WebcamDetectionMode SelectedDetectionMode { get => selectedDetectionMode; set => this.RaiseAndSetIfChanged(ref selectedDetectionMode, value); }
+
         public string Name { get; set; }
         public string Query { get; set; }
         public int UpdateInterval { get => updateInterval; set => this.RaiseAndSetIfChanged(ref updateInterval, value); }

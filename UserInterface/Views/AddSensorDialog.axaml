@@ -23,6 +23,8 @@
     <TextBlock Text="{Binding UpdateInterval, StringFormat= Update every {0} seconds}" HorizontalAlignment="Left" MinWidth="150"/>
     <ContentControl IsVisible="{Binding ShowQueryInput}" Margin="0 20 0 10">Query</ContentControl>
     <TextBox IsVisible="{Binding ShowQueryInput}" Text="{Binding Query}" Watermark="SELECT Name FROM Win32_Processor" HorizontalAlignment="Left" MinWidth="300"/>
+    <ContentControl IsVisible="{Binding ShowDetectionModeOptions}" Margin="0 20 0 10">Detection mode</ContentControl>
+    <ComboBox IsVisible="{Binding ShowDetectionModeOptions}" x:Name="DetectionModeComboBox" SelectedItem="{Binding SelectedDetectionMode}" MinHeight="27"></ComboBox>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
   </StackPanel>
 </Window>

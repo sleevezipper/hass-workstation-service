@@ -89,7 +89,10 @@ namespace hass_workstation_service.Data
                         sensor = new ActiveWindowSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     case "WebcamActiveSensor":
-                        sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.DetectionMode, configuredSensor.Id);
+                        break;
+                    case "MicrophoneActiveSensor":
+                        sensor = new MicrophoneActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
