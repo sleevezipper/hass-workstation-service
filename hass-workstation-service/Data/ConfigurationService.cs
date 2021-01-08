@@ -91,6 +91,8 @@ namespace hass_workstation_service.Data
                     case "NamedWindowSensor":
                         sensor = new NamedWindowSensor(publisher, configuredSensor.WindowName, configuredSensor.Name, configuredSensor.UpdateInterval, configuredSensor.Id);
                         break;
+                    case "IdleTimeSensor":
+                        sensor = new IdleTimeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                     case "WebcamActiveSensor":
                         sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.DetectionMode, configuredSensor.Id);
                         break;
