@@ -72,7 +72,8 @@ namespace hass_workstation_service
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .UseSerilog()
+                .ConfigureLogging((hostContext, loggingBuilder) =>
+                    loggingBuilder.AddSerilog(dispose: true))
                 .ConfigureServices((hostContext, services) =>
                 {
                     var deviceConfig = new DeviceConfigModel
