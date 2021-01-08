@@ -78,7 +78,7 @@ namespace hass_workstation_service
                     var deviceConfig = new DeviceConfigModel
                     {
                         Name = Environment.MachineName,
-                        Identifiers = "hass-workstation-service",
+                        Identifiers = "hass-workstation-service" + Environment.MachineName,
                         Manufacturer = Environment.UserName,
                         Model = Environment.OSVersion.ToString(),
                         Sw_version = GetVersion()
