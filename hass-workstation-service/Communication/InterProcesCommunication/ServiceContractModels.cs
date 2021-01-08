@@ -40,7 +40,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         MicrophoneActiveSensor,
         ActiveWindowSensor,
         NamedWindowSensor,
-        IdleTimeSensor
+        IdleTimeSensor,
+        UpTimeSensor
     }
 
     public enum WebcamDetectionMode

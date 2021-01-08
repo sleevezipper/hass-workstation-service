@@ -25,7 +25,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/sensor/{this.Name}/state",
-                Icon = "mdi:window-maximize",
+                Icon = "mdi:clock-time-three-outline",
             });
         }
 
