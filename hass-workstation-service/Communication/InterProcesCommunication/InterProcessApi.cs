@@ -106,6 +106,25 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.ActiveWindowSensor:
                     sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.WebcamActiveSensor:
+                    DetectionMode detectionMode;
+                    switch ((WebcamDetectionMode)model.DetectionMode)
+                    {
+                        case WebcamDetectionMode.Registry:
+                            detectionMode = DetectionMode.Registry;
+                            break;
+                        case WebcamDetectionMode.OpenCV:
+                            detectionMode = DetectionMode.OpenCV;
+                            break;
+                        default:
+                            detectionMode = DetectionMode.Registry;
+                            break;
+                    }
+                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name, detectionMode);
+                    break;
+                case AvailableSensors.MicrophoneActiveSensor:
+                    sensorToCreate = new MicrophoneActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 case AvailableSensors.NamedWindowSensor:
                     sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
                     break;

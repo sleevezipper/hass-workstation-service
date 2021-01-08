@@ -1,3 +1,4 @@
+using hass_workstation_service.Domain.Sensors;
 using System;
 
 namespace hass_workstation_service.Data
@@ -10,5 +11,6 @@ namespace hass_workstation_service.Data
         public string Query { get; set; }
         public int? UpdateInterval { get; set; }
         public string WindowName { get; set; }
+        public DetectionMode DetectionMode { get; set; }
     }
 }

@@ -113,7 +113,7 @@ namespace hass_workstation_service.Communication
                     PropertyNameCaseInsensitive = true
                 };
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/sensor/{config.Name}/config")
+                .WithTopic($"homeassistant/sensor/{this.DeviceConfigModel.Name}/{config.Name}/config")
                 .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(config, options))
                 .WithRetainFlag()
                 .Build();

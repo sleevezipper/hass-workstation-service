@@ -21,14 +21,16 @@ It will try to futher accomplish this goal in the future by:
 
 ## Installation
 
-You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup.
+You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup. This is the recommended way to install for most users.
 Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing.
 
-If you don't want to use the installer, you can find releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). `hass-workstation-service.exe` is the background service and you can use `UserInterface.exe` to configure the service. If you don't use the installer autostart won't work.
+### Standalone
+
+If you don't want to use the installer, you can find the standalone version releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). Unpack all files to a folder and run `hass-workstation-service.exe`. This is the background service and you can use `UserInterface.exe` to configure the service. There is no automatic (or prompted) updating in the standalone version.
 
 ### Updating
 
-The app checks for updates on startup. If an update is available you will be prompted to install.
+If you used the installer, the app checks for updates on startup. If an update is available you will be prompted to install. If you use the standalone, just delete all files from the previous install and unpack the zip to the same location as before.
 
 ## Sensors
 
@@ -53,6 +55,17 @@ This sensor watches the UserNotificationState. This is normally used in applicat
 ### ActiveWindow
 
 This sensor exposes the name of the currently focused window.
+
+### WebcamActive
+
+This sensor shows if the webcam is currently being used. It has two detection modes:
+
+- Registry - this is the preferred method. This will work from Windows 10 version 1903 and higher.
+- OpenCV - this method tries to access the webcam and if that fails, it assumes it is currently in use. This will flash the webcam activity light at every update interval. It also uses more CPU cycles and memory.
+
+### MicrophoneActive
+
+This sensor shows if the microphone is currently being used. It uses the Windows registry to check and wil work from Windows 10 version 1903 and higher.
 
 ### CPULoad
 

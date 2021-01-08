@@ -36,8 +36,16 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         CPULoadSensor,
         WMIQuerySensor,
         MemoryUsageSensor,
+        WebcamActiveSensor,
+        MicrophoneActiveSensor,
         ActiveWindowSensor,
         NamedWindowSensor,
         IdleTimeSensor
+    }
+
+    public enum WebcamDetectionMode
+    {
+        Registry,
+        OpenCV
     }
 }
