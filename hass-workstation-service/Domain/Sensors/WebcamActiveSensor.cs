@@ -3,6 +3,8 @@ using Microsoft.Win32;
 using OpenCvSharp;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace hass_workstation_service.Domain.Sensors
 {
@@ -14,22 +16,28 @@ namespace hass_workstation_service.Domain.Sensors
     public class WebcamActiveSensor : AbstractSensor
     {
         public DetectionMode DetectionMode { get; private set; }
-        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", DetectionMode detectionMode = DetectionMode.Registry,  Guid id = default(Guid)) : base(publisher, name, updateInterval ?? 10, id)
+        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", DetectionMode detectionMode = DetectionMode.Registry, Guid id = default(Guid)) : base(publisher, name, updateInterval ?? 10, id)
         {
             this.DetectionMode = detectionMode;
         }
         public override string GetState()
         {
-            switch (this.DetectionMode)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                case DetectionMode.Registry:
-                    return IsWebCamInUseRegistry() ? "True" : "False";
-                case DetectionMode.OpenCV:
-                    return IsWebCamInUseOpenCV() ? "True" : "False";
-                default:
-                    return "Error";
+                switch (this.DetectionMode)
+                {
+                    case DetectionMode.Registry:
+                        return IsWebCamInUseRegistry() ? "True" : "False";
+                    case DetectionMode.OpenCV:
+                        return IsWebCamInUseOpenCV() ? "True" : "False";
+                    default:
+                        return "Error";
+                }
             }
-            
+            else
+            {
+                return "unsopported";
+            }
         }
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -63,7 +71,7 @@ namespace hass_workstation_service.Domain.Sensors
                     capture.Dispose();
                     return true;
                 }
-                
+
             }
             catch (Exception)
             {
@@ -72,6 +80,7 @@ namespace hass_workstation_service.Domain.Sensors
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private bool IsWebCamInUseRegistry()
         {
             using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam\NonPackaged"))

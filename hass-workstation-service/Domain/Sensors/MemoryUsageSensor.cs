@@ -3,10 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace hass_workstation_service.Domain.Sensors
 {
+
+    [SupportedOSPlatform("windows")]
     public class MemoryUsageSensor : WMIQuerySensor
     {
         public MemoryUsageSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WMIQuerySensor", Guid id = default) : base(publisher, "SELECT FreePhysicalMemory,TotalVisibleMemorySize FROM Win32_OperatingSystem", updateInterval ?? 10, name, id)
