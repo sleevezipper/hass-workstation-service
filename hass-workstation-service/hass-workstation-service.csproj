@@ -29,12 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="UserInterface.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="appsettings.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
