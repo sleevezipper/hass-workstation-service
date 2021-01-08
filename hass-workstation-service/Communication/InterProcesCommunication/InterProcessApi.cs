@@ -109,6 +109,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.NamedWindowSensor:
                     sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
                     break;
+                case AvailableSensors.IdleTimeSensor:
+                    sensorToCreate = new IdleTimeSensor(this._publisher,(int)model.UpdateInterval, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;

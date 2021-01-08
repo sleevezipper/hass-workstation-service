@@ -91,6 +91,9 @@ namespace hass_workstation_service.Data
                     case "NamedWindowSensor":
                         sensor = new NamedWindowSensor(publisher, configuredSensor.WindowName, configuredSensor.Name, configuredSensor.UpdateInterval, configuredSensor.Id);
                         break;
+                    case "IdleTimeSensor":
+                        sensor = new IdleTimeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
                         break;
