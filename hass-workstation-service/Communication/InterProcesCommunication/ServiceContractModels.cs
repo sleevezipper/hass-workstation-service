@@ -1,4 +1,4 @@
-﻿using hass_workstation_service.Domain.Sensors;
+using hass_workstation_service.Domain.Sensors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -41,11 +41,5 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         ActiveWindowSensor,
         NamedWindowSensor,
         IdleTimeSensor
-    }
-
-    public enum WebcamDetectionMode
-    {
-        Registry,
-        OpenCV
     }
 }

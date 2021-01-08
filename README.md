@@ -58,14 +58,11 @@ This sensor exposes the name of the currently focused window.
 
 ### WebcamActive
 
-This sensor shows if the webcam is currently being used. It has two detection modes:
-
-- Registry - this is the preferred method. This will work from Windows 10 version 1903 and higher.
-- OpenCV - this method tries to access the webcam and if that fails, it assumes it is currently in use. This will flash the webcam activity light at every update interval. It also uses more CPU cycles and memory.
+This sensor shows if the webcam is currently being used. It uses the Windows registry to check will work from Windows 10 version 1903 and higher.
 
 ### MicrophoneActive
 
-This sensor shows if the microphone is currently being used. It uses the Windows registry to check and wil work from Windows 10 version 1903 and higher.
+This sensor shows if the microphone is currently being used. It uses the Windows registry to check and will work from Windows 10 version 1903 and higher.
 
 ### CPULoad
 

@@ -26,8 +26,6 @@
     <ContentControl IsVisible="{Binding ShowWindowNameInput}" Margin="0 20 0 5">Window name</ContentControl>
     <TextBlock TextWrapping="Wrap" MaxWidth="300" FontStyle="Italic" IsVisible="{Binding ShowWindowNameInput}" Margin="0 0 0 10">This is case-insensitive and loosely matched. A window called "Spotify Premium" will match "spotify" or "premium".</TextBlock>
     <TextBox IsVisible="{Binding ShowWindowNameInput}" Text="{Binding WindowName}" Watermark="Visual Studio Code" HorizontalAlignment="Left" MinWidth="300"/>
-    <ContentControl IsVisible="{Binding ShowDetectionModeOptions}" Margin="0 20 0 10">Detection mode</ContentControl>
-    <ComboBox IsVisible="{Binding ShowDetectionModeOptions}" x:Name="DetectionModeComboBox" SelectedItem="{Binding SelectedDetectionMode}" MinHeight="27"></ComboBox>
-    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
+        <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
   </StackPanel>
 </Window>
