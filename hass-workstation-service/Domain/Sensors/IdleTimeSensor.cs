@@ -1,21 +1,13 @@
 ﻿using hass_workstation_service.Communication;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using HWND = System.IntPtr;
 
 namespace hass_workstation_service.Domain.Sensors
 {
     public class IdleTimeSensor : AbstractSensor
     {
         
-        public IdleTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "IdleTime", Guid id = default) : base(publisher, name ?? "IdleTime", updateInterval ?? 10, id)
-        {
-        
-
-        }
+        public IdleTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "IdleTime", Guid id = default) : base(publisher, name ?? "IdleTime", updateInterval ?? 10, id){}
 
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -24,14 +16,13 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/sensor/{this.Name}/state",
+                State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
                 Icon = "mdi:window-maximize",
             });
         }
 
         public override string GetState()
         {
-
             return GetLastInputTime().ToString();
         }
 
