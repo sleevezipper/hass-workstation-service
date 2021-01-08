@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using JKang.IpcServiceFramework.Hosting;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Communication.InterProcesCommunication;
+using hass_workstation_service.Domain.Notify;
 
 namespace hass_workstation_service
 {
@@ -88,6 +89,7 @@ namespace hass_workstation_service
                     services.AddSingleton<IConfigurationService, ConfigurationService>();
                     services.AddSingleton<MqttPublisher>();
                     services.AddHostedService<Worker>();
+                    services.AddSingleton<Notifier>();
                 }).ConfigureIpcHost(builder =>
                 {
                     // configure IPC endpoints

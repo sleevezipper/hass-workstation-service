@@ -1,16 +1,19 @@
 using System;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
+using hass_workstation_service.Domain.Notify;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Adapter;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using Serilog;
+using static hass_workstation_service.Domain.Notify.Notifier;
 
 namespace hass_workstation_service.Communication
 {
@@ -20,6 +23,7 @@ namespace hass_workstation_service.Communication
         private readonly IMqttClient _mqttClient;
         private readonly ILogger<MqttPublisher> _logger;
         private readonly IConfigurationService _configurationService;
+        private readonly Notifier _notifier;
         private string _mqttClientMessage { get; set; }
         public DateTime LastConfigAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
@@ -41,12 +45,14 @@ namespace hass_workstation_service.Communication
         public MqttPublisher(
             ILogger<MqttPublisher> logger,
             DeviceConfigModel deviceConfigModel,
-            IConfigurationService configurationService)
+            IConfigurationService configurationService,
+            Notifier notifier)
         {
 
             this._logger = logger;
             this.DeviceConfigModel = deviceConfigModel;
             this._configurationService = configurationService;
+            this._notifier = notifier;
 
             var options = _configurationService.GetMqttClientOptionsAsync().Result;
             _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
@@ -63,10 +69,19 @@ namespace hass_workstation_service.Communication
             {
                 this._mqttClientMessage = "Not configured";
             }
-           
-            this._mqttClient.UseConnectedHandler(e => {
+
+            this._mqttClient.UseConnectedHandler(e =>
+            {
                 this._mqttClientMessage = "All good";
+
+                // subscribe to the default notify topic
+                this._mqttClient.SubscribeAsync(
+                    new MqttTopicFilterBuilder()
+                    .WithTopic($"homeassistant/sensor/{this.DeviceConfigModel.Name}/notify")
+                    .Build());
             });
+
+            this._mqttClient.UseApplicationMessageReceivedHandler(e => this.HandleMessageReceived(e.ApplicationMessage));
 
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(async e =>
@@ -135,12 +150,35 @@ namespace hass_workstation_service.Communication
                 this._mqttClientMessage = ex.ResultCode.ToString();
                 Log.Logger.Error("Could not connect to broker: " + ex.ResultCode.ToString());
             }
-            
+
         }
 
         public MqqtClientStatus GetStatus()
         {
             return new MqqtClientStatus() { IsConnected = _mqttClient.IsConnected, Message = _mqttClientMessage };
+        }
+
+        private void HandleMessageReceived(MqttApplicationMessage applicationMessage)
+        {
+            NotificationModel notification;
+            try
+            {
+                notification = JsonSerializer.Deserialize<NotificationModel>(Encoding.UTF8.GetString(applicationMessage?.Payload));
+            }
+            catch (Exception)
+            {
+                notification = new NotificationModel("Error", $"Invalid message: {Encoding.UTF8.GetString(applicationMessage?.Payload)}");
+            }
+            
+
+            this._notifier.GenerateToast(notification);
+            Console.WriteLine("### RECEIVED APPLICATION MESSAGE ###");
+            Console.WriteLine($"+ Topic = {applicationMessage.Topic}");
+
+            Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(applicationMessage?.Payload)}");
+            Console.WriteLine($"+ QoS = {applicationMessage.QualityOfServiceLevel}");
+            Console.WriteLine($"+ Retain = {applicationMessage.Retain}");
+            Console.WriteLine();
         }
     }
 }
