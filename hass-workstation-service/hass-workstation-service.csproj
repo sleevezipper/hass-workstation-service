@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-hass_workstation_service-C65C2EBE-1977-4C24-AC6B-6921877E1390</UserSecretsId>
     <RootNamespace>hass_workstation_service</RootNamespace>
     <OutputType>WinExe</OutputType>
@@ -26,12 +26,6 @@
   <ItemGroup>
     <None Remove="UserInterface.exe" />
     <None Remove="UserInterface.pdb" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="UserInterface.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
