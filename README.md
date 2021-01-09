@@ -108,7 +108,19 @@ This sensor returns the amount of seconds the workstation has been idle for. It 
 
 ### UpTime
 
-This sensor returns the up time from windows in seconds
+This sensor returns theup time from Windows in seconds.
+
+### SessionState
+
+This sensor returns the current session state. It has the following possible states:
+
+|State|Explanation|
+|---|---|
+|Locked|All user sessions are locked.|
+|LoggedOff|No users are logged in.|
+|InUse|A user is currently logged in.|
+|Unknown|Something went wrong while getting the status.|
+
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.

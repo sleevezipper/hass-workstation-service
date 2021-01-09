@@ -43,6 +43,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         ActiveWindowSensor,
         NamedWindowSensor,
         IdleTimeSensor,
-        UpTimeSensor
+        UpTimeSensor,
+        SessionStateSensor
     }
 }

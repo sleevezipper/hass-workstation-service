@@ -18,6 +18,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
                 Icon = "mdi:clock-time-three-outline",
+                Unit_of_measurement = "seconds"
             });
         }
 

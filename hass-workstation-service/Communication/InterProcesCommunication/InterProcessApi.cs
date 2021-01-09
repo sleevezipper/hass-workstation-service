@@ -121,6 +121,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.UpTimeSensor:
                     sensorToCreate = new UpTimeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.SessionStateSensor:
+                    sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;

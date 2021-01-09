@@ -40,7 +40,7 @@ namespace UserInterface.ViewModels
             {
                 if (!string.IsNullOrWhiteSpace(_value))
                 {
-                    return _value + UnitOfMeasurement;
+                    return _value + " " + UnitOfMeasurement;
                 }
                 else return "";
                 

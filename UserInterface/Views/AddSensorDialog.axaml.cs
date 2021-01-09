@@ -26,8 +26,10 @@ namespace UserInterface.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            DataContext = new AddSensorViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>();
+            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
+            this.comboBox.SelectedIndex = 0;
 
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
@@ -40,9 +42,6 @@ namespace UserInterface.Views
 
             // create client
             this.client = clientFactory.CreateClient("addsensor");
-
-
-            DataContext = new AddSensorViewModel();
         }
 
         public async void Save(object sender, RoutedEventArgs args)
@@ -144,12 +143,19 @@ namespace UserInterface.Views
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.UpTimeSensor:
-                    item.Description = "This sensor returns the up time from windows in seconds";
+                    item.Description = "This sensor returns the uptime from Windows in seconds";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#uptime";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
-                    break;                
+                    break;
+                case AvailableSensors.SessionStateSensor:
+                    item.Description = "This sensor returns the state of the Windows session.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#sessionstate";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
+                    item.UpdateInterval = 5;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

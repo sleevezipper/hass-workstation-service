@@ -108,6 +108,9 @@ namespace hass_workstation_service.Data
                     case "MicrophoneActiveSensor":
                         sensor = new MicrophoneActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "SessionStateSensor":
+                        sensor = new SessionStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
                         break;
