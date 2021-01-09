@@ -78,9 +78,6 @@ namespace hass_workstation_service.Data
                     case "CurrentClockSpeedSensor":
                         sensor = new CurrentClockSpeedSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
-                    case "WMIQuerySensor":
-                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
-                        break;
                     case "CPULoadSensor":
                         sensor = new CPULoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
@@ -110,6 +107,10 @@ namespace hass_workstation_service.Data
                         break;
                     case "SessionStateSensor":
                         sensor = new SessionStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    // keep this one last!
+                    case "WMIQuerySensor":
+                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
