@@ -193,7 +193,7 @@ namespace hass_workstation_service.Data
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
 #pragma warning restore CA1416 // Validate platform compatibility
                     }
-                    if (sensor is NamedWindowSensor namedWindowSensor)
+                    else if (sensor is NamedWindowSensor namedWindowSensor)
                     {
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = namedWindowSensor.Id, Name = namedWindowSensor.Name, Type = namedWindowSensor.GetType().Name, UpdateInterval = namedWindowSensor.UpdateInterval, WindowName = namedWindowSensor.WindowName });
                     }

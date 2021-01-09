@@ -10,7 +10,7 @@ namespace hass_workstation_service.Domain.Sensors
 
     public class MicrophoneActiveSensor : AbstractSensor
     {
-        public MicrophoneActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneActive", Guid id = default(Guid)) : base(publisher, name, updateInterval ?? 10, id)
+        public MicrophoneActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneActive", Guid id = default(Guid)) : base(publisher, name ?? "MicrophoneActive", updateInterval ?? 10, id)
         {
         }
         public override string GetState()
