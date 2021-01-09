@@ -26,6 +26,8 @@ Note: You'll get a Windows Smartscreen warning because the code was self signed.
 
 ### Standalone
 
+You'll need [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) installed.
+
 If you don't want to use the installer, you can find the standalone version releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). Unpack all files to a folder and run `hass-workstation-service.exe`. This is the background service and you can use `UserInterface.exe` to configure the service. There is no automatic (or prompted) updating in the standalone version.
 
 ### Updating
