@@ -297,9 +297,12 @@ namespace hass_workstation_service.Data
                 // The path to the key where Windows looks for startup applications
                 RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
 
+                Log.Information("currentDir: " + Environment.CurrentDirectory);
+                Log.Information("appData: " + Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+
                 string startPath;
                 // if the app is installed in appdata, we can assume it was installed using the installer
-                if (Environment.CurrentDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)))
+                if (Environment.CurrentDirectory.Contains(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)))
                 {
                     // so we set the autostart Path to launch shortcut
                     startPath = Environment.GetFolderPath(Environment.SpecialFolder.Programs) + @"\Sleevezipper\Hass Workstation Service.appref-ms";
