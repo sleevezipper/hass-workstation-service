@@ -152,7 +152,8 @@ namespace UserInterface.Views
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
-                    break;                default:
+                    break;                
+                default:
                     item.Description = null;
                     item.MoreInfoLink = null;
                     item.ShowQueryInput = false;
