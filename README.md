@@ -103,14 +103,13 @@ which results in `4008` for my PC.
 
 You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) to find see what data is available.
 
+### IdleTime
+
+This sensor returns the amount of seconds the workstation has been idle for. It starts counting the moment you stop typing or moving your mouse.
+
 ### UpTime
 
 This sensor returns the up time from windows in seconds
-
-### IdleTime
-
-This sensor returns the idle time from windows in seconds
-
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.

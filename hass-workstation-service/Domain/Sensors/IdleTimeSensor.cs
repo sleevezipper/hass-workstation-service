@@ -1,21 +1,13 @@
 ﻿using hass_workstation_service.Communication;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using HWND = System.IntPtr;
 
 namespace hass_workstation_service.Domain.Sensors
 {
     public class IdleTimeSensor : AbstractSensor
     {
         
-        public IdleTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "IdleTime", Guid id = default) : base(publisher, name ?? "IdleTime", updateInterval ?? 10, id)
-        {
-        
-
-        }
+        public IdleTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "IdleTime", Guid id = default) : base(publisher, name ?? "IdleTime", updateInterval ?? 10, id){}
 
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -31,7 +23,6 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-
             return GetLastInputTime().ToString();
         }
 
