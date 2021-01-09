@@ -10,6 +10,7 @@ using MQTTnet;
 using MQTTnet.Adapter;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Exceptions;
 using Serilog;
 
 namespace hass_workstation_service.Communication
@@ -135,7 +136,11 @@ namespace hass_workstation_service.Communication
                 this._mqttClientMessage = ex.ResultCode.ToString();
                 Log.Logger.Error("Could not connect to broker: " + ex.ResultCode.ToString());
             }
-            
+            catch (MqttCommunicationException ex)
+            {
+                this._mqttClientMessage = ex.ToString();
+                Log.Logger.Error("Could not connect to broker: " + ex.Message);
+            }
         }
 
         public MqqtClientStatus GetStatus()

@@ -34,12 +34,12 @@ namespace hass_workstation_service.Data
         {
             if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
             {
-                File.Create(Path.Combine(path, "mqttbroker.json"));
+                File.Create(Path.Combine(path, "mqttbroker.json")).Close();
             }
 
             if (!File.Exists(Path.Combine(path, "configured-sensors.json")))
             {
-                File.Create(Path.Combine(path, "configured-sensors.json"));
+                File.Create(Path.Combine(path, "configured-sensors.json")).Close();
             }
 
             ConfiguredSensors = new List<AbstractSensor>();
@@ -123,8 +123,12 @@ namespace hass_workstation_service.Data
             {
 
                 var mqttClientOptions = new MqttClientOptionsBuilder()
-                    .WithTcpServer(configuredBroker.Host)
-                    // .WithTls()
+                    .WithTcpServer(configuredBroker.Host, configuredBroker.Port)
+                    .WithTls(new MqttClientOptionsBuilderTlsParameters()
+                    {
+                        UseTls = configuredBroker.UseTLS,
+                        AllowUntrustedCertificates = true
+                    })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
                     .Build();
                 return mqttClientOptions;
@@ -248,7 +252,9 @@ namespace hass_workstation_service.Data
                 {
                     Host = settings.Host,
                     Username = settings.Username,
-                    Password = settings.Password ?? ""
+                    Password = settings.Password ?? "",
+                    Port = settings.Port ?? 1883,
+                    UseTLS = settings.UseTLS
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);
@@ -265,7 +271,9 @@ namespace hass_workstation_service.Data
             {
                 Host = broker?.Host,
                 Username = broker?.Username,
-                Password = broker?.Password
+                Password = broker?.Password,
+                Port = broker?.Port,
+                UseTLS = broker?.UseTLS ?? false
             };
         }
 
