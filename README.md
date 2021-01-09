@@ -7,17 +7,17 @@ This goal of this project is to provide useful sensors and services from your wo
 - Using well defined standards
 - Being local when you want it to, only communicating through your own MQTT broker
 - Being easy to configure
+- Using secure communication
 
 It will try to futher accomplish this goal in the future by:
 
 - Being platform independent
-- Using secure communication
 
 ## Screenshots
 
-![The settings screen](https://i.imgur.com/KXKQqMr.png)
+![The settings screen](https://i.imgur.com/WpCZaDR.png)
 
-![The resulting sensors in Home Assistant](https://i.imgur.com/1Yvx2Ea.png)
+![The resulting sensors in Home Assistant](https://i.imgur.com/Kka8VOi.png)
 
 ## Installation
 
@@ -36,7 +36,7 @@ If you used the installer, the app checks for updates on startup. If an update i
 
 ## Sensors
 
-The application provides several sensors. Sensors can be configured with a name and this name will be used in the MQTT topic like this: `homeassistant/sensor/{Name}/state`. Sensors will expose themselves through [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/) and will automatically appear in Home assistant or any other platform that supports this type of configuration.
+The application provides several sensors. Sensors can be configured with a name and this name will be used in the MQTT topic like this: `homeassistant/sensor/{DeviceName}/{Name}/state`. Sensors will expose themselves through [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/) and will automatically appear in Home assistant or any other platform that supports this type of configuration.
 
 Sensors publish their state on their own interval which you can configure and only publish when the state changes.
 
