@@ -1,4 +1,4 @@
-﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
@@ -107,26 +107,16 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                     sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.WebcamActiveSensor:
-                    DetectionMode detectionMode;
-                    switch ((WebcamDetectionMode)model.DetectionMode)
-                    {
-                        case WebcamDetectionMode.Registry:
-                            detectionMode = DetectionMode.Registry;
-                            break;
-                        case WebcamDetectionMode.OpenCV:
-                            detectionMode = DetectionMode.OpenCV;
-                            break;
-                        default:
-                            detectionMode = DetectionMode.Registry;
-                            break;
-                    }
-                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name, detectionMode);
+                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.MicrophoneActiveSensor:
                     sensorToCreate = new MicrophoneActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.NamedWindowSensor:
                     sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
+                    break;
+                case AvailableSensors.IdleTimeSensor:
+                    sensorToCreate = new IdleTimeSensor(this._publisher,(int)model.UpdateInterval, model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");

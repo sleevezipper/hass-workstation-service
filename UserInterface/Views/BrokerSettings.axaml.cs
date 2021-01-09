@@ -10,6 +10,8 @@ using System.Reactive.Linq;
 using UserInterface.ViewModels;
 using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace UserInterface.Views
 {
@@ -45,7 +47,11 @@ namespace UserInterface.Views
         public void Configure(object sender, RoutedEventArgs args)
         {
             var model = (BrokerSettingsViewModel)this.DataContext;
-            var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password ?? "" }));
+            ICollection<ValidationResult> results;
+            if (model.IsValid(model, out results))
+            {
+                var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password ?? "", Port = model.Port, UseTLS = model.UseTLS }));
+            }
         }
 
         public async void GetSettings()

@@ -1,4 +1,4 @@
-﻿using hass_workstation_service.Domain.Sensors;
+using hass_workstation_service.Domain.Sensors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +10,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Host { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public int? Port { get; set; }
+        public bool UseTLS { get; set; }
     }
 
     public class MqqtClientStatus
@@ -39,12 +41,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         WebcamActiveSensor,
         MicrophoneActiveSensor,
         ActiveWindowSensor,
-        NamedWindowSensor
-    }
-
-    public enum WebcamDetectionMode
-    {
-        Registry,
-        OpenCV
+        NamedWindowSensor,
+        IdleTimeSensor
     }
 }

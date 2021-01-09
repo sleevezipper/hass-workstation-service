@@ -29,9 +29,6 @@ namespace UserInterface.Views
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
             this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>();
 
-            this.comboBox = this.FindControl<ComboBox>("DetectionModeComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(WebcamDetectionMode)).Cast<WebcamDetectionMode>();
-
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
                 .AddNamedPipeIpcClient<ServiceContractInterfaces>("addsensor", pipeName: "pipeinternal")
@@ -51,7 +48,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = ((AddSensorViewModel)this.DataContext);
-            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName, DetectionMode = item.SelectedDetectionMode };
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName};
             string json = JsonSerializer.Serialize(model);
             await this.client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
             Close();
@@ -137,6 +134,13 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#namedwindow";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = true;
+                    item.UpdateInterval = 5;
+                    break;
+                case AvailableSensors.IdleTimeSensor:
+                    item.Description = "This sensor returns the amount of seconds the workstation has been idle for. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#idletime";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 default:

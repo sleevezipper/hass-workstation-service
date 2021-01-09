@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using hass_workstation_service.Data;
-using hass_workstation_service.Domain.Notify;
 using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

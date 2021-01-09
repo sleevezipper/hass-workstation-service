@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -23,8 +25,8 @@ namespace hass_workstation_service.Data
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
 
-        public bool _brokerSettingsFileLocked { get; set; }
-        public bool _sensorsSettingsFileLocked { get; set; }
+        private bool BrokerSettingsFileLocked { get; set; }
+        private bool SensorsSettingsFileLocked { get; set; }
 
         private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
@@ -32,12 +34,12 @@ namespace hass_workstation_service.Data
         {
             if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
             {
-                File.Create(Path.Combine(path, "mqttbroker.json"));
+                File.Create(Path.Combine(path, "mqttbroker.json")).Close();
             }
 
             if (!File.Exists(Path.Combine(path, "configured-sensors.json")))
             {
-                File.Create(Path.Combine(path, "configured-sensors.json"));
+                File.Create(Path.Combine(path, "configured-sensors.json")).Close();
             }
 
             ConfiguredSensors = new List<AbstractSensor>();
@@ -45,11 +47,11 @@ namespace hass_workstation_service.Data
 
         public async void ReadSensorSettings(MqttPublisher publisher)
         {
-            while (this._sensorsSettingsFileLocked)
+            while (this.SensorsSettingsFileLocked)
             {
                 await Task.Delay(500);
             }
-            this._sensorsSettingsFileLocked = true;
+            this.SensorsSettingsFileLocked = true;
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
             using (var stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
             {
@@ -59,7 +61,7 @@ namespace hass_workstation_service.Data
                     sensors = await JsonSerializer.DeserializeAsync<List<ConfiguredSensor>>(stream);
                 }
                 stream.Close();
-                this._sensorsSettingsFileLocked = false;
+                this.SensorsSettingsFileLocked = false;
             }
 
             foreach (ConfiguredSensor configuredSensor in sensors)
@@ -83,7 +85,10 @@ namespace hass_workstation_service.Data
                         sensor = new CPULoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     case "MemoryUsageSensor":
-                        sensor = new MemoryUsageSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            sensor = new MemoryUsageSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        }
                         break;
                     case "ActiveWindowSensor":
                         sensor = new ActiveWindowSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
@@ -91,8 +96,11 @@ namespace hass_workstation_service.Data
                     case "NamedWindowSensor":
                         sensor = new NamedWindowSensor(publisher, configuredSensor.WindowName, configuredSensor.Name, configuredSensor.UpdateInterval, configuredSensor.Id);
                         break;
+                    case "IdleTimeSensor":
+                        sensor = new IdleTimeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     case "WebcamActiveSensor":
-                        sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.DetectionMode, configuredSensor.Id);
+                        sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     case "MicrophoneActiveSensor":
                         sensor = new MicrophoneActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
@@ -115,8 +123,12 @@ namespace hass_workstation_service.Data
             {
 
                 var mqttClientOptions = new MqttClientOptionsBuilder()
-                    .WithTcpServer(configuredBroker.Host)
-                    // .WithTls()
+                    .WithTcpServer(configuredBroker.Host, configuredBroker.Port)
+                    .WithTls(new MqttClientOptionsBuilderTlsParameters()
+                    {
+                        UseTls = configuredBroker.UseTLS,
+                        AllowUntrustedCertificates = true
+                    })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
                     .Build();
                 return mqttClientOptions;
@@ -134,11 +146,11 @@ namespace hass_workstation_service.Data
         /// <returns></returns>
         public async Task<ConfiguredMqttBroker> ReadMqttSettingsAsync()
         {
-            while (this._brokerSettingsFileLocked)
+            while (this.BrokerSettingsFileLocked)
             {
                 await Task.Delay(500);
             }
-            this._brokerSettingsFileLocked = true;
+            this.BrokerSettingsFileLocked = true;
             ConfiguredMqttBroker configuredBroker = null;
             using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
             {
@@ -150,17 +162,17 @@ namespace hass_workstation_service.Data
                 stream.Close();
             }
 
-            this._brokerSettingsFileLocked = false;
+            this.BrokerSettingsFileLocked = false;
             return configuredBroker;
         }
 
         public async void WriteSettingsAsync()
         {
-            while (this._sensorsSettingsFileLocked)
+            while (this.SensorsSettingsFileLocked)
             {
                 await Task.Delay(500);
             }
-            this._sensorsSettingsFileLocked = true;
+            this.SensorsSettingsFileLocked = true;
             List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
             using (FileStream stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
             {
@@ -168,14 +180,14 @@ namespace hass_workstation_service.Data
                 Log.Logger.Information($"writing configured sensors to: {stream.Name}");
                 foreach (AbstractSensor sensor in this.ConfiguredSensors)
                 {
-                    if (sensor is WMIQuerySensor)
+                    if (sensor is WMIQuerySensor wmiSensor)
                     {
-                        var wmiSensor = (WMIQuerySensor)sensor;
+#pragma warning disable CA1416 // Validate platform compatibility. We ignore it here because this would never happen. A cleaner solution may be implemented later.
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
+#pragma warning restore CA1416 // Validate platform compatibility
                     }
-                    if (sensor is NamedWindowSensor)
+                    if (sensor is NamedWindowSensor namedWindowSensor)
                     {
-                        var namedWindowSensor = (NamedWindowSensor)sensor;
                         configuredSensorsToSave.Add(new ConfiguredSensor() { Id = namedWindowSensor.Id, Name = namedWindowSensor.Name, Type = namedWindowSensor.GetType().Name, UpdateInterval = namedWindowSensor.UpdateInterval, WindowName = namedWindowSensor.WindowName });
                     }
                     else
@@ -188,7 +200,7 @@ namespace hass_workstation_service.Data
                 await JsonSerializer.SerializeAsync(stream, configuredSensorsToSave);
                 stream.Close();
             }
-            this._sensorsSettingsFileLocked = false;
+            this.SensorsSettingsFileLocked = false;
         }
 
         public void AddConfiguredSensor(AbstractSensor sensor)
@@ -226,11 +238,11 @@ namespace hass_workstation_service.Data
         /// <param name="settings"></param>
         public async void WriteMqttBrokerSettingsAsync(MqttSettings settings)
         {
-            while (this._brokerSettingsFileLocked)
+            while (this.BrokerSettingsFileLocked)
             {
                 await Task.Delay(500);
             }
-            this._brokerSettingsFileLocked = true;
+            this.BrokerSettingsFileLocked = true;
             using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
             {
                 stream.SetLength(0);
@@ -240,13 +252,15 @@ namespace hass_workstation_service.Data
                 {
                     Host = settings.Host,
                     Username = settings.Username,
-                    Password = settings.Password ?? ""
+                    Password = settings.Password ?? "",
+                    Port = settings.Port ?? 1883,
+                    UseTLS = settings.UseTLS
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);
                 stream.Close();
             }
-            this._brokerSettingsFileLocked = false;
+            this.BrokerSettingsFileLocked = false;
             this.MqqtConfigChangedHandler.Invoke(await this.GetMqttClientOptionsAsync());
         }
 
@@ -257,7 +271,9 @@ namespace hass_workstation_service.Data
             {
                 Host = broker?.Host,
                 Username = broker?.Username,
-                Password = broker?.Password
+                Password = broker?.Password,
+                Port = broker?.Port,
+                UseTLS = broker?.UseTLS ?? false
             };
         }
 
@@ -265,6 +281,7 @@ namespace hass_workstation_service.Data
         /// Enable or disable autostarting the background service. It does this by adding the application shortcut (appref-ms) to the registry run key for the current user
         /// </summary>
         /// <param name="enable"></param>
+        [SupportedOSPlatform("windows")]
         public void EnableAutoStart(bool enable)
         {
             if (enable)
@@ -299,6 +316,7 @@ namespace hass_workstation_service.Data
             }
         }
 
+        [SupportedOSPlatform("windows")]
         public bool IsAutoStartEnabled()
         {
             RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);

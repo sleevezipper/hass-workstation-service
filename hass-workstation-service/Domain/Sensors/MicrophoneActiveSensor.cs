@@ -2,6 +2,8 @@
 using Microsoft.Win32;
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 namespace hass_workstation_service.Domain.Sensors
 {
@@ -13,7 +15,11 @@ namespace hass_workstation_service.Domain.Sensors
         }
         public override string GetState()
         {
-            return IsMicrophoneInUse() ? "True" : "False";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return IsMicrophoneInUse() ? "True" : "False";
+            }
+            else return "unsupported";
         }
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -27,6 +33,7 @@ namespace hass_workstation_service.Domain.Sensors
             });
         }
 
+        [SupportedOSPlatform("windows")]
         private bool IsMicrophoneInUse()
         {
             using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone\NonPackaged"))
