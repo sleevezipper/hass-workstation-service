@@ -19,7 +19,7 @@ namespace hass_workstation_service.Domain.Sensors
         public MqttPublisher Publisher { get; protected set; }
         public AbstractSensor(MqttPublisher publisher, string name, int updateInterval = 10, Guid id = default(Guid))
         {
-            if (id == Guid.Empty || id == null)
+            if (id == Guid.Empty)
             {
                 this.Id = Guid.NewGuid();
             }

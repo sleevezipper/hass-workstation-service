@@ -1,3 +1,4 @@
+using hass_workstation_service.Domain.Sensors;
 using System;
 
 namespace hass_workstation_service.Data

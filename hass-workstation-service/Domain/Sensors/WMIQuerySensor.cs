@@ -2,16 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace hass_workstation_service.Domain.Sensors
 {
+
+    [SupportedOSPlatform("windows")]
     public class WMIQuerySensor : AbstractSensor
     {
         public string Query { get; private set; }
         protected readonly ObjectQuery _objectQuery;
         protected readonly ManagementObjectSearcher _searcher;
-        public WMIQuerySensor(MqttPublisher publisher, string query, int? updateInterval = null, string name = "WMIQuerySensor", Guid id = default(Guid)) : base(publisher, name ?? "WMIQuerySensor", updateInterval ?? 10, id)
+        public WMIQuerySensor(MqttPublisher publisher, string query, int? updateInterval = null, string name = "WMIQuerySensor", Guid id = default) : base(publisher, name ?? "WMIQuerySensor", updateInterval ?? 10, id)
         {
             this.Query = query;
             _objectQuery = new ObjectQuery(this.Query);
@@ -24,7 +27,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/sensor/{this.Name}/state",
+                State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
             });
         }
 

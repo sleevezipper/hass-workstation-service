@@ -10,6 +10,17 @@
     <TextBlock IsVisible="{Binding !IsConnected}" Foreground="Red" Text="{Binding Message}"></TextBlock >
     <ContentControl Margin="0 20 0 10">IP or hostname</ContentControl>
     <TextBox Text="{Binding Host}" HorizontalAlignment="Left" Width="100" Watermark="192.168.1.200"/>
+    <StackPanel Orientation="Horizontal">
+      <StackPanel Orientation="Vertical">
+        <ContentControl Margin="0 20 0 10">Port</ContentControl>
+        <TextBox Text="{Binding Port}"  HorizontalAlignment="Left" Width="50" Watermark="1883"/>
+      </StackPanel>
+
+      <StackPanel Orientation="Vertical" Margin="30 0 0 0">
+        <ContentControl Margin="0 20 0 10">Use TLS</ContentControl>
+        <CheckBox IsChecked="{Binding UseTLS}" HorizontalAlignment="Left" Margin="0 3 0 0"/>
+      </StackPanel>
+    </StackPanel>
     <ContentControl  Margin="0 20 0 10">Username</ContentControl>
     <TextBox Text="{Binding Username}" MinWidth="150"/>
     <ContentControl  Margin="0 20 0 10">Password</ContentControl>

@@ -1,4 +1,4 @@
-﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
@@ -106,8 +106,23 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.ActiveWindowSensor:
                     sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.WebcamActiveSensor:
+                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.MicrophoneActiveSensor:
+                    sensorToCreate = new MicrophoneActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 case AvailableSensors.NamedWindowSensor:
                     sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
+                    break;
+                case AvailableSensors.IdleTimeSensor:
+                    sensorToCreate = new IdleTimeSensor(this._publisher,(int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.UpTimeSensor:
+                    sensorToCreate = new UpTimeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.SessionStateSensor:
+                    sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");

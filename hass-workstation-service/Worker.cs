@@ -9,6 +9,7 @@ using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Client;
+using Serilog;
 
 namespace hass_workstation_service
 {
@@ -51,7 +52,15 @@ namespace hass_workstation_service
 
                 foreach (AbstractSensor sensor in sensors)
                 {
-                    await sensor.PublishStateAsync();
+                    try
+                    {
+                        await sensor.PublishStateAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Warning("Sensor failed: " + sensor.Name, ex);
+                    }
+                    
                 }
                 // announce autodiscovery every 30 seconds
                 if (_mqttPublisher.LastConfigAnnounce < DateTime.UtcNow.AddSeconds(-30))

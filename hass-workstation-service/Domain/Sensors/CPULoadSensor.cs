@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace hass_workstation_service.Domain.Sensors
 {
+
+    [SupportedOSPlatform("windows")]
     public class CPULoadSensor : WMIQuerySensor
     {
         public CPULoadSensor(MqttPublisher publisher, int? updateInterval = null, string name = "CPULoadSensor", Guid id = default) : base(publisher, "SELECT PercentProcessorTime FROM Win32_PerfFormattedData_PerfOS_Processor", updateInterval ?? 10, name ?? "CPULoadSensor", id)
@@ -21,11 +24,13 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/sensor/{this.Name}/state",
+                State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
                 Icon = "mdi:chart-areaspline",
                 Unit_of_measurement = "%"
             });
         }
+
+        [SupportedOSPlatform("windows")]
         public override string GetState()
         {
             ManagementObjectCollection collection = _searcher.Get();
