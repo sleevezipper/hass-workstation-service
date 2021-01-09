@@ -9,7 +9,7 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class WebcamActiveSensor : AbstractSensor
     {
-        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", Guid id = default) : base(publisher, name, updateInterval ?? 10, id)
+        public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", Guid id = default) : base(publisher, name ?? "WebcamActive", updateInterval ?? 10, id)
         {
         }
         public override string GetState()
