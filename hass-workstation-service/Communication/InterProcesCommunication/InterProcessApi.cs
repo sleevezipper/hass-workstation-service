@@ -115,8 +115,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.NamedWindowSensor:
                     sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
                     break;
-                case AvailableSensors.IdleTimeSensor:
-                    sensorToCreate = new IdleTimeSensor(this._publisher,(int)model.UpdateInterval, model.Name);
+                case AvailableSensors.LastActiveSensor:
+                    sensorToCreate = new LastActiveSensor(this._publisher,(int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.LastBootSensor:
                     sensorToCreate = new LastBootSensor(this._publisher, (int)model.UpdateInterval, model.Name);

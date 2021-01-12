@@ -102,9 +102,9 @@ which results in `4008` for my PC.
 
 You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) to find see what data is available.
 
-### IdleTime
+### LastActive
 
-This sensor returns the amount of seconds the workstation has been idle for. It starts counting the moment you stop typing or moving your mouse.
+This sensor returns the date/time that the workstation was last active. Typing or moving your mouse will reset the date/time.
 
 ### LastBoot
 

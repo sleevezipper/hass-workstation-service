@@ -135,9 +135,9 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = true;
                     item.UpdateInterval = 5;
                     break;
-                case AvailableSensors.IdleTimeSensor:
-                    item.Description = "This sensor returns the amount of seconds the workstation has been idle for. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#idletime";
+                case AvailableSensors.LastActiveSensor:
+                    item.Description = "This sensor returns the date/time that the workstation was last active.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastactive";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
