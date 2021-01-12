@@ -1,17 +1,13 @@
 ﻿using hass_workstation_service.Communication;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using HWND = System.IntPtr;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class UpTimeSensor : AbstractSensor
+    public class LastBootSensor : AbstractSensor
     {
         
-        public UpTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "UpTime", Guid id = default) : base(publisher, name ?? "UpTime", updateInterval ?? 10, id)
+        public LastBootSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "LastBoot", Guid id = default) : base(publisher, name ?? "LastBoot", updateInterval ?? 10, id)
         {
         
 
@@ -25,15 +21,13 @@ namespace hass_workstation_service.Domain.Sensors
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
-                Icon = "mdi:clock-time-three-outline",
-                Unit_of_measurement = "seconds"
+                Icon = "mdi:clock-time-three-outline"
             });
         }
 
         public override string GetState()
         {
-
-            return (GetTickCount64() / 1000).ToString(); //return in seconds
+            return (DateTime.Now - TimeSpan.FromMilliseconds(GetTickCount64())).ToString("s");
         }
 
         [DllImport("kernel32")]

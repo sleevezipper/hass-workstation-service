@@ -106,9 +106,9 @@ You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) 
 
 This sensor returns the amount of seconds the workstation has been idle for. It starts counting the moment you stop typing or moving your mouse.
 
-### UpTime
+### LastBoot
 
-This sensor returns theup time from Windows in seconds.
+This sensor returns the date/time that Windows was last booted.
 
 ### SessionState
 

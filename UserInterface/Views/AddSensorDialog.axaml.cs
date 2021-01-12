@@ -142,9 +142,9 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                case AvailableSensors.UpTimeSensor:
-                    item.Description = "This sensor returns the uptime from Windows in seconds";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#uptime";
+                case AvailableSensors.LastBootSensor:
+                    item.Description = "This sensor returns the date/time that Windows was last booted";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastboot";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;

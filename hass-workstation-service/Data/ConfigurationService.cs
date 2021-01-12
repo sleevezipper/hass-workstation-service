@@ -96,8 +96,8 @@ namespace hass_workstation_service.Data
                     case "IdleTimeSensor":
                         sensor = new IdleTimeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
-                    case "UpTimeSensor":
-                        sensor = new UpTimeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                    case "LastBootSensor":
+                        sensor = new LastBootSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     case "WebcamActiveSensor":
                         sensor = new WebcamActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);

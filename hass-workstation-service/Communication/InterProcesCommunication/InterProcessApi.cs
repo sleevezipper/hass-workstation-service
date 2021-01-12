@@ -118,8 +118,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.IdleTimeSensor:
                     sensorToCreate = new IdleTimeSensor(this._publisher,(int)model.UpdateInterval, model.Name);
                     break;
-                case AvailableSensors.UpTimeSensor:
-                    sensorToCreate = new UpTimeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                case AvailableSensors.LastBootSensor:
+                    sensorToCreate = new LastBootSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 case AvailableSensors.SessionStateSensor:
                     sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);

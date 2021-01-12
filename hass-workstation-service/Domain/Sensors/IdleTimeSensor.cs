@@ -26,8 +26,6 @@ namespace hass_workstation_service.Domain.Sensors
         {
             return GetLastInputTime().ToString();
         }
-
-
         
 
         static int GetLastInputTime()
