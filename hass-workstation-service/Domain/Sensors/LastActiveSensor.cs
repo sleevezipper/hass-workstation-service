@@ -4,10 +4,10 @@ using System.Runtime.InteropServices;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class IdleTimeSensor : AbstractSensor
+    public class LastActiveSensor : AbstractSensor
     {
         
-        public IdleTimeSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "IdleTime", Guid id = default) : base(publisher, name ?? "IdleTime", updateInterval ?? 10, id){}
+        public LastActiveSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "LastActive", Guid id = default) : base(publisher, name ?? "LastActive", updateInterval ?? 10, id){}
 
         public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
@@ -17,20 +17,17 @@ namespace hass_workstation_service.Domain.Sensors
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
-                Icon = "mdi:clock-time-three-outline",
-                Unit_of_measurement = "seconds"
+                Icon = "mdi:clock-time-three-outline"
             });
         }
 
         public override string GetState()
         {
-            return GetLastInputTime().ToString();
+            return GetLastInputTime().ToString("s");
         }
-
-
         
 
-        static int GetLastInputTime()
+        static DateTime GetLastInputTime()
         {
             int idleTime = 0;
             LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
@@ -46,9 +43,9 @@ namespace hass_workstation_service.Domain.Sensors
                 idleTime = envTicks - lastInputTick;
             }
 
-            return ((idleTime > 0) ? (idleTime / 1000) : idleTime);
-        }
 
+            return idleTime > 0 ? DateTime.Now - TimeSpan.FromMilliseconds(idleTime) : DateTime.Now;
+        }
 
 
         [DllImport("User32.dll")]

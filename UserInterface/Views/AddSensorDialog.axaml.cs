@@ -135,16 +135,16 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = true;
                     item.UpdateInterval = 5;
                     break;
-                case AvailableSensors.IdleTimeSensor:
-                    item.Description = "This sensor returns the amount of seconds the workstation has been idle for. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#idletime";
+                case AvailableSensors.LastActiveSensor:
+                    item.Description = "This sensor returns the date/time that the workstation was last active.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastactive";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                case AvailableSensors.UpTimeSensor:
-                    item.Description = "This sensor returns the uptime from Windows in seconds";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#uptime";
+                case AvailableSensors.LastBootSensor:
+                    item.Description = "This sensor returns the date/time that Windows was last booted";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastboot";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
