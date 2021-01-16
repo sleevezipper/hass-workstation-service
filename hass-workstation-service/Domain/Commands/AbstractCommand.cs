@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using MQTTnet;
 
-namespace hass_workstation_service.Domain.Sensors
+namespace hass_workstation_service.Domain.Commands
 {
 
-    public abstract class AbstractSensor : AbstractDiscoverable
+    public abstract class AbstractCommand : AbstractDiscoverable
     {
         public Guid Id { get; protected set; }
         public string Name { get; protected set; }
@@ -17,8 +17,8 @@ namespace hass_workstation_service.Domain.Sensors
         public DateTime? LastUpdated { get; protected set; }
         public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
-        public override string Domain { get => "sensor"; }
-        public AbstractSensor(MqttPublisher publisher, string name, int updateInterval = 10, Guid id = default(Guid))
+        public override string Domain { get => "switch"; }
+        public AbstractCommand(MqttPublisher publisher, string name, Guid id = default(Guid))
         {
             if (id == Guid.Empty)
             {
@@ -30,17 +30,17 @@ namespace hass_workstation_service.Domain.Sensors
             }
             this.Name = name;
             this.Publisher = publisher;
-            this.UpdateInterval = updateInterval;
+            publisher.Subscribe(this);
 
         }
-        protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
-        protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)
+        protected CommandDiscoveryConfigModel _autoDiscoveryConfigModel;
+        protected CommandDiscoveryConfigModel SetAutoDiscoveryConfigModel(CommandDiscoveryConfigModel config)
         {
             this._autoDiscoveryConfigModel = config;
             return config;
         }
 
-        public abstract SensorDiscoveryConfigModel GetAutoDiscoveryConfig();
+        public abstract CommandDiscoveryConfigModel GetAutoDiscoveryConfig();
         public abstract string GetState();
 
         public async Task PublishStateAsync()
@@ -74,6 +74,6 @@ namespace hass_workstation_service.Domain.Sensors
         {
             await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain, true);
         }
-
+        public abstract void Execute();
     }
 }

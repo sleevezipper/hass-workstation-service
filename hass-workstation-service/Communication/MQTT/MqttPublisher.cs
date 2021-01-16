@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
+using hass_workstation_service.Domain.Commands;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Adapter;
@@ -24,6 +27,7 @@ namespace hass_workstation_service.Communication
         private string _mqttClientMessage { get; set; }
         public DateTime LastConfigAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
+        public ICollection<AbstractCommand> Subscribers { get; private set; }
         public bool IsConnected
         {
             get
@@ -44,7 +48,7 @@ namespace hass_workstation_service.Communication
             DeviceConfigModel deviceConfigModel,
             IConfigurationService configurationService)
         {
-
+            this.Subscribers = new List<AbstractCommand>();
             this._logger = logger;
             this.DeviceConfigModel = deviceConfigModel;
             this._configurationService = configurationService;
@@ -68,6 +72,8 @@ namespace hass_workstation_service.Communication
             this._mqttClient.UseConnectedHandler(e => {
                 this._mqttClientMessage = "All good";
             });
+
+            this._mqttClient.UseApplicationMessageReceivedHandler(e => this.HandleMessageReceived(e.ApplicationMessage));
 
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(async e =>
@@ -103,7 +109,7 @@ namespace hass_workstation_service.Communication
             }
         }
 
-        public async Task AnnounceAutoDiscoveryConfig(AutoDiscoveryConfigModel config, bool clearConfig = false)
+        public async Task AnnounceAutoDiscoveryConfig(DiscoveryConfigModel config, string domain, bool clearConfig = false)
         {
             if (this._mqttClient.IsConnected)
             {
@@ -111,11 +117,13 @@ namespace hass_workstation_service.Communication
                 {
                     PropertyNamingPolicy = new CamelCaseJsonNamingpolicy(),
                     IgnoreNullValues = true,
-                    PropertyNameCaseInsensitive = true
+                    PropertyNameCaseInsensitive = true,
+                    
                 };
+
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/sensor/{this.DeviceConfigModel.Name}/{config.Name}/config")
-                .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(config, options))
+                .WithTopic($"homeassistant/{domain}/{this.DeviceConfigModel.Name}/{config.Name}/config")
+                .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(config, config.GetType(), options))
                 .WithRetainFlag()
                 .Build();
                 await this.Publish(message);
@@ -146,6 +154,73 @@ namespace hass_workstation_service.Communication
         public MqqtClientStatus GetStatus()
         {
             return new MqqtClientStatus() { IsConnected = _mqttClient.IsConnected, Message = _mqttClientMessage };
+        }
+
+        public async void AnnounceAvailability(string domain, bool offline = false)
+        {
+            if (this._mqttClient.IsConnected)
+            {
+                await this._mqttClient.PublishAsync(
+                    new MqttApplicationMessageBuilder()
+                    .WithTopic($"homeassistant/{domain}/{DeviceConfigModel.Name}/availability")
+                    .WithPayload(offline ? "offline" : "online")
+                    .Build()
+                    );
+            }
+            else
+            {
+                this._logger.LogInformation($"Availability announce dropped because mqtt not connected");
+            }
+        }
+
+        public async Task DisconnectAsync()
+        {
+            if (this._mqttClient.IsConnected)
+            {
+                await this._mqttClient.DisconnectAsync();
+            }
+            else
+            {
+                this._logger.LogInformation($"Disconnected");
+            }
+        }
+
+        public async void Subscribe(AbstractCommand command)
+        {
+            if (this.IsConnected)
+            {
+                await this._mqttClient.SubscribeAsync(command.GetAutoDiscoveryConfig().Command_topic);
+            }
+            else
+            {
+                while (this.IsConnected == false)
+                {
+                    await Task.Delay(5500);
+                }
+
+                await this._mqttClient.SubscribeAsync(command.GetAutoDiscoveryConfig().Command_topic);
+
+            }
+            
+            Subscribers.Add(command);
+        }
+
+        private void HandleMessageReceived(MqttApplicationMessage applicationMessage)
+        {
+            foreach (AbstractCommand command in this.Subscribers)
+            {
+                if (command.GetAutoDiscoveryConfig().Command_topic == applicationMessage.Topic)
+                {
+                    command.Execute();
+                }
+            }
+            Console.WriteLine("### RECEIVED APPLICATION MESSAGE ###");
+            Console.WriteLine($"+ Topic = {applicationMessage.Topic}");
+
+            Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(applicationMessage?.Payload)}");
+            Console.WriteLine($"+ QoS = {applicationMessage.QualityOfServiceLevel}");
+            Console.WriteLine($"+ Retain = {applicationMessage.Retain}");
+            Console.WriteLine();
         }
     }
 }

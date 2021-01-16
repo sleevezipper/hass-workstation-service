@@ -1,5 +1,6 @@
 ﻿using hass_workstation_service.Communication;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using hass_workstation_service.Domain.Commands;
 using hass_workstation_service.Domain.Sensors;
 using MQTTnet.Client.Options;
 using System;
@@ -13,16 +14,21 @@ namespace hass_workstation_service.Data
     {
         ICollection<AbstractSensor> ConfiguredSensors { get; }
         Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        ICollection<AbstractCommand> ConfiguredCommands { get; }
 
+        void AddConfiguredCommand(AbstractCommand command);
         void AddConfiguredSensor(AbstractSensor sensor);
         void AddConfiguredSensors(List<AbstractSensor> sensors);
         Task<IMqttClientOptions> GetMqttClientOptionsAsync();
         void ReadSensorSettings(MqttPublisher publisher);
         void WriteMqttBrokerSettingsAsync(MqttSettings settings);
-        void WriteSettingsAsync();
+        void WriteSensorSettingsAsync();
         Task<MqttSettings> GetMqttBrokerSettings();
         void EnableAutoStart(bool enable);
         bool IsAutoStartEnabled();
         void DeleteConfiguredSensor(Guid id);
+        void DeleteConfiguredCommand(Guid id);
+        void WriteCommandSettingsAsync();
+        void ReadCommandSettings(MqttPublisher publisher);
     }
 }

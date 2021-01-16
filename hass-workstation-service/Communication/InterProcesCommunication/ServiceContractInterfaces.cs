@@ -17,5 +17,8 @@ namespace hass_workstation_service.Communication.NamedPipe
         List<ConfiguredSensorModel> GetConfiguredSensors();
         void RemoveSensorById(Guid id);
         void AddSensor(AvailableSensors sensorType, string json);
+        void RemoveCommandById(Guid id);
+        List<ConfiguredCommandModel> GetConfiguredCommands();
+        void AddCommand(AvailableCommands commandType, string json);
     }
 }

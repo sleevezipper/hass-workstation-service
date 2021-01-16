@@ -124,3 +124,15 @@ This sensor returns the current session state. It has the following possible sta
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.
+
+## Commands
+
+Commands can be used to trigger certain things on the client.
+
+### CustomCommand
+
+This command allows you to run any Windows Commands. The command will be run in a hidden Command Prompt. Some examples:
+
+|Command|Explanation|
+|---|---|
+|Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|

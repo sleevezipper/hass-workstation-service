@@ -9,15 +9,17 @@ namespace hass_workstation_service.Domain.Sensors
     {
         public UserNotificationStateSensor(MqttPublisher publisher, int? updateInterval = null, string name = "NotificationState", Guid id = default(Guid)) : base(publisher, name ?? "NotificationState", updateInterval ?? 10, id) { }
 
-        public override AutoDiscoveryConfigModel GetAutoDiscoveryConfig()
+        public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
-            return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new AutoDiscoveryConfigModel()
+            return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel()
             {
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
                 Icon = "mdi:laptop",
+                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability",
+                Expire_after = 60
             });
         }
 

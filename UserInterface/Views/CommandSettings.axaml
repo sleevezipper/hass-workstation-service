@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              MaxWidth="800"
-             x:Class="UserInterface.Views.SensorSettings" >
+             x:Class="UserInterface.Views.CommandSettings" >
   <StackPanel Margin="30" HorizontalAlignment="Left" >
-    <ContentControl FontSize="18" Margin="0 0 0 15" FontWeight="Bold">Sensors</ContentControl>
-    <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredSensors}">
+    <ContentControl FontSize="18" Margin="0 0 0 15" FontWeight="Bold">Commands</ContentControl>
+    <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredCommands.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredCommands}">
 
       <DataGrid.Columns>
         <DataGridTextColumn Header="Name"
@@ -16,17 +16,11 @@
         <DataGridTextColumn Header="Type"
                             Binding="{Binding Type}"
                             Width="1*" />
-        <DataGridTextColumn Header="Update Interval"
-                            Binding="{Binding UpdateInterval}"
-                            Width="1*" />
-        <DataGridTextColumn Header="Value"
-                            Binding="{Binding ValueString}"
-                            Width="2*" />
       </DataGrid.Columns>
     </DataGrid>
-    <TextBlock IsVisible="{Binding !ConfiguredSensors.Count}">Add some sensors by clicking the "Add" button. </TextBlock>
+    <TextBlock IsVisible="{Binding !ConfiguredSensors.Count}">Add some commands by clicking the "Add" button. </TextBlock>
 
-    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="AddSensor">Add</Button>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Add">Add</Button>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Delete">Delete</Button>
   </StackPanel>
 </UserControl>

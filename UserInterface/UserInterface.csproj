@@ -23,8 +23,17 @@
     <ProjectReference Include="..\hass-workstation-service\hass-workstation-service.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\AddCommandDialog.axaml.cs">
+      <DependentUpon>AddCommandDialog.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\AppInfo.axaml.cs">
+      <DependentUpon>AppInfo.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\BackgroundServiceSettings.axaml.cs">
       <DependentUpon>BackgroundServiceSettings.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CommandSettings.axaml.cs">
+      <DependentUpon>CommandSettings.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SensorSettings.axaml.cs">
       <DependentUpon>SensorSettings.axaml</DependentUpon>

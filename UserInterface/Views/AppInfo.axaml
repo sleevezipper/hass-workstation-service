@@ -1,0 +1,17 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             x:Class="UserInterface.Views.AppInfo">
+  <StackPanel Margin="30">
+    <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
+      <ContentControl FontSize="18" FontWeight="Bold" >Info</ContentControl>
+      <TextBlock Text="Need some help?" Margin="0 0 0 20"></TextBlock >
+      <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
+        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="Github">Github</Button>
+        <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="Discord">Discord</Button>
+      </StackPanel>
+    </StackPanel>
+  </StackPanel>
+</UserControl>
