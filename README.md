@@ -102,6 +102,14 @@ which results in `4008` for my PC.
 
 You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) to find see what data is available.
 
+Here's some queries from other users:
+
+|Query|Explanation|Thanks|
+|---|---|---|
+|`SELECT username FROM Win32_ComputerSystem`|Shows the current user|@grizzlyjere|
+
+Want to add you query here? Please create a pull request or open an issue.
+
 ### LastActive
 
 This sensor returns the date/time that the workstation was last active. Typing or moving your mouse will reset the date/time.
