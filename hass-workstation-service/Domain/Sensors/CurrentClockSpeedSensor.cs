@@ -19,8 +19,7 @@ namespace hass_workstation_service.Domain.Sensors
                 State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
                 Icon = "mdi:speedometer",
                 Unit_of_measurement = "MHz",
-                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability",
-                Expire_after = 60
+                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
             });
         }
     }

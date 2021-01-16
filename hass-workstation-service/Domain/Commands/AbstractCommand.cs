@@ -13,7 +13,7 @@ namespace hass_workstation_service.Domain.Commands
         /// <summary>
         /// The update interval in seconds. It checks state only if the interval has passed.
         /// </summary>
-        public int UpdateInterval { get; protected set; }
+        public int UpdateInterval { get => 1; }
         public DateTime? LastUpdated { get; protected set; }
         public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
@@ -74,6 +74,7 @@ namespace hass_workstation_service.Domain.Commands
         {
             await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain, true);
         }
-        public abstract void Execute();
+        public abstract void TurnOn();
+        public abstract void TurnOff();
     }
 }

@@ -55,6 +55,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
 
     public enum AvailableCommands
     {
-        CustomCommand
+        CustomCommand,
+        ShutdownCommand,
+        LogOffCommand,
+        RestartCommand,
     }
 }

@@ -61,6 +61,7 @@ namespace hass_workstation_service.Communication
 
             if (options != null)
             {
+                options.WillMessage.Topic = $"homeassistant/sensor/{this.DeviceConfigModel.Name}/availability";
                 this._mqttClient.ConnectAsync(options);
                 this._mqttClientMessage = "Connecting...";
             }
@@ -72,7 +73,6 @@ namespace hass_workstation_service.Communication
             this._mqttClient.UseConnectedHandler(e => {
                 this._mqttClientMessage = "All good";
             });
-
             this._mqttClient.UseApplicationMessageReceivedHandler(e => this.HandleMessageReceived(e.ApplicationMessage));
 
             // configure what happens on disconnect
@@ -93,7 +93,6 @@ namespace hass_workstation_service.Communication
                         _logger.LogError(ex, "Reconnecting failed");
                     }
                 }
-
             });
         }
 
@@ -211,16 +210,17 @@ namespace hass_workstation_service.Communication
             {
                 if (command.GetAutoDiscoveryConfig().Command_topic == applicationMessage.Topic)
                 {
-                    command.Execute();
+                    if (Encoding.UTF8.GetString(applicationMessage?.Payload) == "ON")
+                    {
+                        command.TurnOn();
+                    }
+                    else if (Encoding.UTF8.GetString(applicationMessage?.Payload) == "OFF")
+                    {
+                        command.TurnOff();
+                    }
+                    
                 }
             }
-            Console.WriteLine("### RECEIVED APPLICATION MESSAGE ###");
-            Console.WriteLine($"+ Topic = {applicationMessage.Topic}");
-
-            Console.WriteLine($"+ Payload = {Encoding.UTF8.GetString(applicationMessage?.Payload)}");
-            Console.WriteLine($"+ QoS = {applicationMessage.QualityOfServiceLevel}");
-            Console.WriteLine($"+ Retain = {applicationMessage.Retain}");
-            Console.WriteLine();
         }
     }
 }

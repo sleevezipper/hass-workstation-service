@@ -20,7 +20,7 @@
     <TextBlock Text="{Binding UpdateInterval, StringFormat= Update every {0} seconds}" HorizontalAlignment="Left" MinWidth="150"/>
     <ContentControl IsVisible="{Binding ShowCommandInput}" Margin="0 20 0 10">Command</ContentControl>
     <TextBox IsVisible="{Binding ShowCommandInput}" Text="{Binding Command}" Watermark="Rundll32.exe user32.dll,LockWorkStation" HorizontalAlignment="Left" MinWidth="300"/>
-    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Test">Test</Button>
+    <Button IsVisible="{Binding ShowCommandInput}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Test">Test</Button>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
   </StackPanel>
 </Window>

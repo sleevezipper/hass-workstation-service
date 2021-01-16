@@ -109,11 +109,7 @@ namespace hass_workstation_service.Communication
         /// </summary>
         /// <value></value>
         public string Device_class { get; set; }
-        /// <summary>
-        /// (Optional) Defines the number of seconds after the sensor’s state expires, if it’s not updated. After expiry, the sensor’s state becomes unavailable. Defaults to 0 in hass.
-        /// </summary>
-        /// <value></value>
-        public int? Expire_after { get; set; }
+
         /// <summary>
         /// Sends update events even if the value hasn’t changed. Useful if you want to have meaningful value graphs in history.
         /// </summary>

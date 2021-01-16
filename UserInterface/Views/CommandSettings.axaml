@@ -18,7 +18,7 @@
                             Width="1*" />
       </DataGrid.Columns>
     </DataGrid>
-    <TextBlock IsVisible="{Binding !ConfiguredSensors.Count}">Add some commands by clicking the "Add" button. </TextBlock>
+    <TextBlock IsVisible="{Binding !ConfiguredCommands.Count}">Add some commands by clicking the "Add" button. </TextBlock>
 
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Add">Add</Button>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Delete">Delete</Button>

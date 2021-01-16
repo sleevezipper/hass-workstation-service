@@ -173,6 +173,15 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             AbstractCommand commandToCreate = null;
             switch (commandType)
             {
+                case AvailableCommands.ShutdownCommand:
+                    commandToCreate = new ShutdownCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.RestartCommand:
+                    commandToCreate = new RestartCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.LogOffCommand:
+                    commandToCreate = new LogOffCommand(this._publisher, model.Name);
+                    break;
                 case AvailableCommands.CustomCommand:
                     commandToCreate = new CustomCommand(this._publisher, model.Command, model.Name);
                     break;

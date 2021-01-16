@@ -26,6 +26,7 @@ namespace hass_workstation_service.Data
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public ICollection<AbstractCommand> ConfiguredCommands { get; private set; }
         public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        private readonly DeviceConfigModel _deviceConfigModel;
 
         private bool BrokerSettingsFileLocked { get; set; }
         private bool SensorsSettingsFileLocked { get; set; }
@@ -33,8 +34,9 @@ namespace hass_workstation_service.Data
 
         private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
-        public ConfigurationService()
+        public ConfigurationService(DeviceConfigModel deviceConfigModel)
         {
+            this._deviceConfigModel = deviceConfigModel;
             if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
             {
                 File.Create(Path.Combine(path, "mqttbroker.json")).Close();
@@ -156,6 +158,15 @@ namespace hass_workstation_service.Data
                 AbstractCommand command = null;
                 switch (configuredCommand.Type)
                 {
+                    case "ShutdownCommand":
+                        command = new ShutdownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "RestartCommand":
+                        command = new RestartCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "LogOffCommand":
+                        command = new LogOffCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
                     case "CustomCommand":
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name,  configuredCommand.Id);
                         break;
@@ -184,6 +195,12 @@ namespace hass_workstation_service.Data
                         AllowUntrustedCertificates = true
                     })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
+                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
+                    .WithWillMessage(new MqttApplicationMessageBuilder()
+                        .WithRetainFlag()
+                        .WithTopic($"homeassistant/sensor/{_deviceConfigModel.Name}/availability")
+                        .WithPayload("offline")
+                        .Build())
                     .Build();
                 return mqttClientOptions;
             }
@@ -315,12 +332,12 @@ namespace hass_workstation_service.Data
 
         public async void DeleteConfiguredCommand(Guid id)
         {
-            var sensorToRemove = this.ConfiguredCommands.FirstOrDefault(s => s.Id == id);
-            if (sensorToRemove != null)
+            var commandToRemove = this.ConfiguredCommands.FirstOrDefault(s => s.Id == id);
+            if (commandToRemove != null)
             {
-                await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
-                this.ConfiguredCommands.Remove(sensorToRemove);
-                WriteSensorSettingsAsync();
+                await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
+                this.ConfiguredCommands.Remove(commandToRemove);
+                WriteCommandSettingsAsync();
             }
             else
             {

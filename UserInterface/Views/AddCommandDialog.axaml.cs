@@ -63,6 +63,21 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#customcommand";
                     item.ShowCommandInput = true;
                     break;
+                case AvailableCommands.ShutdownCommand:
+                    item.Description = "This command shuts down the PC immediately. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#shutdowncommand";
+                    item.ShowCommandInput = false;
+                    break;
+                case AvailableCommands.RestartCommand:
+                    item.Description = "This command restarts the PC immediately. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#restartcommand";
+                    item.ShowCommandInput = false;
+                    break;
+                case AvailableCommands.LogOffCommand:
+                    item.Description = "This command logs the current user off immediately. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#logoffcommand";
+                    item.ShowCommandInput = false;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

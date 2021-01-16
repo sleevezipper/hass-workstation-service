@@ -44,7 +44,6 @@ namespace hass_workstation_service
             List<AbstractSensor> sensors = _configurationService.ConfiguredSensors.ToList();
             List<AbstractCommand> commands = _configurationService.ConfiguredCommands.ToList();
             _mqttPublisher.AnnounceAvailability("sensor");
-            _mqttPublisher.AnnounceAvailability("switch");
             foreach (AbstractSensor sensor in sensors)
             {
                 sensor.PublishAutoDiscoveryConfigAsync();
@@ -55,7 +54,6 @@ namespace hass_workstation_service
             }
             while (!stoppingToken.IsCancellationRequested)
             {
-                sensors = _configurationService.ConfiguredSensors.ToList();
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
                 foreach (AbstractSensor sensor in sensors)
@@ -67,6 +65,18 @@ namespace hass_workstation_service
                     catch (Exception ex)
                     {
                         Log.Logger.Warning("Sensor failed: " + sensor.Name, ex);
+                    }
+
+                }
+                foreach (AbstractCommand command in commands)
+                {
+                    try
+                    {
+                        await command.PublishStateAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Logger.Warning("Command state failed: " + command.Name, ex);
                     }
 
                 }
@@ -82,7 +92,6 @@ namespace hass_workstation_service
                         command.PublishAutoDiscoveryConfigAsync();
                     }
                     _mqttPublisher.AnnounceAvailability("sensor");
-                    _mqttPublisher.AnnounceAvailability("switch");
                 }
                 await Task.Delay(1000, stoppingToken);
             }
@@ -92,7 +101,6 @@ namespace hass_workstation_service
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
            _mqttPublisher.AnnounceAvailability("sensor", true);
-           _mqttPublisher.AnnounceAvailability("switch", true);
             await _mqttPublisher.DisconnectAsync();
         }
 

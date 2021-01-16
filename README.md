@@ -127,7 +127,19 @@ This sensor spits out a random number every second. Useful for testing, maybe yo
 
 ## Commands
 
-Commands can be used to trigger certain things on the client.
+Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel thje running command.
+
+### ShutdownCommand
+
+This command shuts down the computer immediately. It runs `shutdown /s`.
+
+### RestartCommand
+
+This command restarts the computer immediately. It runs `shutdown /r`.
+
+### LogOffCommand
+
+This command logs off the current user. It runs `shutdown /l`.
 
 ### CustomCommand
 
@@ -136,3 +148,5 @@ This command allows you to run any Windows Commands. The command will be run in 
 |Command|Explanation|
 |---|---|
 |Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|
+|shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
+|C:\path\to\your\batchfile.bat|Run the specified batch file.|
