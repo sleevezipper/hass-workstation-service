@@ -15,9 +15,9 @@ It will try to futher accomplish this goal in the future by:
 
 ## Screenshots
 
-![The settings screen](https://i.imgur.com/WpCZaDR.png)
+![The settings screen](https://i.imgur.com/RBQx807.png)
 
-![The resulting sensors in Home Assistant](https://i.imgur.com/Kka8VOi.png)
+![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
 ## Installation
 
@@ -33,6 +33,10 @@ If you don't want to use the installer, you can find the standalone version rele
 ### Updating
 
 If you used the installer, the app checks for updates on startup. If an update is available you will be prompted to install. If you use the standalone, just delete all files from the previous install and unpack the zip to the same location as before.
+
+## Need help?
+
+Find us on us on [Discord](https://discord.gg/VraYT2N3wd).
 
 ## Sensors
 
