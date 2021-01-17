@@ -17,6 +17,7 @@ using Microsoft.Win32;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Extensions.ManagedClient;
 using Serilog;
 
 namespace hass_workstation_service.Data
@@ -25,7 +26,7 @@ namespace hass_workstation_service.Data
     {
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public ICollection<AbstractCommand> ConfiguredCommands { get; private set; }
-        public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        public Action<IManagedMqttClientOptions> MqqtConfigChangedHandler { get; set; }
         private readonly DeviceConfigModel _deviceConfigModel;
 
         private bool BrokerSettingsFileLocked { get; set; }
@@ -181,7 +182,7 @@ namespace hass_workstation_service.Data
             }
         }
 
-        public async Task<IMqttClientOptions> GetMqttClientOptionsAsync()
+        public async Task<IManagedMqttClientOptions> GetMqttClientOptionsAsync()
         {
             ConfiguredMqttBroker configuredBroker = await ReadMqttSettingsAsync();
             if (configuredBroker != null && configuredBroker.Host != null)
@@ -202,7 +203,7 @@ namespace hass_workstation_service.Data
                         .WithPayload("offline")
                         .Build())
                     .Build();
-                return mqttClientOptions;
+                return new ManagedMqttClientOptionsBuilder().WithClientOptions(mqttClientOptions).Build();
             }
             else
             {

@@ -56,6 +56,12 @@ namespace hass_workstation_service
             {
                 _logger.LogDebug("Worker running at: {time}", DateTimeOffset.Now);
 
+                // announce autodiscovery every 30 seconds
+                if (_mqttPublisher.LastAvailabilityAnnounce < DateTime.UtcNow.AddSeconds(-10))
+                {
+                    _mqttPublisher.AnnounceAvailability("sensor");
+                }
+
                 foreach (AbstractSensor sensor in sensors)
                 {
                     try
@@ -91,7 +97,6 @@ namespace hass_workstation_service
                     {
                         command.PublishAutoDiscoveryConfigAsync();
                     }
-                    _mqttPublisher.AnnounceAvailability("sensor");
                 }
                 await Task.Delay(1000, stoppingToken);
             }
@@ -100,7 +105,7 @@ namespace hass_workstation_service
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-           _mqttPublisher.AnnounceAvailability("sensor", true);
+            _mqttPublisher.AnnounceAvailability("sensor", true);
             await _mqttPublisher.DisconnectAsync();
         }
 

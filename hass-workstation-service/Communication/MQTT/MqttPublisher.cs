@@ -14,6 +14,7 @@ using MQTTnet.Adapter;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using MQTTnet.Exceptions;
+using MQTTnet.Extensions.ManagedClient;
 using Serilog;
 
 namespace hass_workstation_service.Communication
@@ -21,11 +22,12 @@ namespace hass_workstation_service.Communication
 
     public class MqttPublisher
     {
-        private readonly IMqttClient _mqttClient;
+        private readonly IManagedMqttClient _mqttClient;
         private readonly ILogger<MqttPublisher> _logger;
         private readonly IConfigurationService _configurationService;
         private string _mqttClientMessage { get; set; }
         public DateTime LastConfigAnnounce { get; private set; }
+        public DateTime LastAvailabilityAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
         public ICollection<AbstractCommand> Subscribers { get; private set; }
         public bool IsConnected
@@ -57,12 +59,11 @@ namespace hass_workstation_service.Communication
             _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
 
             var factory = new MqttFactory();
-            this._mqttClient = factory.CreateMqttClient();
+            this._mqttClient = factory.CreateManagedMqttClient();
 
             if (options != null)
             {
-                options.WillMessage.Topic = $"homeassistant/sensor/{this.DeviceConfigModel.Name}/availability";
-                this._mqttClient.ConnectAsync(options);
+                this._mqttClient.StartAsync(options);
                 this._mqttClientMessage = "Connecting...";
             }
             else
@@ -76,23 +77,10 @@ namespace hass_workstation_service.Communication
             this._mqttClient.UseApplicationMessageReceivedHandler(e => this.HandleMessageReceived(e.ApplicationMessage));
 
             // configure what happens on disconnect
-            this._mqttClient.UseDisconnectedHandler(async e =>
+            this._mqttClient.UseDisconnectedHandler(e =>
             {
                 this._mqttClientMessage = e.ReasonCode.ToString();
-                if (e.ReasonCode != MQTTnet.Client.Disconnecting.MqttClientDisconnectReason.NormalDisconnection)
-                {
-                    _logger.LogWarning("Disconnected from server");
-                    await Task.Delay(TimeSpan.FromSeconds(5));
 
-                    try
-                    {
-                        await this._mqttClient.ConnectAsync(options, CancellationToken.None);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Reconnecting failed");
-                    }
-                }
             });
         }
 
@@ -130,13 +118,13 @@ namespace hass_workstation_service.Communication
             }
         }
 
-        public async void ReplaceMqttClient(IMqttClientOptions options)
+        public async void ReplaceMqttClient(IManagedMqttClientOptions options)
         {
             this._logger.LogInformation($"Replacing Mqtt client with new config");
-            await _mqttClient.DisconnectAsync();
+            await _mqttClient.StopAsync();
             try
             {
-                await _mqttClient.ConnectAsync(options);
+                await _mqttClient.StartAsync(options);
             }
             catch (MqttConnectingFailedException ex)
             {
@@ -165,6 +153,7 @@ namespace hass_workstation_service.Communication
                     .WithPayload(offline ? "offline" : "online")
                     .Build()
                     );
+                this.LastAvailabilityAnnounce = DateTime.UtcNow;
             }
             else
             {
@@ -176,7 +165,7 @@ namespace hass_workstation_service.Communication
         {
             if (this._mqttClient.IsConnected)
             {
-                await this._mqttClient.DisconnectAsync();
+                await this._mqttClient.InternalClient.DisconnectAsync();
             }
             else
             {
