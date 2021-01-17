@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="hass-workstation-service.pdb" />
     <None Remove="libSkiaSharp.dll" />
     <None Remove="UserInterface.exe" />
     <None Remove="UserInterface.pdb" />
@@ -31,10 +32,10 @@
 
   <ItemGroup>
     <Content Include="libSkiaSharp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="UserInterface.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
