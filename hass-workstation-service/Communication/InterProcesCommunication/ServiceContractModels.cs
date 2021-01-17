@@ -29,7 +29,13 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public int UpdateInterval { get; set; }
         public string UnitOfMeasurement { get; set; }
     }
-
+    public class ConfiguredCommandModel
+    {
+        public Guid Id { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public string Command { get; set; }
+    }
     public enum AvailableSensors
     {
         UserNotificationStateSensor,
@@ -45,5 +51,13 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         LastActiveSensor,
         LastBootSensor,
         SessionStateSensor
+    }
+
+    public enum AvailableCommands
+    {
+        CustomCommand,
+        ShutdownCommand,
+        LogOffCommand,
+        RestartCommand,
     }
 }

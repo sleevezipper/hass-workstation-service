@@ -15,9 +15,9 @@ It will try to futher accomplish this goal in the future by:
 
 ## Screenshots
 
-![The settings screen](https://i.imgur.com/WpCZaDR.png)
+![The settings screen](https://i.imgur.com/RBQx807.png)
 
-![The resulting sensors in Home Assistant](https://i.imgur.com/Kka8VOi.png)
+![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
 ## Installation
 
@@ -33,6 +33,10 @@ If you don't want to use the installer, you can find the standalone version rele
 ### Updating
 
 If you used the installer, the app checks for updates on startup. If an update is available you will be prompted to install. If you use the standalone, just delete all files from the previous install and unpack the zip to the same location as before.
+
+## Need help?
+
+Find us on us on [Discord](https://discord.gg/VraYT2N3wd).
 
 ## Sensors
 
@@ -132,3 +136,29 @@ This sensor returns the current session state. It has the following possible sta
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.
+
+## Commands
+
+Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel thje running command.
+
+### ShutdownCommand
+
+This command shuts down the computer immediately. It runs `shutdown /s`.
+
+### RestartCommand
+
+This command restarts the computer immediately. It runs `shutdown /r`.
+
+### LogOffCommand
+
+This command logs off the current user. It runs `shutdown /l`.
+
+### CustomCommand
+
+This command allows you to run any Windows Commands. The command will be run in a hidden Command Prompt. Some examples:
+
+|Command|Explanation|
+|---|---|
+|Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|
+|shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
+|C:\path\to\your\batchfile.bat|Run the specified batch file.|

@@ -1,0 +1,26 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="UserInterface.Views.AddCommandDialog"
+        SizeToContent="WidthAndHeight"
+        Title="Add sensor">
+  <StackPanel Margin="40" MinWidth="200">
+    <ContentControl  Margin="0 20 0 10">Sensor type</ContentControl>
+
+    <ComboBox x:Name="ComboBox" SelectionChanged="ComboBoxClosed" SelectedItem="{Binding SelectedType}" MinHeight="27"></ComboBox>
+    <TextBlock Margin="0 10 0 10" MaxWidth="300" TextWrapping="Wrap" TextAlignment="Left" Text="{Binding Description}"></TextBlock>
+    <Button IsVisible="{Binding MoreInfoLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" Click="OpenInfo" Margin="0 10 0 10">Click for more information.</Button>
+    <ContentControl Margin="0 20 0 10">Name</ContentControl>
+    <TextBox Text="{Binding Name}" HorizontalAlignment="Left" MinWidth="150"/>
+
+
+
+    <TextBlock Text="{Binding UpdateInterval, StringFormat= Update every {0} seconds}" HorizontalAlignment="Left" MinWidth="150"/>
+    <ContentControl IsVisible="{Binding ShowCommandInput}" Margin="0 20 0 10">Command</ContentControl>
+    <TextBox IsVisible="{Binding ShowCommandInput}" Text="{Binding Command}" Watermark="Rundll32.exe user32.dll,LockWorkStation" HorizontalAlignment="Left" MinWidth="300"/>
+    <Button IsVisible="{Binding ShowCommandInput}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Test">Test</Button>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Save">Save</Button>
+  </StackPanel>
+</Window>

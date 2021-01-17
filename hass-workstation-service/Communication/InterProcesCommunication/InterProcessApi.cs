@@ -2,6 +2,7 @@ using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
+using hass_workstation_service.Domain.Commands;
 using hass_workstation_service.Domain.Sensors;
 using Serilog;
 using System;
@@ -49,11 +50,19 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             return "what?";
         }
 
+        /// <summary>
+        /// This writes the provided settings to the config file.
+        /// </summary>
+        /// <param name="settings"></param>
         public void WriteMqttBrokerSettingsAsync(MqttSettings settings)
         {
             this._configurationService.WriteMqttBrokerSettingsAsync(settings);
         }
 
+        /// <summary>
+        /// Enables or disables autostart. 
+        /// </summary>
+        /// <param name="enable"></param>
         public void EnableAutostart(bool enable)
         {
             this._configurationService.EnableAutoStart(enable);
@@ -69,11 +78,25 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.GetAutoDiscoveryConfig().Unit_of_measurement }).ToList();
         }
 
+        public List<ConfiguredCommandModel> GetConfiguredCommands()
+        {
+            return this._configurationService.ConfiguredCommands.Select(s => new ConfiguredCommandModel() { Name = s.Name, Type = s.GetType().Name, Id = s.Id }).ToList();
+        }
+        public void RemoveCommandById(Guid id)
+        {
+            this._configurationService.DeleteConfiguredCommand(id);
+        }
+
         public void RemoveSensorById(Guid id)
         {
             this._configurationService.DeleteConfiguredSensor(id);
         }
 
+        /// <summary>
+        /// Adds a command to the configured commands. This properly initializes the class and writes it to the config file. 
+        /// </summary>
+        /// <param name="sensorType"></param>
+        /// <param name="json"></param>
         public void AddSensor(AvailableSensors sensorType, string json)
         {
             var serializerOptions = new JsonSerializerOptions
@@ -131,6 +154,44 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             if (sensorToCreate != null)
             {
                 this._configurationService.AddConfiguredSensor(sensorToCreate);
+            }
+        }
+
+        /// <summary>
+        /// Adds a command to the configured commands. This properly initializes the class, subscribes to the command topic and writes it to the config file. 
+        /// </summary>
+        /// <param name="commandType"></param>
+        /// <param name="json"></param>
+        public void AddCommand(AvailableCommands commandType, string json)
+        {
+            var serializerOptions = new JsonSerializerOptions
+            {
+                Converters = { new DynamicJsonConverter() }
+            };
+            dynamic model = JsonSerializer.Deserialize<dynamic>(json, serializerOptions);
+
+            AbstractCommand commandToCreate = null;
+            switch (commandType)
+            {
+                case AvailableCommands.ShutdownCommand:
+                    commandToCreate = new ShutdownCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.RestartCommand:
+                    commandToCreate = new RestartCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.LogOffCommand:
+                    commandToCreate = new LogOffCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.CustomCommand:
+                    commandToCreate = new CustomCommand(this._publisher, model.Command, model.Name);
+                    break;
+                default:
+                    Log.Logger.Error("Unknown sensortype");
+                    break;
+            }
+            if (commandToCreate != null)
+            {
+                this._configurationService.AddConfiguredCommand(commandToCreate);
             }
         }
     }

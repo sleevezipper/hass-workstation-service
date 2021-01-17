@@ -6,6 +6,7 @@
              MaxWidth="800"
              x:Class="UserInterface.Views.SensorSettings" >
   <StackPanel Margin="30" HorizontalAlignment="Left" >
+    <ContentControl FontSize="18" Margin="0 0 0 15" FontWeight="Bold">Sensors</ContentControl>
     <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredSensors}">
 
       <DataGrid.Columns>

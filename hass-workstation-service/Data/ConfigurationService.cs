@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.NamedPipe;
+using hass_workstation_service.Domain.Commands;
 using hass_workstation_service.Domain.Sensors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
+using MQTTnet.Extensions.ManagedClient;
 using Serilog;
 
 namespace hass_workstation_service.Data
@@ -23,15 +25,19 @@ namespace hass_workstation_service.Data
     public class ConfigurationService : IConfigurationService
     {
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
-        public Action<IMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        public ICollection<AbstractCommand> ConfiguredCommands { get; private set; }
+        public Action<IManagedMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        private readonly DeviceConfigModel _deviceConfigModel;
 
         private bool BrokerSettingsFileLocked { get; set; }
         private bool SensorsSettingsFileLocked { get; set; }
+        private bool CommandSettingsFileLocked { get; set; }
 
         private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
-        public ConfigurationService()
+        public ConfigurationService(DeviceConfigModel deviceConfigModel)
         {
+            this._deviceConfigModel = deviceConfigModel;
             if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
             {
                 File.Create(Path.Combine(path, "mqttbroker.json")).Close();
@@ -42,7 +48,13 @@ namespace hass_workstation_service.Data
                 File.Create(Path.Combine(path, "configured-sensors.json")).Close();
             }
 
+            if (!File.Exists(Path.Combine(path, "configured-commands.json")))
+            {
+                File.Create(Path.Combine(path, "configured-commands.json")).Close();
+            }
+
             ConfiguredSensors = new List<AbstractSensor>();
+            ConfiguredCommands = new List<AbstractCommand>();
         }
 
         public async void ReadSensorSettings(MqttPublisher publisher)
@@ -123,7 +135,54 @@ namespace hass_workstation_service.Data
             }
         }
 
-        public async Task<IMqttClientOptions> GetMqttClientOptionsAsync()
+        public async void ReadCommandSettings(MqttPublisher publisher)
+        {
+            while (this.CommandSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this.CommandSettingsFileLocked = true;
+            List<ConfiguredCommand> commands = new List<ConfiguredCommand>();
+            using (var stream = new FileStream(Path.Combine(path, "configured-commands.json"), FileMode.Open))
+            {
+                Log.Logger.Information($"reading configured commands from: {stream.Name}");
+                if (stream.Length > 0)
+                {
+                    commands = await JsonSerializer.DeserializeAsync<List<ConfiguredCommand>>(stream);
+                }
+                stream.Close();
+                this.CommandSettingsFileLocked = false;
+            }
+
+            foreach (ConfiguredCommand configuredCommand in commands)
+            {
+                AbstractCommand command = null;
+                switch (configuredCommand.Type)
+                {
+                    case "ShutdownCommand":
+                        command = new ShutdownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "RestartCommand":
+                        command = new RestartCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "LogOffCommand":
+                        command = new LogOffCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "CustomCommand":
+                        command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name,  configuredCommand.Id);
+                        break;
+                    default:
+                        Log.Logger.Error("unsupported command type in config");
+                        break;
+                }
+                if (command != null)
+                {
+                    this.ConfiguredCommands.Add(command);
+                }
+            }
+        }
+
+        public async Task<IManagedMqttClientOptions> GetMqttClientOptionsAsync()
         {
             ConfiguredMqttBroker configuredBroker = await ReadMqttSettingsAsync();
             if (configuredBroker != null && configuredBroker.Host != null)
@@ -137,8 +196,14 @@ namespace hass_workstation_service.Data
                         AllowUntrustedCertificates = true
                     })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
+                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
+                    .WithWillMessage(new MqttApplicationMessageBuilder()
+                        .WithRetainFlag()
+                        .WithTopic($"homeassistant/sensor/{_deviceConfigModel.Name}/availability")
+                        .WithPayload("offline")
+                        .Build())
                     .Build();
-                return mqttClientOptions;
+                return new ManagedMqttClientOptionsBuilder().WithClientOptions(mqttClientOptions).Build();
             }
             else
             {
@@ -173,7 +238,7 @@ namespace hass_workstation_service.Data
             return configuredBroker;
         }
 
-        public async void WriteSettingsAsync()
+        public async void WriteSensorSettingsAsync()
         {
             while (this.SensorsSettingsFileLocked)
             {
@@ -210,11 +275,44 @@ namespace hass_workstation_service.Data
             this.SensorsSettingsFileLocked = false;
         }
 
+        public async void WriteCommandSettingsAsync()
+        {
+            while (this.CommandSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this.CommandSettingsFileLocked = true;
+            List<ConfiguredCommand> configuredCommandsToSave = new List<ConfiguredCommand>();
+            using (FileStream stream = new FileStream(Path.Combine(path, "configured-commands.json"), FileMode.Open))
+            {
+                stream.SetLength(0);
+                Log.Logger.Information($"writing configured commands to: {stream.Name}");
+                foreach (AbstractCommand command in this.ConfiguredCommands)
+                {
+                    if (command is CustomCommand customcommand)
+                    {
+                        configuredCommandsToSave.Add(new ConfiguredCommand() { Id = customcommand.Id, Name = customcommand.Name, Type = customcommand.GetType().Name, Command = customcommand.Command });
+                    }
+                }
+
+                await JsonSerializer.SerializeAsync(stream, configuredCommandsToSave);
+                stream.Close();
+            }
+            this.CommandSettingsFileLocked = false;
+        }
+
         public void AddConfiguredSensor(AbstractSensor sensor)
         {
             this.ConfiguredSensors.Add(sensor);
             sensor.PublishAutoDiscoveryConfigAsync();
-            WriteSettingsAsync();
+            WriteSensorSettingsAsync();
+        }
+
+        public void AddConfiguredCommand(AbstractCommand command)
+        {
+            this.ConfiguredCommands.Add(command);
+            command.PublishAutoDiscoveryConfigAsync();
+            WriteCommandSettingsAsync();
         }
 
         public async void DeleteConfiguredSensor(Guid id)
@@ -224,7 +322,7 @@ namespace hass_workstation_service.Data
             {
                 await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
                 this.ConfiguredSensors.Remove(sensorToRemove);
-                WriteSettingsAsync();
+                WriteSensorSettingsAsync();
             }
             else
             {
@@ -233,10 +331,26 @@ namespace hass_workstation_service.Data
 
         }
 
+        public async void DeleteConfiguredCommand(Guid id)
+        {
+            var commandToRemove = this.ConfiguredCommands.FirstOrDefault(s => s.Id == id);
+            if (commandToRemove != null)
+            {
+                await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
+                this.ConfiguredCommands.Remove(commandToRemove);
+                WriteCommandSettingsAsync();
+            }
+            else
+            {
+                Log.Logger.Warning($"command with id {id} not found");
+            }
+
+        }
+
         public void AddConfiguredSensors(List<AbstractSensor> sensors)
         {
             sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));
-            WriteSettingsAsync();
+            WriteSensorSettingsAsync();
         }
 
         /// <summary>

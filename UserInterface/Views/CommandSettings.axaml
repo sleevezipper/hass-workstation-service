@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             MaxWidth="800"
+             x:Class="UserInterface.Views.CommandSettings" >
+  <StackPanel Margin="30" HorizontalAlignment="Left" >
+    <ContentControl FontSize="18" Margin="0 0 0 15" FontWeight="Bold">Commands</ContentControl>
+    <DataGrid x:Name="Grid" IsVisible="{Binding ConfiguredCommands.Count}" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" Items="{Binding ConfiguredCommands}">
+
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Name"
+                            Binding="{Binding Name}"
+                            Width="1*" />
+        <DataGridTextColumn Header="Type"
+                            Binding="{Binding Type}"
+                            Width="1*" />
+      </DataGrid.Columns>
+    </DataGrid>
+    <TextBlock IsVisible="{Binding !ConfiguredCommands.Count}">Add some commands by clicking the "Add" button. </TextBlock>
+
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Add">Add</Button>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Delete">Delete</Button>
+  </StackPanel>
+</UserControl>

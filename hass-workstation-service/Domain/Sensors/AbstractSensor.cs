@@ -6,7 +6,7 @@ using MQTTnet;
 namespace hass_workstation_service.Domain.Sensors
 {
 
-    public abstract class AbstractSensor
+    public abstract class AbstractSensor : AbstractDiscoverable
     {
         public Guid Id { get; protected set; }
         public string Name { get; protected set; }
@@ -17,6 +17,7 @@ namespace hass_workstation_service.Domain.Sensors
         public DateTime? LastUpdated { get; protected set; }
         public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
+        public override string Domain { get => "sensor"; }
         public AbstractSensor(MqttPublisher publisher, string name, int updateInterval = 10, Guid id = default(Guid))
         {
             if (id == Guid.Empty)
@@ -32,14 +33,14 @@ namespace hass_workstation_service.Domain.Sensors
             this.UpdateInterval = updateInterval;
 
         }
-        protected AutoDiscoveryConfigModel _autoDiscoveryConfigModel;
-        protected AutoDiscoveryConfigModel SetAutoDiscoveryConfigModel(AutoDiscoveryConfigModel config)
+        protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
+        protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)
         {
             this._autoDiscoveryConfigModel = config;
             return config;
         }
 
-        public abstract AutoDiscoveryConfigModel GetAutoDiscoveryConfig();
+        public abstract SensorDiscoveryConfigModel GetAutoDiscoveryConfig();
         public abstract string GetState();
 
         public async Task PublishStateAsync()
@@ -67,11 +68,11 @@ namespace hass_workstation_service.Domain.Sensors
         }
         public async void PublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig());
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain);
         }
         public async Task UnPublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), true);
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain, true);
         }
 
     }
