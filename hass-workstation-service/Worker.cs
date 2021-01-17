@@ -41,14 +41,12 @@ namespace hass_workstation_service
             }
             _logger.LogInformation("Connected. Sending auto discovery messages.");
 
-            List<AbstractSensor> sensors = _configurationService.ConfiguredSensors.ToList();
-            List<AbstractCommand> commands = _configurationService.ConfiguredCommands.ToList();
             _mqttPublisher.AnnounceAvailability("sensor");
-            foreach (AbstractSensor sensor in sensors)
+            foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors.ToList())
             {
                 sensor.PublishAutoDiscoveryConfigAsync();
             }
-            foreach (AbstractCommand command in commands)
+            foreach (AbstractCommand command in _configurationService.ConfiguredCommands.ToList())
             {
                 command.PublishAutoDiscoveryConfigAsync();
             }
@@ -62,7 +60,7 @@ namespace hass_workstation_service
                     _mqttPublisher.AnnounceAvailability("sensor");
                 }
 
-                foreach (AbstractSensor sensor in sensors)
+                foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors.ToList())
                 {
                     try
                     {
@@ -74,7 +72,7 @@ namespace hass_workstation_service
                     }
 
                 }
-                foreach (AbstractCommand command in commands)
+                foreach (AbstractCommand command in _configurationService.ConfiguredCommands.ToList())
                 {
                     try
                     {
@@ -89,11 +87,11 @@ namespace hass_workstation_service
                 // announce autodiscovery every 30 seconds
                 if (_mqttPublisher.LastConfigAnnounce < DateTime.UtcNow.AddSeconds(-30))
                 {
-                    foreach (AbstractSensor sensor in sensors)
+                    foreach (AbstractSensor sensor in _configurationService.ConfiguredSensors.ToList())
                     {
                         sensor.PublishAutoDiscoveryConfigAsync();
                     }
-                    foreach (AbstractCommand command in commands)
+                    foreach (AbstractCommand command in _configurationService.ConfiguredCommands.ToList())
                     {
                         command.PublishAutoDiscoveryConfigAsync();
                     }
