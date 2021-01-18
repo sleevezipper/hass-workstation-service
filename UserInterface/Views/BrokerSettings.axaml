@@ -5,10 +5,10 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.BrokerSettings">
   <StackPanel Margin="30" HorizontalAlignment="Left">
-    <ContentControl FontSize="18" FontWeight="Bold">Mqtt broker</ContentControl>
+    <ContentControl FontSize="18" FontWeight="Bold">MQTT Broker</ContentControl>
     <TextBlock IsVisible="{Binding IsConnected}" Foreground="Green" Text="{Binding Message}"></TextBlock >
     <TextBlock IsVisible="{Binding !IsConnected}" Foreground="Red" Text="{Binding Message}"></TextBlock >
-    <ContentControl Margin="0 20 0 10">IP or hostname</ContentControl>
+    <ContentControl Margin="0 20 0 10">IP address or hostname</ContentControl>
     <TextBox Text="{Binding Host}" HorizontalAlignment="Left" Width="100" Watermark="192.168.1.200"/>
     <StackPanel Orientation="Horizontal">
       <StackPanel Orientation="Vertical">
