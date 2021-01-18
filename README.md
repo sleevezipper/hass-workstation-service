@@ -38,6 +38,10 @@ If you used the installer, the app checks for updates on startup. If an update i
 
 Find us on us on [Discord](https://discord.gg/VraYT2N3wd).
 
+## Development
+
+Want to develop or build the application yourself? Make sure to install the .NET Runtime [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) and [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/current).
+
 ## Sensors
 
 The application provides several sensors. Sensors can be configured with a name and this name will be used in the MQTT topic like this: `homeassistant/sensor/{DeviceName}/{Name}/state`. Sensors will expose themselves through [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/) and will automatically appear in Home assistant or any other platform that supports this type of configuration.
