@@ -26,9 +26,14 @@ Note: You'll get a Windows Smartscreen warning because the code was self signed.
 
 ### Standalone
 
-You'll need [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) installed.
+If you don't want to use the installer, standalone is what you need. Make sure to install [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) first. Find the standalone version releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). Unpack all files to a folder and run `hass-workstation-service.exe`. This is the background service and you can use `UserInterface.exe` to configure the service. There is no automatic (or prompted) updating in the standalone version.
 
-If you don't want to use the installer, you can find the standalone version releases on GitHub [here](https://github.com/sleevezipper/hass-workstation-service/releases). Unpack all files to a folder and run `hass-workstation-service.exe`. This is the background service and you can use `UserInterface.exe` to configure the service. There is no automatic (or prompted) updating in the standalone version.
+### Getting Started
+
+As a prerequisite, make sure you have an MQTT username and password available. Using Home Assistant in combination with the Mosquitto broker add-on and integration? You can use both a Home Assistant account and a local account. From a security perspective, we recommend a local account as this only provides access to the MQTT Broker and not to your Home Assistant instance.
+
+Now that you are all set, make sure to run the `hass-workstation-service.exe` executable first. This executable is responsible for setting up the sensors and talking with your MQTT Broker. To configure the service, start the `UserInterface.exe` executable.
+Add your `hostname` or `IP address`, `port`, `username` and `password` and click on Save. The application will mention "All good" when configured correctly.
 
 ### Updating
 
@@ -40,7 +45,14 @@ Find us on us on [Discord](https://discord.gg/VraYT2N3wd).
 
 ## Development
 
-Want to develop or build the application yourself? Make sure to install the .NET Runtime [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) and [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/current).
+Want to develop or build the application yourself? Make sure to install the .NET Runtime [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) and [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/current). Run the following commands from the `hass-workstation-service\hass-workstation-service` directory to get you started:
+
+```` powershell
+dotnet build
+dotnet publish
+````
+
+In case you are using Visual Studio Code, open the `hass-workstation-service\hass-workstation-service` folder to take advantage of the predefined build and publish tasks.
 
 ## Sensors
 
