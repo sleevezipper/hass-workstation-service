@@ -5,9 +5,9 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="UserInterface.Views.AddCommandDialog"
         SizeToContent="WidthAndHeight"
-        Title="Add sensor">
+        Title="Add command">
   <StackPanel Margin="40" MinWidth="200">
-    <ContentControl  Margin="0 20 0 10">Sensor type</ContentControl>
+    <ContentControl  Margin="0 20 0 10">Command type</ContentControl>
 
     <ComboBox x:Name="ComboBox" SelectionChanged="ComboBoxClosed" SelectedItem="{Binding SelectedType}" MinHeight="27"></ComboBox>
     <TextBlock Margin="0 10 0 10" MaxWidth="300" TextWrapping="Wrap" TextAlignment="Left" Text="{Binding Description}"></TextBlock>
