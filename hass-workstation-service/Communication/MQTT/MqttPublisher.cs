@@ -95,7 +95,8 @@ namespace hass_workstation_service.Communication
                 this._logger.LogInformation($"Message dropped because mqtt not connected: {message}");
             }
         }
-
+        // TODO: This should take a sensor/command instead of a config. 
+        // Then we can ask the sensor about the topic based on ObjectId instead of referencing Name directly
         public async Task AnnounceAutoDiscoveryConfig(DiscoveryConfigModel config, string domain, bool clearConfig = false)
         {
             if (this._mqttClient.IsConnected)

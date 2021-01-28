@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using MQTTnet;
@@ -10,6 +11,9 @@ namespace hass_workstation_service.Domain.Sensors
     {
         public Guid Id { get; protected set; }
         public string Name { get; protected set; }
+        public string ObjectId { get {
+                return Regex.Replace(this.Name, "[^a-zA-Z0-9_-]", "_");
+            } }
         /// <summary>
         /// The update interval in seconds. It checks state only if the interval has passed.
         /// </summary>
