@@ -64,7 +64,7 @@ namespace UserInterface.Views
             }
         }
 
-        public void Github(object sender, RoutedEventArgs args)
+        public void GitHub(object sender, RoutedEventArgs args)
         {
             BrowserUtil.OpenBrowser("https://github.com/sleevezipper/hass-workstation-service");
         }

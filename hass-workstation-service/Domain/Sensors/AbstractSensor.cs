@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using MQTTnet;
@@ -8,8 +9,6 @@ namespace hass_workstation_service.Domain.Sensors
 
     public abstract class AbstractSensor : AbstractDiscoverable
     {
-        public Guid Id { get; protected set; }
-        public string Name { get; protected set; }
         /// <summary>
         /// The update interval in seconds. It checks state only if the interval has passed.
         /// </summary>
@@ -40,7 +39,6 @@ namespace hass_workstation_service.Domain.Sensors
             return config;
         }
 
-        public abstract SensorDiscoveryConfigModel GetAutoDiscoveryConfig();
         public abstract string GetState();
 
         public async Task PublishStateAsync()
@@ -68,11 +66,11 @@ namespace hass_workstation_service.Domain.Sensors
         }
         public async void PublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain);
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain);
         }
         public async Task UnPublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain, true);
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain, true);
         }
 
     }

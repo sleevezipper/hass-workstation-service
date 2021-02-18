@@ -9,7 +9,7 @@
       <ContentControl FontSize="18" FontWeight="Bold" >Info</ContentControl>
       <TextBlock Text="Need some help?" Margin="0 0 0 20"></TextBlock >
       <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
-        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="Github">Github</Button>
+        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="GitHub">GitHub</Button>
         <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="Discord">Discord</Button>
       </StackPanel>
     </StackPanel>
