@@ -87,7 +87,7 @@ namespace UserInterface.Views
         }
         public void OpenInfo(object sender, RoutedEventArgs args)
         {
-            var item = ((AddSensorViewModel)this.DataContext);
+            var item = ((AddCommandViewModel)this.DataContext);
             BrowserUtil.OpenBrowser(item.MoreInfoLink);
         }
 
