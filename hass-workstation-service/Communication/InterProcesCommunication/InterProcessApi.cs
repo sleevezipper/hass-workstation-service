@@ -75,7 +75,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
 
         public List<ConfiguredSensorModel> GetConfiguredSensors()
         {
-            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.GetAutoDiscoveryConfig().Unit_of_measurement }).ToList();
+            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement }).ToList();
         }
 
         public List<ConfiguredCommandModel> GetConfiguredCommands()
