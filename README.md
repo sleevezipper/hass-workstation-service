@@ -133,13 +133,24 @@ This sensor returns the current session state. It has the following possible sta
 |InUse|A user is currently logged in.|
 |Unknown|Something went wrong while getting the status.|
 
+### CurrentVolume
+
+This sensor returns the volume of the currently playing audio. So if you're listening to music and you pause, this sensor will return 0 (or at least a very low value).
+
+|State|Explanation|
+|---|---|
+|Locked|All user sessions are locked.|
+|LoggedOff|No users are logged in.|
+|InUse|A user is currently logged in.|
+|Unknown|Something went wrong while getting the status.|
+
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.
 
 ## Commands
 
-Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel thje running command.
+Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel the running command.
 
 ### ShutdownCommand
 
@@ -162,3 +173,11 @@ This command allows you to run any Windows Commands. The command will be run in 
 |Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|
 |shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
 |C:\path\to\your\batchfile.bat|Run the specified batch file.|
+
+## Credits
+
+This project depends on work done by others and they should at least get a mention. Please note that this list is not complete yet.
+
+### [CoreAudio](https://github.com/morphx666/CoreAudio)
+
+CoreAudio was used to check the current volume of playing audio. 
