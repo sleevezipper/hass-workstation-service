@@ -1,4 +1,6 @@
 ﻿using hass_workstation_service.Communication;
+using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,11 +68,12 @@ namespace hass_workstation_service.Domain.Sensors
 
                 var scope = new ManagementScope();
                 scope.Connect();
-
+                Log.Logger.Information("Connected to Scope");
                 var explorerProcesses = Process.GetProcessesByName("explorer")
                                             .Select(p => p.Id.ToString())
                                             .ToHashSet();
 
+                Log.Logger.Information("Created explorerprocess list");
                 var REprocessid = new Regex(@"(?<=Handle="").*?(?="")", RegexOptions.Compiled);
 
                 var numberOfLogonSessionsWithExplorer = new ManagementObjectSearcher(scope, new SelectQuery("SELECT * FROM Win32_SessionProcess")).Get()
@@ -80,8 +83,16 @@ namespace hass_workstation_service.Domain.Sensors
                                                             .Distinct()
                                                             .Count();
 
+
+                Log.Logger.Information("Created numberOfLogonSessionsWithExplorer");
+
                 var numberOfUserDesktops = new ManagementObjectSearcher(scope, new SelectQuery("select * from win32_Perfrawdata_TermService_TerminalServicesSession")).Get().Count - 1; // don't count Service desktop
+
+                Log.Logger.Information("Created numberOfUserDesktops");
+
                 var numberOflogonUIProcesses = Process.GetProcessesByName("LogonUI").Length;
+
+                Log.Logger.Information("Created numberOflogonUIProcesses");
 
                 if (numberOflogonUIProcesses >= numberOfUserDesktops)
                 {
@@ -93,8 +104,9 @@ namespace hass_workstation_service.Domain.Sensors
                 else
                     return PCUserStatuses.InUse;
             }
-            catch
+            catch (Exception e)
             {
+                Log.Logger.Error(e, "Exception in SessionStateSensor");
                 return PCUserStatuses.Unknown;
             }
         }
