@@ -60,5 +60,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         ShutdownCommand,
         LogOffCommand,
         RestartCommand,
+        KeyCommand,
+        PlayPauseCommand,
+        NextCommand,
+        PreviousCommand
     }
 }

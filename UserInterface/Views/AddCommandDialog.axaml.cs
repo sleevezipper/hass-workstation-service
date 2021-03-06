@@ -78,6 +78,26 @@ namespace UserInterface.Views
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#logoffcommand";
                     item.ShowCommandInput = false;
                     break;
+                case AvailableCommands.KeyCommand:
+                    item.Description = "This commands can be used to send emulate a keystroke.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#keycommand";
+                    item.ShowCommandInput = false;
+                    break;
+                case AvailableCommands.PlayPauseCommand:
+                    item.Description = "This command plays or pauses currently playing media.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#playpausecommand";
+                    item.ShowCommandInput = false;
+                    break;
+                case AvailableCommands.NextCommand:
+                    item.Description = "This command skips to the next media.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#nextcommand";
+                    item.ShowCommandInput = false;
+                    break;
+                case AvailableCommands.PreviousCommand:
+                    item.Description = "This command plays previous media.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#previouscommand";
+                    item.ShowCommandInput = false;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

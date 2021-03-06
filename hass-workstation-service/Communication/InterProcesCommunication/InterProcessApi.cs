@@ -188,6 +188,18 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableCommands.CustomCommand:
                     commandToCreate = new CustomCommand(this._publisher, model.Command, model.Name);
                     break;
+                case AvailableCommands.PlayPauseCommand:
+                    commandToCreate = new MediaPlayPauseCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.NextCommand:
+                    commandToCreate = new MediaNextCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.PreviousCommand:
+                    commandToCreate = new MediaPreviousCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.KeyCommand:
+                    commandToCreate = new KeyCommand(this._publisher, (byte)model.KeyCode, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;
