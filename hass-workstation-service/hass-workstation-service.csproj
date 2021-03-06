@@ -52,4 +52,10 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CoreAudio">
+      <HintPath>..\lib\CoreAudio.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
