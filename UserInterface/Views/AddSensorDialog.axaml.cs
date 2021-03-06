@@ -156,6 +156,13 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
+                case AvailableSensors.CurrentVolumeSensor:
+                    item.Description = "This sensor returns the volume of currently playing audio.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentvolume";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
+                    item.UpdateInterval = 5;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;
