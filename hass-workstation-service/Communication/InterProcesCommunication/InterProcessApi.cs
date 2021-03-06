@@ -147,6 +147,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.SessionStateSensor:
                     sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.CurrentVolumeSensor:
+                    sensorToCreate = new CurrentVolumeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;

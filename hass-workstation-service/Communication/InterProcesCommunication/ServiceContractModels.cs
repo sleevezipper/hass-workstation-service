@@ -50,7 +50,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         NamedWindowSensor,
         LastActiveSensor,
         LastBootSensor,
-        SessionStateSensor
+        SessionStateSensor,
+        CurrentVolumeSensor
     }
 
     public enum AvailableCommands

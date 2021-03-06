@@ -120,6 +120,9 @@ namespace hass_workstation_service.Data
                     case "SessionStateSensor":
                         sensor = new SessionStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "CurrentVolumeSensor":
+                        sensor = new CurrentVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     // keep this one last!
                     case "WMIQuerySensor":
                         sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
