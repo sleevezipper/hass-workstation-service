@@ -12,8 +12,10 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class CurrentVolumeSensor : AbstractSensor
     {
-
-        public CurrentVolumeSensor(MqttPublisher publisher, int? updateInterval = null, string name = "CurrentVolume", Guid id = default(Guid)) : base(publisher, name ?? "CurrentVolume", updateInterval ?? 10, id) { }
+        private MMDeviceEnumerator DevEnum;
+        public CurrentVolumeSensor(MqttPublisher publisher, int? updateInterval = null, string name = "CurrentVolume", Guid id = default(Guid)) : base(publisher, name ?? "CurrentVolume", updateInterval ?? 10, id) {
+            this.DevEnum = new MMDeviceEnumerator();
+        }
         public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
             return this._autoDiscoveryConfigModel ?? SetAutoDiscoveryConfigModel(new SensorDiscoveryConfigModel()
@@ -33,8 +35,6 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-            MMDeviceEnumerator DevEnum = new MMDeviceEnumerator();
-
             var collection = DevEnum.EnumerateAudioEndPoints(EDataFlow.eRender, DEVICE_STATE.DEVICE_STATE_ACTIVE);
 
             List<float> peaks = new List<float>();
