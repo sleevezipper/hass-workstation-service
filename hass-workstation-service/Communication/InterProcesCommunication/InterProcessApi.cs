@@ -197,8 +197,17 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableCommands.PreviousCommand:
                     commandToCreate = new MediaPreviousCommand(this._publisher, model.Name);
                     break;
+                case AvailableCommands.VolumeUpCommand:
+                    commandToCreate = new MediaVolumeUpCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.VolumeDownCommand:
+                    commandToCreate = new MediaVolumeDownCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.MuteCommand:
+                    commandToCreate = new MediaMuteCommand(this._publisher, model.Name);
+                    break;
                 case AvailableCommands.KeyCommand:
-                    commandToCreate = new KeyCommand(this._publisher, (byte)model.KeyCode, model.Name);
+                    commandToCreate = new KeyCommand(this._publisher, Convert.ToByte(model.Key, 16), model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");

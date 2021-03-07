@@ -183,6 +183,15 @@ namespace hass_workstation_service.Data
                     case "MediaPreviousCommand":
                         command = new MediaPreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
+                    case "MediaVolumeUpCommand":
+                        command = new MediaVolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaVolumeDownCommand":
+                        command = new MediaVolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaMuteCommand":
+                        command = new MediaMuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
                     case "KeyCommand":
                         command = new KeyCommand(publisher, configuredCommand.KeyCode, configuredCommand.Name, configuredCommand.Id);
                         break;

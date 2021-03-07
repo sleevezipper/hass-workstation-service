@@ -47,7 +47,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = ((AddCommandViewModel)this.DataContext);
-            dynamic model = new { item.Name, item.Command};
+            dynamic model = new { item.Name, item.Command, item.Key};
             string json = JsonSerializer.Serialize(model);
             await this.client.InvokeAsync(x => x.AddCommand(item.SelectedType, json));
             Close();
@@ -62,50 +62,77 @@ namespace UserInterface.Views
                     item.Description = "This command lets you execute any command you want. It will run in a Windows Command Prompt silently. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#customcommand";
                     item.ShowCommandInput = true;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.ShutdownCommand:
                     item.Description = "This command shuts down the PC immediately. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#shutdowncommand";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.RestartCommand:
                     item.Description = "This command restarts the PC immediately. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#restartcommand";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.LogOffCommand:
                     item.Description = "This command logs the current user off immediately. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#logoffcommand";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.KeyCommand:
-                    item.Description = "This commands can be used to send emulate a keystroke.";
+                    item.Description = "This command can be used to emulate a keystroke. It requires a key code which you can find by clicking the info button below.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#keycommand";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = true;
                     break;
                 case AvailableCommands.PlayPauseCommand:
                     item.Description = "This command plays or pauses currently playing media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#playpausecommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.NextCommand:
                     item.Description = "This command skips to the next media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#nextcommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.PreviousCommand:
                     item.Description = "This command plays previous media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#previouscommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
+                    break;
+                case AvailableCommands.VolumeDownCommand:
+                    item.Description = "Lowers the system volume.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
+                    break;
+                case AvailableCommands.VolumeUpCommand:
+                    item.Description = "Raises the system volume.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
+                    break;
+                case AvailableCommands.MuteCommand:
+                    item.Description = "Toggles muting the system volume.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;
                     item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
                     break;
             }
         }
-        public void OpenInfo(object sender, RoutedEventArgs args)
+        public void OpenInfo(object sender, RoutedEventArgs args)   
         {
             var item = ((AddCommandViewModel)this.DataContext);
             BrowserUtil.OpenBrowser(item.MoreInfoLink);

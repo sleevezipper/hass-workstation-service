@@ -63,6 +63,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         KeyCommand,
         PlayPauseCommand,
         NextCommand,
-        PreviousCommand
+        PreviousCommand,
+        VolumeUpCommand,
+        VolumeDownCommand,
+        MuteCommand
     }
 }
