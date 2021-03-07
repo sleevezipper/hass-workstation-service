@@ -190,6 +190,21 @@ This command allows you to run any Windows Commands. The command will be run in 
 |shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
 |C:\path\to\your\batchfile.bat|Run the specified batch file.|
 
+### KeyCommand
+
+Sends a keystroke with the specified key. You can pick [any of these](https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes) key codes.
+
+### Media Commands
+
+There's several media commands available which are very self exlanatory. 
+
+- Play/Pause
+- Next
+- Previous
+- Volume up
+- Volume down
+- Mute (toggle)
+
 ## Credits
 
 This project depends on work done by others and they should at least get a mention. Please note that this list is not complete yet.

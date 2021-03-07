@@ -174,6 +174,27 @@ namespace hass_workstation_service.Data
                     case "CustomCommand":
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name,  configuredCommand.Id);
                         break;
+                    case "MediaPlayPauseCommand":
+                        command = new MediaPlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaNextCommand":
+                        command = new MediaNextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaPreviousCommand":
+                        command = new MediaPreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaVolumeUpCommand":
+                        command = new MediaVolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaVolumeDownCommand":
+                        command = new MediaVolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "MediaMuteCommand":
+                        command = new MediaMuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "KeyCommand":
+                        command = new KeyCommand(publisher, configuredCommand.KeyCode, configuredCommand.Name, configuredCommand.Id);
+                        break;
                     default:
                         Log.Logger.Error("unsupported command type in config");
                         break;
@@ -292,9 +313,13 @@ namespace hass_workstation_service.Data
                 Log.Logger.Information($"writing configured commands to: {stream.Name}");
                 foreach (AbstractCommand command in this.ConfiguredCommands)
                 {
-                    if (command is CustomCommand customcommand)
+                    if (command is CustomCommand customCommand)
                     {
-                        configuredCommandsToSave.Add(new ConfiguredCommand() { Id = customcommand.Id, Name = customcommand.Name, Type = customcommand.GetType().Name, Command = customcommand.Command });
+                        configuredCommandsToSave.Add(new ConfiguredCommand() { Id = customCommand.Id, Name = customCommand.Name, Type = customCommand.GetType().Name, Command = customCommand.Command });
+                    }
+                    if (command is KeyCommand customKeyCommand)
+                    {
+                        configuredCommandsToSave.Add(new ConfiguredCommand() { Id = customKeyCommand.Id, Name = customKeyCommand.Name, Type = customKeyCommand.GetType().Name, KeyCode = customKeyCommand.KeyCode });
                     }
                 }
 

@@ -9,5 +9,6 @@ namespace hass_workstation_service.Data
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
+        public byte KeyCode { get; set; }
     }
 }
