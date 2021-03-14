@@ -51,7 +51,9 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         LastActiveSensor,
         LastBootSensor,
         SessionStateSensor,
-        CurrentVolumeSensor
+        CurrentVolumeSensor,
+        GPUTemperatureSensor,
+        GPULoadSensor
     }
 
     public enum AvailableCommands

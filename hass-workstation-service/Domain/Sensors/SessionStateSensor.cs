@@ -44,7 +44,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
                 Icon = "mdi:lock",
                 Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
             });
@@ -73,24 +73,33 @@ namespace hass_workstation_service.Domain.Sensors
                                             .Select(p => p.Id.ToString())
                                             .ToHashSet();
                 var REprocessid = new Regex(@"(?<=Handle="").*?(?="")", RegexOptions.Compiled);
-
-                var numberOfLogonSessionsWithExplorer = new ManagementObjectSearcher(scope, new SelectQuery("SELECT * FROM Win32_SessionProcess")).Get()
-                                                            .Cast<ManagementObject>()
-                                                            .Where(mo => explorerProcesses.Contains(REprocessid.Match(mo["Dependent"].ToString()).Value))
-                                                            .Select(mo => mo["Antecedent"].ToString())
-                                                            .Distinct()
-                                                            .Count();
+                int numberOfLogonSessionsWithExplorer = 1;
+                using (var managemntObjectSearcher = new ManagementObjectSearcher(scope, new SelectQuery("SELECT * FROM Win32_SessionProcess")))
+                {
+                    numberOfLogonSessionsWithExplorer = managemntObjectSearcher.Get()
+                                                                .Cast<ManagementObject>()
+                                                                .Where(mo => explorerProcesses.Contains(REprocessid.Match(mo["Dependent"].ToString()).Value))
+                                                                .Select(mo => mo["Antecedent"].ToString())
+                                                                .Distinct()
+                                                                .Count();
+                }
                 int numberOfUserDesktops = 1;
 
                 // this can fail sometimes, that's why we set numberOfUserDesktops to 1
                 try
                 {
-                    numberOfUserDesktops = new ManagementObjectSearcher(scope, new SelectQuery("select * from win32_Perfrawdata_TermService_TerminalServicesSession")).Get().Count - 1; // don't count Service desktop
+                    using (var managementObjectSearcher = new ManagementObjectSearcher(scope, new SelectQuery("select * from win32_Perfrawdata_TermService_TerminalServicesSession")))
+                    {
+
+                        numberOfUserDesktops = managementObjectSearcher.Get().Count - 1; // don't count Service desktop
+                    }
                 }
                 catch
                 {
-                    
+
                 }
+
+
 
                 var numberOflogonUIProcesses = Process.GetProcessesByName("LogonUI").Length;
 
@@ -102,7 +111,9 @@ namespace hass_workstation_service.Domain.Sensors
                         return PCUserStatuses.LoggedOff;
                 }
                 else
+                {
                     return PCUserStatuses.InUse;
+                }
             }
             catch (Exception e)
             {

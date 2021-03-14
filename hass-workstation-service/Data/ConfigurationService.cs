@@ -32,6 +32,7 @@ namespace hass_workstation_service.Data
         private bool BrokerSettingsFileLocked { get; set; }
         private bool SensorsSettingsFileLocked { get; set; }
         private bool CommandSettingsFileLocked { get; set; }
+        private bool _sensorsLoading { get; set; }
 
         private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
@@ -59,6 +60,7 @@ namespace hass_workstation_service.Data
 
         public async void ReadSensorSettings(MqttPublisher publisher)
         {
+            this._sensorsLoading = true;
             while (this.SensorsSettingsFileLocked)
             {
                 await Task.Delay(500);
@@ -123,6 +125,12 @@ namespace hass_workstation_service.Data
                     case "CurrentVolumeSensor":
                         sensor = new CurrentVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "GpuTemperatureSensor":
+                        sensor = new GpuTemperatureSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
+                    case "GpuLoadSensor":
+                        sensor = new GpuLoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     // keep this one last!
                     case "WMIQuerySensor":
                         sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
@@ -135,6 +143,7 @@ namespace hass_workstation_service.Data
                 {
                     this.ConfiguredSensors.Add(sensor);
                 }
+                this._sensorsLoading = false;
             }
         }
 
@@ -473,6 +482,15 @@ namespace hass_workstation_service.Data
         {
             RegistryKey rkApp = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
             return rkApp.GetValue("hass-workstation-service") != null;
+        }
+
+        public async Task<ICollection<AbstractSensor>> GetSensorsAfterLoadingAsync()
+        {
+            while (this._sensorsLoading)
+            {
+                await Task.Delay(500);
+            }
+            return this.ConfiguredSensors;
         }
     }
 }

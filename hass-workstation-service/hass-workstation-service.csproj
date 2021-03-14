@@ -43,6 +43,7 @@
 
   <ItemGroup>
     <PackageReference Include="JKang.IpcServiceFramework.Hosting.NamedPipe" Version="3.1.0" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.8.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="MQTTnet" Version="3.0.13" />
