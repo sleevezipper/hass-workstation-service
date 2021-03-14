@@ -23,9 +23,6 @@ namespace UserInterface.Views
         public AddCommandDialog()
         {
             this.InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
             DataContext = new AddCommandViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
             this.comboBox.Items = Enum.GetValues(typeof(AvailableCommands)).Cast<AvailableCommands>().OrderBy(v => v.ToString());

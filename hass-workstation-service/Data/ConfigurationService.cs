@@ -226,6 +226,7 @@ namespace hass_workstation_service.Data
                     .WithTls(new MqttClientOptionsBuilderTlsParameters()
                     {
                         UseTls = configuredBroker.UseTLS,
+                        SslProtocol = System.Security.Authentication.SslProtocols.Tls12,
                         AllowUntrustedCertificates = true
                     })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())

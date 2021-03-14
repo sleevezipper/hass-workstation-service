@@ -23,9 +23,6 @@ namespace UserInterface.Views
         public AddSensorDialog()
         {
             this.InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
             DataContext = new AddSensorViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
             this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
