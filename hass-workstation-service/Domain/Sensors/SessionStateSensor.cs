@@ -92,6 +92,8 @@ namespace hass_workstation_service.Domain.Sensors
                     
                 }
 
+                
+
                 var numberOflogonUIProcesses = Process.GetProcessesByName("LogonUI").Length;
 
                 if (numberOflogonUIProcesses >= numberOfUserDesktops)

@@ -34,16 +34,17 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-            ManagementObjectCollection collection = _searcher.Get();
-
-            foreach (ManagementObject mo in collection)
+            using (ManagementObjectCollection collection = _searcher.Get())
             {
-                foreach (PropertyData property in mo.Properties)
+                foreach (ManagementObject mo in collection)
                 {
-                    return property.Value.ToString();
+                    foreach (PropertyData property in mo.Properties)
+                    {
+                        return property.Value.ToString();
+                    }
                 }
+                return "";
             }
-            return "";
         }
 
     }
