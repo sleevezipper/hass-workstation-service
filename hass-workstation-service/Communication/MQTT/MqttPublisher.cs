@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using hass_workstation_service.Communication.Util;
 using hass_workstation_service.Data;
+using hass_workstation_service.Domain;
 using hass_workstation_service.Domain.Commands;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -79,7 +80,7 @@ namespace hass_workstation_service.Communication
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(e =>
             {
-                this._mqttClientMessage = e.ReasonCode.ToString();
+                this._mqttClientMessage = e.Reason.ToString();
 
             });
         }
@@ -95,8 +96,9 @@ namespace hass_workstation_service.Communication
                 this._logger.LogInformation($"Message dropped because mqtt not connected: {message}");
             }
         }
-
-        public async Task AnnounceAutoDiscoveryConfig(DiscoveryConfigModel config, string domain, bool clearConfig = false)
+        // TODO: This should take a sensor/command instead of a config. 
+        // Then we can ask the sensor about the topic based on ObjectId instead of referencing Name directly
+        public async Task AnnounceAutoDiscoveryConfig(AbstractDiscoverable discoverable, string domain, bool clearConfig = false)
         {
             if (this._mqttClient.IsConnected)
             {
@@ -109,8 +111,8 @@ namespace hass_workstation_service.Communication
                 };
 
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/{domain}/{this.DeviceConfigModel.Name}/{config.Name}/config")
-                .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(config, config.GetType(), options))
+                .WithTopic($"homeassistant/{domain}/{this.DeviceConfigModel.Name}/{discoverable.ObjectId}/config")
+                .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(discoverable.GetAutoDiscoveryConfig(), discoverable.GetAutoDiscoveryConfig().GetType(), options))
                 .WithRetainFlag()
                 .Build();
                 await this.Publish(message);
@@ -177,7 +179,7 @@ namespace hass_workstation_service.Communication
         {
             if (this.IsConnected)
             {
-                await this._mqttClient.SubscribeAsync(command.GetAutoDiscoveryConfig().Command_topic);
+                await this._mqttClient.SubscribeAsync(((CommandDiscoveryConfigModel) command.GetAutoDiscoveryConfig()).Command_topic);
             }
             else
             {
@@ -186,7 +188,7 @@ namespace hass_workstation_service.Communication
                     await Task.Delay(5500);
                 }
 
-                await this._mqttClient.SubscribeAsync(command.GetAutoDiscoveryConfig().Command_topic);
+                await this._mqttClient.SubscribeAsync(((CommandDiscoveryConfigModel) command.GetAutoDiscoveryConfig()).Command_topic);
 
             }
             
@@ -197,7 +199,7 @@ namespace hass_workstation_service.Communication
         {
             foreach (AbstractCommand command in this.Subscribers)
             {
-                if (command.GetAutoDiscoveryConfig().Command_topic == applicationMessage.Topic)
+                if (((CommandDiscoveryConfigModel)command.GetAutoDiscoveryConfig()).Command_topic == applicationMessage.Topic)
                 {
                     if (Encoding.UTF8.GetString(applicationMessage?.Payload) == "ON")
                     {

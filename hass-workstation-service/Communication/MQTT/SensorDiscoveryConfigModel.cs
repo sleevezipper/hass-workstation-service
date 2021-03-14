@@ -15,6 +15,11 @@ namespace hass_workstation_service.Communication
         /// </summary>
         /// <value></value>
         public string Name { get; set; }
+        /// <summary>
+        /// The MQTT topic subscribed to receive sensor values.
+        /// </summary>
+        /// <value></value>
+        public string State_topic { get; set; }
     }
     public class SensorDiscoveryConfigModel : DiscoveryConfigModel
     {
@@ -69,12 +74,6 @@ namespace hass_workstation_service.Communication
         /// </summary>
         /// <value></value>
         public int? Qos { get; set; }
-
-        /// <summary>
-        /// The MQTT topic subscribed to receive sensor values.
-        /// </summary>
-        /// <value></value>
-        public string State_topic { get; set; }
         /// <summary>
         /// (Optional) An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception.
         /// </summary>
@@ -146,11 +145,6 @@ namespace hass_workstation_service.Communication
         /// </summary>
         /// <value></value>
         public int? Qos { get; set; }
-        /// <summary>
-        /// The MQTT topic subscribed to receive sensor values.
-        /// </summary>
-        /// <value></value>
-        public string State_topic { get; set; }
         /// <summary>
         /// (Optional) An ID that uniquely identifies this sensor. If two sensors have the same unique ID, Home Assistant will raise an exception.
         /// </summary>

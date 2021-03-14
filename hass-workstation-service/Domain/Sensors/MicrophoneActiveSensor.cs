@@ -10,6 +10,7 @@ namespace hass_workstation_service.Domain.Sensors
 
     public class MicrophoneActiveSensor : AbstractSensor
     {
+        public override string Domain => "binary_sensor";
         public MicrophoneActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneActive", Guid id = default(Guid)) : base(publisher, name ?? "MicrophoneActive", updateInterval ?? 10, id)
         {
         }
@@ -17,7 +18,7 @@ namespace hass_workstation_service.Domain.Sensors
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return IsMicrophoneInUse() ? "True" : "False";
+                return IsMicrophoneInUse() ? "ON" : "OFF";
             }
             else return "unsupported";
         }
@@ -28,9 +29,8 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
-                Icon = "mdi:microphone",
-                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
+                Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability"
             });
         }
 

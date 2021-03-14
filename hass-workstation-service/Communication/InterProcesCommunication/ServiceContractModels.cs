@@ -50,7 +50,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         NamedWindowSensor,
         LastActiveSensor,
         LastBootSensor,
-        SessionStateSensor
+        SessionStateSensor,
+        CurrentVolumeSensor,
+        GPUTemperatureSensor,
+        GPULoadSensor
     }
 
     public enum AvailableCommands
@@ -59,5 +62,12 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         ShutdownCommand,
         LogOffCommand,
         RestartCommand,
+        KeyCommand,
+        PlayPauseCommand,
+        NextCommand,
+        PreviousCommand,
+        VolumeUpCommand,
+        VolumeDownCommand,
+        MuteCommand
     }
 }

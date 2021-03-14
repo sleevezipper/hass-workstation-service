@@ -10,6 +10,7 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class NamedWindowSensor : AbstractSensor
     {
+        public override string Domain => "binary_sensor";
         public string WindowName { get; protected set; }
         public NamedWindowSensor(MqttPublisher publisher, string windowName, string name = "NamedWindow", int? updateInterval = 10, Guid id = default) : base(publisher, name ?? "NamedWindow", updateInterval ?? 10, id)
         {
@@ -23,16 +24,15 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
-                Icon = "mdi:window-maximize",
-                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
+                Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability"
             });
         }
 
         public override string GetState()
         {
             var windowNames = GetOpenWindows().Values;
-            return windowNames.Any(v => v.Contains(this.WindowName, StringComparison.OrdinalIgnoreCase)) ? "True" : "False";
+            return windowNames.Any(v => v.Contains(this.WindowName, StringComparison.OrdinalIgnoreCase)) ? "ON" : "OFF";
         }
 
 

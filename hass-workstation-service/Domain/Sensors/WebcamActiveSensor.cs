@@ -9,14 +9,16 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class WebcamActiveSensor : AbstractSensor
     {
+        public override string Domain => "binary_sensor";
         public WebcamActiveSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamActive", Guid id = default) : base(publisher, name ?? "WebcamActive", updateInterval ?? 10, id)
         {
         }
+        
         public override string GetState()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return IsWebCamInUseRegistry() ? "True" : "False";
+                return IsWebCamInUseRegistry() ? "ON" : "OFF";
             }
             else
             {
@@ -31,8 +33,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
-                Icon = "mdi:webcam",
-                Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
+                Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability"
             });
         }
 

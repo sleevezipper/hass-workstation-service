@@ -20,7 +20,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
                 Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
             });
         }

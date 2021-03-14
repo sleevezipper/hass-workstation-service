@@ -8,8 +8,6 @@ namespace hass_workstation_service.Domain.Commands
 
     public abstract class AbstractCommand : AbstractDiscoverable
     {
-        public Guid Id { get; protected set; }
-        public string Name { get; protected set; }
         /// <summary>
         /// The update interval in seconds. It checks state only if the interval has passed.
         /// </summary>
@@ -40,7 +38,6 @@ namespace hass_workstation_service.Domain.Commands
             return config;
         }
 
-        public abstract CommandDiscoveryConfigModel GetAutoDiscoveryConfig();
         public abstract string GetState();
 
         public async Task PublishStateAsync()
@@ -68,11 +65,11 @@ namespace hass_workstation_service.Domain.Commands
         }
         public async void PublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain);
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain);
         }
         public async Task UnPublishAutoDiscoveryConfigAsync()
         {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this.GetAutoDiscoveryConfig(), this.Domain, true);
+            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain, true);
         }
         public abstract void TurnOn();
         public abstract void TurnOff();

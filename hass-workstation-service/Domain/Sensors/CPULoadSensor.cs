@@ -24,7 +24,7 @@ namespace hass_workstation_service.Domain.Sensors
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.Name}/state",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
                 Icon = "mdi:chart-areaspline",
                 Unit_of_measurement = "%",
                 Availability_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/availability"
@@ -34,17 +34,20 @@ namespace hass_workstation_service.Domain.Sensors
         [SupportedOSPlatform("windows")]
         public override string GetState()
         {
-            ManagementObjectCollection collection = _searcher.Get();
-            List<int> processorLoadPercentages = new List<int>();
-            foreach (ManagementObject mo in collection)
+            using (ManagementObjectCollection collection = _searcher.Get())
             {
-                foreach (PropertyData property in mo.Properties)
+                List<int> processorLoadPercentages = new List<int>();
+                foreach (ManagementObject mo in collection)
                 {
-                    processorLoadPercentages.Add(int.Parse(property.Value.ToString()));
+                    foreach (PropertyData property in mo.Properties)
+                    {
+                        processorLoadPercentages.Add(int.Parse(property.Value.ToString()));
+                    }
                 }
+                double average = processorLoadPercentages.Count > 0 ? processorLoadPercentages.Average() : 0.0;
+                return average.ToString("#.##", CultureInfo.InvariantCulture);
             }
-            double average = processorLoadPercentages.Count > 0 ? processorLoadPercentages.Average() : 0.0;
-            return average.ToString("#.##", CultureInfo.InvariantCulture);
+
         }
     }
 }

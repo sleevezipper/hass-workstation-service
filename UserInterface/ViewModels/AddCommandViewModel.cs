@@ -13,9 +13,11 @@ namespace UserInterface.ViewModels
 
         public string Description { get => description; set => this.RaiseAndSetIfChanged(ref description, value); }
         public bool ShowCommandInput { get => showCommandInput; set => this.RaiseAndSetIfChanged(ref showCommandInput, value); }
+        public bool ShowKeyInput { get => showKeyInput; set => this.RaiseAndSetIfChanged(ref showKeyInput, value); }
 
         private string moreInfoLink;
         private bool showCommandInput;
+        private bool showKeyInput;
 
         public string MoreInfoLink
         {
@@ -27,5 +29,6 @@ namespace UserInterface.ViewModels
 
         public string Name { get; set; }
         public string Command { get; set; }
+        public string Key { get; set; }
     }
 }

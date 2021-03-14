@@ -73,9 +73,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             return this._configurationService.IsAutoStartEnabled();
         }
 
-        public List<ConfiguredSensorModel> GetConfiguredSensors()
+        public async Task<List<ConfiguredSensorModel>> GetConfiguredSensors()
         {
-            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.GetAutoDiscoveryConfig().Unit_of_measurement }).ToList();
+            var sensors = await this._configurationService.GetSensorsAfterLoadingAsync();
+            return sensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement }).ToList();
         }
 
         public List<ConfiguredCommandModel> GetConfiguredCommands()
@@ -147,6 +148,15 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 case AvailableSensors.SessionStateSensor:
                     sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
+                case AvailableSensors.CurrentVolumeSensor:
+                    sensorToCreate = new CurrentVolumeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.GPUTemperatureSensor:
+                    sensorToCreate = new GpuTemperatureSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.GPULoadSensor:
+                    sensorToCreate = new GpuLoadSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
                     break;
@@ -184,6 +194,27 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                     break;
                 case AvailableCommands.CustomCommand:
                     commandToCreate = new CustomCommand(this._publisher, model.Command, model.Name);
+                    break;
+                case AvailableCommands.PlayPauseCommand:
+                    commandToCreate = new MediaPlayPauseCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.NextCommand:
+                    commandToCreate = new MediaNextCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.PreviousCommand:
+                    commandToCreate = new MediaPreviousCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.VolumeUpCommand:
+                    commandToCreate = new MediaVolumeUpCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.VolumeDownCommand:
+                    commandToCreate = new MediaVolumeDownCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.MuteCommand:
+                    commandToCreate = new MediaMuteCommand(this._publisher, model.Name);
+                    break;
+                case AvailableCommands.KeyCommand:
+                    commandToCreate = new KeyCommand(this._publisher, Convert.ToByte(model.Key, 16), model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
