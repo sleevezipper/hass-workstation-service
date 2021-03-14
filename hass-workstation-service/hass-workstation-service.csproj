@@ -25,12 +25,20 @@
 
   <ItemGroup>
     <None Remove="hass-workstation-service.pdb" />
+    <None Remove="libHarfBuzzSharp.dll" />
     <None Remove="libSkiaSharp.dll" />
+    <None Remove="UserInterface.exe" />
     <None Remove="UserInterface.pdb" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="libSkiaSharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libHarfBuzzSharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UserInterface.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -58,5 +66,9 @@
     <Reference Include="CoreAudio">
       <HintPath>..\lib\CoreAudio.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="libHarfBuzzSharp.dll" />
   </ItemGroup>
 </Project>

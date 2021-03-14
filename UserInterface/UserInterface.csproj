@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <StartupObject>UserInterface.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Models\" />
