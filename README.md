@@ -220,3 +220,7 @@ This project depends on work done by others and they should at least get a menti
 ### [CoreAudio](https://github.com/morphx666/CoreAudio)
 
 CoreAudio was used to check the current volume of playing audio.
+
+### [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor)
+
+We use this for our GPU sensors.
