@@ -17,13 +17,13 @@ namespace hass_workstation_service.Domain.Sensors
         {
             _computer = new Computer
             {
-                IsCpuEnabled = true,
+                IsCpuEnabled = false,
                 IsGpuEnabled = true,
-                IsMemoryEnabled = true,
-                IsMotherboardEnabled = true,
-                IsControllerEnabled = true,
-                IsNetworkEnabled = true,
-                IsStorageEnabled = true
+                IsMemoryEnabled = false,
+                IsMotherboardEnabled = false,
+                IsControllerEnabled = false,
+                IsNetworkEnabled = false,
+                IsStorageEnabled = false,
             };
 
             _computer.Open();
@@ -56,7 +56,7 @@ namespace hass_workstation_service.Domain.Sensors
             {
                 return "NotSupported";
             }
-
+            
             return sensor.Value.HasValue ? sensor.Value.Value.ToString("#.##", CultureInfo.InvariantCulture) : "Unknown";
         }
     }
