@@ -50,12 +50,17 @@ namespace UserInterface.Views
             sensorsNeedToRefresh = false;
             List<ConfiguredSensorModel> status = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
 
-            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s => new SensorViewModel() { Name = s.Name, Type = s.Type, Value = s.Value, Id = s.Id , UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.UnitOfMeasurement}).ToList();
+            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s => new SensorViewModel() { Name = s.Name, Type = s.Type, Value = s.Value, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = s.UnitOfMeasurement }).ToList();
             while (!sensorsNeedToRefresh)
             {
                 await Task.Delay(1000);
                 List<ConfiguredSensorModel> statusUpdated = await this.client.InvokeAsync(x => x.GetConfiguredSensors());
                 var configuredSensors = ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors;
+                // this is a workaround for the list showing before it has been completely loaded in the service
+                if (statusUpdated.Count != configuredSensors.Count) { 
+                    sensorsNeedToRefresh = true; 
+                    GetConfiguredSensors(); 
+                }
                 statusUpdated.ForEach(s =>
                 {
                     var configuredSensor = configuredSensors.FirstOrDefault(cs => cs.Id == s.Id);

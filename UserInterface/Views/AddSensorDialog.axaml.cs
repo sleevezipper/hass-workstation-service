@@ -163,6 +163,20 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
+                case AvailableSensors.GPUTemperatureSensor:
+                    item.Description = "This sensor returns the current temperature of the GPU in °C.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#gputemperature";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
+                    item.UpdateInterval = 5;
+                    break;
+                case AvailableSensors.GPULoadSensor:
+                    item.Description = "This sensor returns the current GPU load.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#gpuload";
+                    item.ShowQueryInput = false;
+                    item.ShowWindowNameInput = false;
+                    item.UpdateInterval = 5;
+                    break;
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

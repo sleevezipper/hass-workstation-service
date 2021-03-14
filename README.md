@@ -90,6 +90,14 @@ This sensor shows if the microphone is currently being used. It uses the Windows
 
 This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.
 
+### GPULoad
+
+This sensor returns the current GPU load. This should work for both NVidia and AMD GPU's.
+
+### GPUTemperature
+
+This sensor returns the current temperature of the GPU in °C. This should work for both NVidia and AMD GPU's.
+
 ### UsedMemory
 
 This sensor calculates the percentage of used memory.
@@ -196,7 +204,7 @@ Sends a keystroke with the specified key. You can pick [any of these](https://do
 
 ### Media Commands
 
-There's several media commands available which are very self exlanatory. 
+There's several media commands available which are very self exlanatory.
 
 - Play/Pause
 - Next
@@ -211,4 +219,4 @@ This project depends on work done by others and they should at least get a menti
 
 ### [CoreAudio](https://github.com/morphx666/CoreAudio)
 
-CoreAudio was used to check the current volume of playing audio. 
+CoreAudio was used to check the current volume of playing audio.

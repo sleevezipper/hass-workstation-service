@@ -31,5 +31,6 @@ namespace hass_workstation_service.Data
         void DeleteConfiguredCommand(Guid id);
         void WriteCommandSettingsAsync();
         void ReadCommandSettings(MqttPublisher publisher);
+        Task<ICollection<AbstractSensor>> GetSensorsAfterLoadingAsync();
     }
 }

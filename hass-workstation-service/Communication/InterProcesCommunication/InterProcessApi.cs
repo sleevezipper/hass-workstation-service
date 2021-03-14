@@ -73,9 +73,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             return this._configurationService.IsAutoStartEnabled();
         }
 
-        public List<ConfiguredSensorModel> GetConfiguredSensors()
+        public async Task<List<ConfiguredSensorModel>> GetConfiguredSensors()
         {
-            return this._configurationService.ConfiguredSensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement }).ToList();
+            var sensors = await this._configurationService.GetSensorsAfterLoadingAsync();
+            return sensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement }).ToList();
         }
 
         public List<ConfiguredCommandModel> GetConfiguredCommands()
@@ -149,6 +150,12 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                     break;
                 case AvailableSensors.CurrentVolumeSensor:
                     sensorToCreate = new CurrentVolumeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.GPUTemperatureSensor:
+                    sensorToCreate = new GpuTemperatureSensor(this._publisher, (int)model.UpdateInterval, model.Name);
+                    break;
+                case AvailableSensors.GPULoadSensor:
+                    sensorToCreate = new GpuLoadSensor(this._publisher, (int)model.UpdateInterval, model.Name);
                     break;
                 default:
                     Log.Logger.Error("Unknown sensortype");
