@@ -25,7 +25,7 @@ namespace UserInterface.Views
             this.InitializeComponent();
             DataContext = new AddSensorViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
+            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>();
             this.comboBox.SelectedIndex = 0;
 
             // register IPC clients

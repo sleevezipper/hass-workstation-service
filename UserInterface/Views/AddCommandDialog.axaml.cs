@@ -25,7 +25,7 @@ namespace UserInterface.Views
             this.InitializeComponent();
             DataContext = new AddCommandViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(AvailableCommands)).Cast<AvailableCommands>().OrderBy(v => v.ToString());
+            this.comboBox.Items = Enum.GetValues(typeof(AvailableCommands)).Cast<AvailableCommands>();
             this.comboBox.SelectedIndex = 0;
 
             // register IPC clients
