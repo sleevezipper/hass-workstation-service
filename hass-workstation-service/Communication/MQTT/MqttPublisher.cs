@@ -80,7 +80,7 @@ namespace hass_workstation_service.Communication
             // configure what happens on disconnect
             this._mqttClient.UseDisconnectedHandler(e =>
             {
-                this._mqttClientMessage = e.Reason.ToString();
+                this._mqttClientMessage = e.ReasonCode.ToString();
 
             });
         }
