@@ -25,7 +25,7 @@ namespace UserInterface.Views
             this.InitializeComponent();
             DataContext = new AddSensorViewModel();
             this.comboBox = this.FindControl<ComboBox>("ComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>();
+            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
             this.comboBox.SelectedIndex = 0;
 
             // register IPC clients
@@ -53,7 +53,7 @@ namespace UserInterface.Views
         public void ComboBoxClosed(object sender, SelectionChangedEventArgs args)
         {
             var item = ((AddSensorViewModel)this.DataContext);
-            switch (item.SelectedType)
+            switch (this.comboBox.SelectedItem)
             {
                 case AvailableSensors.UserNotificationStateSensor:
                     item.Description = "This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. \n ";
