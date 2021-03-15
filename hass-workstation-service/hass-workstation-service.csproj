@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="hass-workstation-service.exe" />
     <None Remove="hass-workstation-service.pdb" />
     <None Remove="libHarfBuzzSharp.dll" />
     <None Remove="libSkiaSharp.dll" />
@@ -32,14 +33,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="libSkiaSharp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="hass-workstation-service.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="libHarfBuzzSharp.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libSkiaSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="UserInterface.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -54,8 +58,8 @@
     <PackageReference Include="LibreHardwareMonitorLib" Version="0.8.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
-    <PackageReference Include="MQTTnet" Version="3.0.15" />
-    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.15" />
+    <PackageReference Include="MQTTnet" Version="3.0.13" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.0.13" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
@@ -66,9 +70,5 @@
     <Reference Include="CoreAudio">
       <HintPath>..\lib\CoreAudio.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="libHarfBuzzSharp.dll" />
   </ItemGroup>
 </Project>

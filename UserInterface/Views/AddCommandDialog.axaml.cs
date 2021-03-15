@@ -53,7 +53,7 @@ namespace UserInterface.Views
         public void ComboBoxClosed(object sender, SelectionChangedEventArgs args)
         {
             var item = ((AddCommandViewModel)this.DataContext);
-            switch (item.SelectedType)
+            switch (this.comboBox.SelectedItem)
             {
                 case AvailableCommands.CustomCommand:
                     item.Description = "This command lets you execute any command you want. It will run in a Windows Command Prompt silently. ";

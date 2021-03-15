@@ -225,5 +225,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 this._configurationService.AddConfiguredCommand(commandToCreate);
             }
         }
+
+        public string GetCurrentVersion()
+        {
+            return Program.GetVersion();
+        }
     }
 }

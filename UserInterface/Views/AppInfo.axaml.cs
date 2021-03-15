@@ -23,7 +23,7 @@ namespace UserInterface.Views
             this.InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("broker", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<ServiceContractInterfaces>("info", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
@@ -31,36 +31,25 @@ namespace UserInterface.Views
                 .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
 
             // create client
-            this.client = clientFactory.CreateClient("broker");
+            this.client = clientFactory.CreateClient("info");
 
 
-            DataContext = new BackgroundServiceSettingsViewModel();
-            Ping();
+
+
+            DataContext = new InfoViewModel();
+            UpdateVersion();
         }
-        public async void Ping() {
-            while (true)
+        public async void UpdateVersion() {
+
+            try
             {
-                try
-                {
-                    var result = await this.client.InvokeAsync(x => x.Ping("ping"));
-                    if (result == "pong")
-                    {
-                        ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(true, "All good");
-                    }
-                    else
-                    {
-                        ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(false, "Not running");
-                    }
-                }
-                catch (System.Exception)
-                {
-                    ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(false, "Not running");
-                }
+                var result = await this.client.InvokeAsync(x => x.GetCurrentVersion());
+                ((InfoViewModel)this.DataContext).UpdateServiceVersion(result);
 
-                var autostartresult = await this.client.InvokeAsync(x => x.IsAutoStartEnabled());
-                ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateAutostartStatus(autostartresult);
+            }
+            catch (System.Exception)
+            {
 
-                await Task.Delay(1000);
             }
         }
 
@@ -72,15 +61,6 @@ namespace UserInterface.Views
         public void Discord(object sender, RoutedEventArgs args)
         {
             BrowserUtil.OpenBrowser("https://discord.gg/VraYT2N3wd");
-        }
-
-        public void EnableAutostart(object sender, RoutedEventArgs args)
-        {
-            this.client.InvokeAsync(x => x.EnableAutostart(true));
-        }
-        public void DisableAutostart(object sender, RoutedEventArgs args)
-        {
-            this.client.InvokeAsync(x => x.EnableAutostart(false));
         }
 
         private void InitializeComponent()

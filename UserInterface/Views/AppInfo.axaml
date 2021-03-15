@@ -7,6 +7,7 @@
   <StackPanel Margin="30">
     <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left">
       <ContentControl FontSize="18" FontWeight="Bold" >Info</ContentControl>
+      <TextBlock Text="{Binding ServiceVersion}" Margin="0 0 0 20"></TextBlock >
       <TextBlock Text="Need some help?" Margin="0 0 0 20"></TextBlock >
       <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
         <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="GitHub">GitHub</Button>
