@@ -5,31 +5,31 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.SensorSettings">
 
-	<Grid RowDefinitions="Auto, *, Auto, Auto" Margin="30 30 30 10" >
-		<TextBlock Grid.Row="0" Margin="0 0 0 15" FontSize="18" FontWeight="Bold" Text="Sensors"/>
-		<DataGrid Grid.Row="1" x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}"
-				  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
-				  Items="{Binding ConfiguredSensors}">
-			<DataGrid.Columns>
-				<DataGridTextColumn Header="Name"
-									Binding="{Binding Name}"
-									Width="1*" />
-				<DataGridTextColumn Header="Type"
-									Binding="{Binding Type}"
-									Width="1*" />
-				<DataGridTextColumn Header="Update Interval"
-									Binding="{Binding UpdateInterval}"
-									Width="1*" />
-				<DataGridTextColumn Header="Value"
-									Binding="{Binding ValueString}"
-									Width="2*" />
-			</DataGrid.Columns>
-		</DataGrid>
-		<TextBlock Grid.Row="2" IsVisible="{Binding !ConfiguredSensors.Count}" Text="Add some sensors by clicking the 'Add' button."/>
-		<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button Width="75" Margin="10 10 0 0" Click="AddSensor" Content="Add"/>
-			<Button Width="75" Margin="10 10 0 0" Click="EditSensor" Content="Edit" IsVisible="False"/>
-			<Button Width="75" Margin="10 10 0 0" Click="DeleteSensor" Content="Delete"/>
-		</StackPanel>
-	</Grid>
+    <Grid RowDefinitions="Auto, *, Auto, Auto" Margin="30 30 30 10" >
+        <TextBlock Grid.Row="0" Margin="0 0 0 15" FontSize="18" FontWeight="Bold" Text="Sensors"/>
+        <DataGrid Grid.Row="1" x:Name="Grid" IsVisible="{Binding ConfiguredSensors.Count}"
+                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                  Items="{Binding ConfiguredSensors}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name"
+                                    Binding="{Binding Name}"
+                                    Width="1*" />
+                <DataGridTextColumn Header="Type"
+                                    Binding="{Binding Type}"
+                                    Width="1*" />
+                <DataGridTextColumn Header="Update Interval"
+                                    Binding="{Binding UpdateInterval}"
+                                    Width="1*" />
+                <DataGridTextColumn Header="Value"
+                                    Binding="{Binding ValueString}"
+                                    Width="2*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Grid.Row="2" IsVisible="{Binding !ConfiguredSensors.Count}" Text="Add some sensors by clicking the 'Add' button."/>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="75" Margin="10 10 0 0" Click="AddSensor" Content="Add"/>
+            <Button Width="75" Margin="10 10 0 0" Click="EditSensor" Content="Edit" IsVisible="False"/>
+            <Button Width="75" Margin="10 10 0 0" Click="DeleteSensor" Content="Delete"/>
+        </StackPanel>
+    </Grid>
 </UserControl>

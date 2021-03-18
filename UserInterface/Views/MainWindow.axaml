@@ -7,20 +7,20 @@
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="500"
         x:Class="UserInterface.Views.MainWindow"
         Icon="/Assets/hass-workstation-logo.ico"
-		MinWidth="700"
-		MinHeight="500"
+        MinWidth="700"
+        MinHeight="500"
         Title="Settings">
 
-	<Design.DataContext>
-		<vm:MainWindowViewModel/>
-	</Design.DataContext>
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
 
-	<Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="*, *" Margin="10">
-		<views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
-		<views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10" Background="#2D2D30"/>
-		<views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="10" Background="#2D2D30"/>
-		<views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10" Background="#2D2D30"/>
-		<views:AppInfo Grid.Column="2" Grid.Row="1" Margin="10" Background="#2D2D30"/>
-	</Grid>
+    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="*, *" Margin="10">
+        <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
+        <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10" Background="#2D2D30"/>
+        <views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="10" Background="#2D2D30"/>
+        <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10" Background="#2D2D30"/>
+        <views:AppInfo Grid.Column="2" Grid.Row="1" Margin="10" Background="#2D2D30"/>
+    </Grid>
 
 </Window>
