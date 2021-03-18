@@ -15,7 +15,7 @@ namespace UserInterface.Views
 {
     public class BackgroundServiceSettings : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> client;
+        private readonly IIpcClient<ServiceContractInterfaces> _client;
 
         public BackgroundServiceSettings()
         {
@@ -30,34 +30,35 @@ namespace UserInterface.Views
                 .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
 
             // create client
-            this.client = clientFactory.CreateClient("broker");
-
+            this._client = clientFactory.CreateClient("broker");
 
             DataContext = new BackgroundServiceSettingsViewModel();
             Ping();
         }
-        public async void Ping() {
+
+        public async void Ping()
+        {
             while (true)
             {
+                if (DataContext is not BackgroundServiceSettingsViewModel viewModel)
+                    throw new System.Exception("Wrong viewmodel class!");
+
                 try
                 {
-                    var result = await this.client.InvokeAsync(x => x.Ping("ping"));
+                    var result = await this._client.InvokeAsync(x => x.Ping("ping"));
+
                     if (result == "pong")
-                    {
-                        ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(true, "All good");
-                    }
+                        viewModel.UpdateStatus(true, "All good");
                     else
-                    {
-                        ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(false, "Not running");
-                    }
+                        viewModel.UpdateStatus(false, "Not running");
                 }
                 catch (System.Exception)
                 {
-                    ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateStatus(false, "Not running");
+                    viewModel.UpdateStatus(false, "Not running");
                 }
 
-                var autostartresult = await this.client.InvokeAsync(x => x.IsAutoStartEnabled());
-                ((BackgroundServiceSettingsViewModel)this.DataContext).UpdateAutostartStatus(autostartresult);
+                var autostartresult = await this._client.InvokeAsync(x => x.IsAutoStartEnabled());
+                viewModel.UpdateAutostartStatus(autostartresult);
 
                 await Task.Delay(1000);
             }
@@ -71,11 +72,12 @@ namespace UserInterface.Views
 
         public void EnableAutostart(object sender, RoutedEventArgs args)
         {
-            this.client.InvokeAsync(x => x.EnableAutostart(true));
+            this._client.InvokeAsync(x => x.EnableAutostart(true));
         }
+
         public void DisableAutostart(object sender, RoutedEventArgs args)
         {
-            this.client.InvokeAsync(x => x.EnableAutostart(false));
+            this._client.InvokeAsync(x => x.EnableAutostart(false));
         }
 
         private void InitializeComponent()
