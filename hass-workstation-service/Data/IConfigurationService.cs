@@ -13,13 +13,18 @@ namespace hass_workstation_service.Data
 {
     public interface IConfigurationService
     {
-        ICollection<AbstractSensor> ConfiguredSensors { get; }
         Action<IManagedMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        ICollection<AbstractSensor> ConfiguredSensors { get; }
         ICollection<AbstractCommand> ConfiguredCommands { get; }
 
-        void AddConfiguredCommand(AbstractCommand command);
         void AddConfiguredSensor(AbstractSensor sensor);
+        void AddConfiguredCommand(AbstractCommand command);
         void AddConfiguredSensors(List<AbstractSensor> sensors);
+        void AddConfiguredCommands(List<AbstractCommand> commands);
+        void DeleteConfiguredSensor(Guid id);
+        void DeleteConfiguredCommand(Guid id);
+        void UpdateConfiguredSensor(Guid id, AbstractSensor sensor);
+        void UpdateConfiguredCommand(Guid id, AbstractCommand command);
         Task<IManagedMqttClientOptions> GetMqttClientOptionsAsync();
         void ReadSensorSettings(MqttPublisher publisher);
         void WriteMqttBrokerSettingsAsync(MqttSettings settings);
@@ -27,8 +32,6 @@ namespace hass_workstation_service.Data
         Task<MqttSettings> GetMqttBrokerSettings();
         void EnableAutoStart(bool enable);
         bool IsAutoStartEnabled();
-        void DeleteConfiguredSensor(Guid id);
-        void DeleteConfiguredCommand(Guid id);
         void WriteCommandSettingsAsync();
         void ReadCommandSettings(MqttPublisher publisher);
         Task<ICollection<AbstractSensor>> GetSensorsAfterLoadingAsync();
