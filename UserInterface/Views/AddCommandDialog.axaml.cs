@@ -17,7 +17,7 @@ namespace UserInterface.Views
 {
     public class AddCommandDialog : Window
     {
-        private readonly IIpcClient<ServiceContractInterfaces> client;
+        private readonly IIpcClient<IServiceContractInterfaces> client;
         public ComboBox comboBox { get; set; }
         public ComboBox detectionModecomboBox { get; set; }
         public AddCommandDialog()
@@ -30,12 +30,12 @@ namespace UserInterface.Views
 
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("addCommand", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("addCommand", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
             this.client = clientFactory.CreateClient("addCommand");

@@ -16,19 +16,19 @@ namespace UserInterface.Views
 {
     public class AppInfo : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> client;
+        private readonly IIpcClient<IServiceContractInterfaces> client;
 
         public AppInfo()
         {
             this.InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("info", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("info", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
             this.client = clientFactory.CreateClient("info");

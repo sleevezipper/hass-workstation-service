@@ -84,14 +84,14 @@ namespace hass_workstation_service
                         Sw_version = GetVersion()
                     };
                     services.AddSingleton(deviceConfig);
-                    services.AddSingleton<ServiceContractInterfaces, InterProcessApi>();
+                    services.AddSingleton<IServiceContractInterfaces, InterProcessApi>();
                     services.AddSingleton<IConfigurationService, ConfigurationService>();
                     services.AddSingleton<MqttPublisher>();
                     services.AddHostedService<Worker>();
                 }).ConfigureIpcHost(builder =>
                 {
                     // configure IPC endpoints
-                    builder.AddNamedPipeEndpoint<ServiceContractInterfaces>(pipeName: "pipeinternal");
+                    builder.AddNamedPipeEndpoint<IServiceContractInterfaces>(pipeName: "pipeinternal");
                 });
         static internal string GetVersion()
         {

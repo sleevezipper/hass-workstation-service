@@ -1,12 +1,11 @@
 ﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace hass_workstation_service.Communication.NamedPipe
 {
-    public interface ServiceContractInterfaces
+    public interface IServiceContractInterfaces
     {
         Task<MqttSettings> GetMqttBrokerSettings();
         public string Ping(string str);
@@ -14,12 +13,15 @@ namespace hass_workstation_service.Communication.NamedPipe
         MqqtClientStatus GetMqqtClientStatus();
         void EnableAutostart(bool enable);
         bool IsAutoStartEnabled();
+        Task<ConfiguredSensorModel> GetConfiguredSensor(Guid id);
         Task<List<ConfiguredSensorModel>> GetConfiguredSensors();
-        void RemoveSensorById(Guid id);
         void AddSensor(AvailableSensors sensorType, string json);
-        void RemoveCommandById(Guid id);
+        void RemoveSensorById(Guid id);
+        void UpdateSensorById(Guid id, string json);
+        ConfiguredCommandModel GetConfiguredCommand(Guid id);
         List<ConfiguredCommandModel> GetConfiguredCommands();
         void AddCommand(AvailableCommands commandType, string json);
+        void RemoveCommandById(Guid id);
         string GetCurrentVersion();
     }
 }
