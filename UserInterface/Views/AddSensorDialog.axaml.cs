@@ -7,7 +7,6 @@ using hass_workstation_service.Communication.NamedPipe;
 using JKang.IpcServiceFramework.Client;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Dynamic;
 using System.Linq;
 using System.Text.Json;
 using UserInterface.Util;
@@ -17,16 +16,25 @@ namespace UserInterface.Views
 {
     public class AddSensorDialog : Window
     {
-        private readonly IIpcClient<IServiceContractInterfaces> client;
-        public ComboBox comboBox { get; set; }
-        public ComboBox detectionModecomboBox { get; set; }
+        private readonly IIpcClient<IServiceContractInterfaces> _client;
+        public ComboBox ComboBox { get; set; }
+        public ComboBox DetectionModecomboBox { get; set; }
+        public Guid SensorId { get; }
+
+        public AddSensorDialog(Guid sensorId) : this()
+        {
+            SensorId = sensorId;
+            GetSensorInfo(SensorId);
+            Title = "Edit sensor";
+        }
+
         public AddSensorDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             DataContext = new AddSensorViewModel();
-            this.comboBox = this.FindControl<ComboBox>("ComboBox");
-            this.comboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
-            this.comboBox.SelectedIndex = 0;
+            ComboBox = this.FindControl<ComboBox>("ComboBox");
+            ComboBox.Items = Enum.GetValues(typeof(AvailableSensors)).Cast<AvailableSensors>().OrderBy(v => v.ToString());
+            ComboBox.SelectedIndex = 0;
 
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
@@ -38,22 +46,52 @@ namespace UserInterface.Views
                 .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
-            this.client = clientFactory.CreateClient("addsensor");
+            _client = clientFactory.CreateClient("addsensor");
+            Title = "Add sensor";
+        }
+
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        private async void GetSensorInfo(Guid sensorId)
+        {
+            var sensor = await _client.InvokeAsync(x => x.GetConfiguredSensor(sensorId));
+
+            ComboBox.SelectedItem = sensor.Type;
+            FillDefaultValues();
+            ComboBox.IsEnabled = false;
+            var item = (AddSensorViewModel)DataContext;
+            item.SelectedType = sensor.Type;
+            item.Name = sensor.Name;
+            item.UpdateInterval = sensor.UpdateInterval;
+            //item.WindowName =
+            //item.Query =
         }
 
         public async void Save(object sender, RoutedEventArgs args)
         {
-            var item = ((AddSensorViewModel)this.DataContext);
-            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName};
+            var item = (AddSensorViewModel)DataContext;
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName };
             string json = JsonSerializer.Serialize(model);
-            await this.client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
+            if (SensorId == Guid.Empty)
+                await _client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
+            else
+                await _client.InvokeAsync(x => x.UpdateSensorById(SensorId, json));
+
             Close();
         }
 
         public void ComboBoxClosed(object sender, SelectionChangedEventArgs args)
         {
-            var item = ((AddSensorViewModel)this.DataContext);
-            switch (this.comboBox.SelectedItem)
+            FillDefaultValues();
+        }
+
+        private void FillDefaultValues()
+        {
+            var item = (AddSensorViewModel)DataContext;
+            switch (ComboBox.SelectedItem)
             {
                 case AvailableSensors.UserNotificationStateSensor:
                     item.Description = "This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. \n ";
@@ -181,15 +219,11 @@ namespace UserInterface.Views
                     break;
             }
         }
+
         public void OpenInfo(object sender, RoutedEventArgs args)
         {
-            var item = ((AddSensorViewModel)this.DataContext);
+            var item = (AddSensorViewModel)DataContext;
             BrowserUtil.OpenBrowser(item.MoreInfoLink);
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

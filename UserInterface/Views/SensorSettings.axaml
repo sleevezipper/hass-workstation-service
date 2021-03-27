@@ -28,7 +28,7 @@
         <TextBlock Grid.Row="2" IsVisible="{Binding !ConfiguredSensors.Count}" Text="Add some sensors by clicking the 'Add' button."/>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="75" Margin="10 10 0 0" Click="AddSensor" Content="Add"/>
-            <Button Width="75" Margin="10 10 0 0" Click="EditSensor" Content="Edit" IsVisible="False"/>
+            <Button Width="75" Margin="10 10 0 0" Click="EditSensor" Content="Edit"/>
             <Button Width="75" Margin="10 10 0 0" Click="DeleteSensor" Content="Delete"/>
         </StackPanel>
     </Grid>

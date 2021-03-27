@@ -22,7 +22,7 @@
         <TextBlock Grid.Row="2" IsVisible="{Binding !ConfiguredCommands.Count}" Text="Add some commands by clicking the 'Add' button."/>
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="75" Margin="10 10 0 0" Click="AddCommand" Content="Add"/>
-            <Button Width="75" Margin="10 10 0 0" Click="EditCommand" Content="Edit" IsVisible="False"/>
+            <Button Width="75" Margin="10 10 0 0" Click="EditCommand" Content="Edit"/>
             <Button Width="75" Margin="10 10 0 0" Click="DeleteCommand" Content="Delete"/>
         </StackPanel>
     </Grid>

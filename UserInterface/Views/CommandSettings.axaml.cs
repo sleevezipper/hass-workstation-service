@@ -4,15 +4,14 @@ using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using hass_workstation_service.Communication.NamedPipe;
 using JKang.IpcServiceFramework.Client;
-using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using System.Reactive.Linq;
 using UserInterface.ViewModels;
-using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Controls.ApplicationLifetimes;
+using System.Threading.Tasks;
 
 namespace UserInterface.Views
 {
@@ -20,11 +19,11 @@ namespace UserInterface.Views
     {
         private readonly IIpcClient<IServiceContractInterfaces> _client;
         private readonly DataGrid _dataGrid;
-        private bool _sensorsNeedToRefresh;
+        private bool _commandsNeedToRefresh;
 
         public CommandSettings()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
                 .AddNamedPipeIpcClient<IServiceContractInterfaces>("commands", pipeName: "pipeinternal")
@@ -35,27 +34,36 @@ namespace UserInterface.Views
                 .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
-            this._client = clientFactory.CreateClient("commands");
-
+            _client = clientFactory.CreateClient("commands");
+            _dataGrid = this.FindControl<DataGrid>("Grid");
 
             DataContext = new CommandSettingsViewModel();
             GetConfiguredCommands();
+        }
 
-            this._dataGrid = this.FindControl<DataGrid>("Grid");
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
 
         public async void GetConfiguredCommands()
         {
-            _sensorsNeedToRefresh = false;
-            List<ConfiguredCommandModel> status = await this._client.InvokeAsync(x => x.GetConfiguredCommands());
+            List<ConfiguredCommandModel> status = await _client.InvokeAsync(x => x.GetConfiguredCommands());
 
-            ((CommandSettingsViewModel)this.DataContext).ConfiguredCommands = status.Select(s =>
+            ((CommandSettingsViewModel)DataContext).ConfiguredCommands = status.Select(s =>
                 new CommandViewModel()
                 {
                     Name = s.Name,
                     Type = s.Type,
                     Id = s.Id
                 }).ToList();
+
+            if (_commandsNeedToRefresh)
+            {
+                await Task.Delay(1000);
+                GetConfiguredCommands();
+                _commandsNeedToRefresh = false;
+            }
         }
 
         public async void AddCommand(object sender, RoutedEventArgs args)
@@ -64,14 +72,22 @@ namespace UserInterface.Views
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 await dialog.ShowDialog(desktop.MainWindow);
-                _sensorsNeedToRefresh = true;
                 GetConfiguredCommands();
             }
         }
 
-        public void EditCommand(object sender, RoutedEventArgs args)
+        public async void EditCommand(object sender, RoutedEventArgs args)
         {
+            if (_dataGrid.SelectedItem is not CommandViewModel item)
+                return;
 
+            var dialog = new AddCommandDialog(item.Id);
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await dialog.ShowDialog(desktop.MainWindow);
+                _commandsNeedToRefresh = true;
+                GetConfiguredCommands();
+            }
         }
 
         public void DeleteCommand(object sender, RoutedEventArgs args)
@@ -79,7 +95,7 @@ namespace UserInterface.Views
             if (_dataGrid.SelectedItem is not CommandViewModel item)
                 return;
 
-            this._client.InvokeAsync(x => x.RemoveCommandById(item.Id));
+            _client.InvokeAsync(x => x.RemoveCommandById(item.Id));
 
             if (DataContext is not CommandSettingsViewModel viewModel)
                 return;
@@ -87,11 +103,6 @@ namespace UserInterface.Views
             viewModel.ConfiguredCommands.Remove(item);
             _dataGrid.SelectedIndex = -1;
             viewModel.TriggerUpdate();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }
