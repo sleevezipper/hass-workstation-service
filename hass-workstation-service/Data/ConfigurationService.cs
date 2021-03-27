@@ -377,6 +377,7 @@ namespace hass_workstation_service.Data
         public async void UpdateConfiguredSensor(Guid id, AbstractSensor sensor)
         {
             await DeleteSensor(id);
+            await Task.Delay(500);
             AddSensor(sensor);
             WriteSensorSettingsAsync();
         }
