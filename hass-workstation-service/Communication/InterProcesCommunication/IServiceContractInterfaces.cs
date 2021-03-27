@@ -22,6 +22,7 @@ namespace hass_workstation_service.Communication.NamedPipe
         List<ConfiguredCommandModel> GetConfiguredCommands();
         void AddCommand(AvailableCommands commandType, string json);
         void RemoveCommandById(Guid id);
+        void UpdateCommandById(Guid id, string json);
         string GetCurrentVersion();
     }
 }
