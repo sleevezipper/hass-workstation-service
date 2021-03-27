@@ -1,7 +1,4 @@
-using hass_workstation_service.Domain.Sensors;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace hass_workstation_service.Communication.InterProcesCommunication.Models
 {
@@ -23,19 +20,21 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
     public class ConfiguredSensorModel
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
+        public AvailableSensors Type { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
         public int UpdateInterval { get; set; }
         public string UnitOfMeasurement { get; set; }
     }
+
     public class ConfiguredCommandModel
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
+        public AvailableCommands Type { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
     }
+
     public enum AvailableSensors
     {
         UserNotificationStateSensor,
