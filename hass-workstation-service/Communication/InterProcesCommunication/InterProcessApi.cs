@@ -7,15 +7,13 @@ using hass_workstation_service.Domain.Sensors;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace hass_workstation_service.Communication.InterProcesCommunication
 {
-    public class InterProcessApi : ServiceContractInterfaces
+    public class InterProcessApi : IServiceContractInterfaces
     {
         private readonly MqttPublisher _publisher;
         private readonly IConfigurationService _configurationService;
@@ -26,72 +24,114 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             _configurationService = configurationService;
         }
 
-        public MqqtClientStatus GetMqqtClientStatus()
-        {
-            return this._publisher.GetStatus();
-        }
+        public MqqtClientStatus GetMqqtClientStatus() => _publisher.GetStatus();
 
-        public Task<MqttSettings> GetMqttBrokerSettings()
-        {
-            return this._configurationService.GetMqttBrokerSettings();
-        }
+        public Task<MqttSettings> GetMqttBrokerSettings() => _configurationService.GetMqttBrokerSettings();
 
         /// <summary>
         /// You can use this to check if the application responds.
         /// </summary> 
         /// <param name="str"></param>
         /// <returns></returns>
-        public string Ping(string str)
-        {
-            if (str == "ping")
-            {
-                return "pong";
-            }
-            return "what?";
-        }
+        public string Ping(string str) => str == "ping" ? "pong" : "what?";
+
+        public string GetCurrentVersion() => Program.GetVersion();
 
         /// <summary>
         /// This writes the provided settings to the config file.
         /// </summary>
         /// <param name="settings"></param>
-        public void WriteMqttBrokerSettingsAsync(MqttSettings settings)
-        {
-            this._configurationService.WriteMqttBrokerSettingsAsync(settings);
-        }
+        public void WriteMqttBrokerSettingsAsync(MqttSettings settings) => _configurationService.WriteMqttBrokerSettingsAsync(settings);
 
         /// <summary>
         /// Enables or disables autostart. 
         /// </summary>
         /// <param name="enable"></param>
-        public void EnableAutostart(bool enable)
-        {
-            this._configurationService.EnableAutoStart(enable);
-        }
+        public void EnableAutostart(bool enable) => _configurationService.EnableAutoStart(enable);
 
-        public bool IsAutoStartEnabled()
-        {
-            return this._configurationService.IsAutoStartEnabled();
-        }
+        public bool IsAutoStartEnabled() => _configurationService.IsAutoStartEnabled();
 
         public async Task<List<ConfiguredSensorModel>> GetConfiguredSensors()
         {
-            var sensors = await this._configurationService.GetSensorsAfterLoadingAsync();
-            return sensors.Select(s => new ConfiguredSensorModel() { Name = s.Name, Type = s.GetType().Name, Value = s.PreviousPublishedState, Id = s.Id, UpdateInterval = s.UpdateInterval, UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement }).ToList();
+            var sensors = await _configurationService.GetSensorsAfterLoadingAsync();
+            return sensors.Select(s =>
+            {
+                if (!Enum.TryParse(s.GetType().Name, out AvailableSensors type))
+                    Log.Logger.Error("Unknown sensor");
+
+                return new ConfiguredSensorModel()
+                {
+                    Name = s.Name,
+                    Type = type,
+                    Value = s.PreviousPublishedState,
+                    Id = s.Id,
+                    UpdateInterval = s.UpdateInterval,
+                    UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement
+                };
+            }).ToList();
+        }
+
+        public async Task<ConfiguredSensorModel> GetConfiguredSensor(Guid id)
+        {
+            var sensors = await _configurationService.GetSensorsAfterLoadingAsync();
+            var s = sensors.FirstOrDefault(x => id == x.Id);
+            if (s == null)
+                return null;
+            else
+            {
+                if (!Enum.TryParse(s.GetType().Name, out AvailableSensors type))
+                    Log.Logger.Error("Unknown sensor");
+
+                return new ConfiguredSensorModel()
+                {
+                    Name = s.Name,
+                    Type = type,
+                    Value = s.PreviousPublishedState,
+                    Id = s.Id,
+                    UpdateInterval = s.UpdateInterval,
+                    UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement
+                };
+            }
         }
 
         public List<ConfiguredCommandModel> GetConfiguredCommands()
         {
-            return this._configurationService.ConfiguredCommands.Select(s => new ConfiguredCommandModel() { Name = s.Name, Type = s.GetType().Name, Id = s.Id }).ToList();
-        }
-        public void RemoveCommandById(Guid id)
-        {
-            this._configurationService.DeleteConfiguredCommand(id);
+            return _configurationService.ConfiguredCommands.Select(s =>
+            {
+                if (!Enum.TryParse(s.GetType().Name, out AvailableCommands type))
+                    Log.Logger.Error("Unknown command");
+
+                return new ConfiguredCommandModel()
+                {
+                    Name = s.Name,
+                    Type = type,
+                    Id = s.Id
+                };
+            }).ToList();
         }
 
-        public void RemoveSensorById(Guid id)
+        public ConfiguredCommandModel GetConfiguredCommand(Guid id)
         {
-            this._configurationService.DeleteConfiguredSensor(id);
+            var c = _configurationService.ConfiguredCommands.FirstOrDefault(x => id == x.Id);
+            if (c == null)
+                return null;
+            else
+            {
+                if (!Enum.TryParse(c.GetType().Name, out AvailableCommands type))
+                    Log.Logger.Error("Unknown command");
+
+                return new ConfiguredCommandModel()
+                {
+                    Name = c.Name,
+                    Type = type,
+                    Id = c.Id
+                };
+            }
         }
+
+        public void RemoveSensorById(Guid id) => _configurationService.DeleteConfiguredSensor(id);
+
+        public void RemoveCommandById(Guid id) => _configurationService.DeleteConfiguredCommand(id);
 
         /// <summary>
         /// Adds a command to the configured commands. This properly initializes the class and writes it to the config file. 
@@ -100,71 +140,12 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         /// <param name="json"></param>
         public void AddSensor(AvailableSensors sensorType, string json)
         {
-            var serializerOptions = new JsonSerializerOptions
-            {
-                Converters = { new DynamicJsonConverter() }
-            };
-            dynamic model = JsonSerializer.Deserialize<dynamic>(json, serializerOptions);
+            var sensorToCreate = GetSensorToCreate(sensorType, json);
 
-            AbstractSensor sensorToCreate = null;
-            switch (sensorType)
-            {
-                case AvailableSensors.UserNotificationStateSensor:
-                    sensorToCreate = new UserNotificationStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.DummySensor:
-                    sensorToCreate = new DummySensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.CurrentClockSpeedSensor:
-                    sensorToCreate = new CurrentClockSpeedSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.CPULoadSensor:
-                    sensorToCreate = new CPULoadSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.WMIQuerySensor:
-                    sensorToCreate = new WMIQuerySensor(this._publisher, model.Query, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.MemoryUsageSensor:
-                    sensorToCreate = new MemoryUsageSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.ActiveWindowSensor:
-                    sensorToCreate = new ActiveWindowSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.WebcamActiveSensor:
-                    sensorToCreate = new WebcamActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.MicrophoneActiveSensor:
-                    sensorToCreate = new MicrophoneActiveSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.NamedWindowSensor:
-                    sensorToCreate = new NamedWindowSensor(this._publisher, model.WindowName, model.Name, (int)model.UpdateInterval);
-                    break;
-                case AvailableSensors.LastActiveSensor:
-                    sensorToCreate = new LastActiveSensor(this._publisher,(int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.LastBootSensor:
-                    sensorToCreate = new LastBootSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.SessionStateSensor:
-                    sensorToCreate = new SessionStateSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.CurrentVolumeSensor:
-                    sensorToCreate = new CurrentVolumeSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.GPUTemperatureSensor:
-                    sensorToCreate = new GpuTemperatureSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                case AvailableSensors.GPULoadSensor:
-                    sensorToCreate = new GpuLoadSensor(this._publisher, (int)model.UpdateInterval, model.Name);
-                    break;
-                default:
-                    Log.Logger.Error("Unknown sensortype");
-                    break;
-            }
-            if (sensorToCreate != null)
-            {
-                this._configurationService.AddConfiguredSensor(sensorToCreate);
-            }
+            if (sensorToCreate == null)
+                Log.Logger.Error("Unknown sensortype");
+            else
+                _configurationService.AddConfiguredSensor(sensorToCreate);
         }
 
         /// <summary>
@@ -174,61 +155,89 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         /// <param name="json"></param>
         public void AddCommand(AvailableCommands commandType, string json)
         {
+            var commandToCreate = GetCommandToCreate(commandType, json);
+
+            if (commandToCreate == null)
+                Log.Logger.Error("Unknown command type");
+            else
+                _configurationService.AddConfiguredCommand(commandToCreate);
+        }
+
+        public async void UpdateSensorById(Guid id, string json)
+        {
+            var existingSensor = await GetConfiguredSensor(id);
+            var sensorToUpdate = GetSensorToCreate(existingSensor.Type, json);
+
+            if (sensorToUpdate == null)
+                Log.Logger.Error("Unknown sensortype");
+            else
+                _configurationService.UpdateConfiguredSensor(id, sensorToUpdate);
+        }
+
+        public void UpdateCommandById(Guid id, string json)
+        {
+            var existingCommand = GetConfiguredCommand(id);
+            var commandToUpdate = GetCommandToCreate(existingCommand.Type, json);
+
+            if (commandToUpdate == null)
+                Log.Logger.Error("Unknown commandtype");
+            else
+                _configurationService.UpdateConfiguredCommand(id, commandToUpdate);
+        }
+
+        private AbstractSensor GetSensorToCreate(AvailableSensors sensorType, string json)
+        {
             var serializerOptions = new JsonSerializerOptions
             {
                 Converters = { new DynamicJsonConverter() }
             };
             dynamic model = JsonSerializer.Deserialize<dynamic>(json, serializerOptions);
 
-            AbstractCommand commandToCreate = null;
-            switch (commandType)
+            return sensorType switch
             {
-                case AvailableCommands.ShutdownCommand:
-                    commandToCreate = new ShutdownCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.RestartCommand:
-                    commandToCreate = new RestartCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.LogOffCommand:
-                    commandToCreate = new LogOffCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.CustomCommand:
-                    commandToCreate = new CustomCommand(this._publisher, model.Command, model.Name);
-                    break;
-                case AvailableCommands.PlayPauseCommand:
-                    commandToCreate = new MediaPlayPauseCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.NextCommand:
-                    commandToCreate = new MediaNextCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.PreviousCommand:
-                    commandToCreate = new MediaPreviousCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.VolumeUpCommand:
-                    commandToCreate = new MediaVolumeUpCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.VolumeDownCommand:
-                    commandToCreate = new MediaVolumeDownCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.MuteCommand:
-                    commandToCreate = new MediaMuteCommand(this._publisher, model.Name);
-                    break;
-                case AvailableCommands.KeyCommand:
-                    commandToCreate = new KeyCommand(this._publisher, Convert.ToByte(model.Key, 16), model.Name);
-                    break;
-                default:
-                    Log.Logger.Error("Unknown sensortype");
-                    break;
-            }
-            if (commandToCreate != null)
-            {
-                this._configurationService.AddConfiguredCommand(commandToCreate);
-            }
+                AvailableSensors.UserNotificationStateSensor => new UserNotificationStateSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.DummySensor => new DummySensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.CurrentClockSpeedSensor => new CurrentClockSpeedSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.CPULoadSensor => new CPULoadSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.WMIQuerySensor => new WMIQuerySensor(_publisher, model.Query, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.MemoryUsageSensor => new MemoryUsageSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.ActiveWindowSensor => new ActiveWindowSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.WebcamActiveSensor => new WebcamActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.MicrophoneActiveSensor => new MicrophoneActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.NamedWindowSensor => new NamedWindowSensor(_publisher, model.WindowName, model.Name, (int)model.UpdateInterval),
+                AvailableSensors.LastActiveSensor => new LastActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.LastBootSensor => new LastBootSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.SessionStateSensor => new SessionStateSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.CurrentVolumeSensor => new CurrentVolumeSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.GPUTemperatureSensor => new GpuTemperatureSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.GPULoadSensor => new GpuLoadSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                _ => null
+            };
         }
 
-        public string GetCurrentVersion()
+        private AbstractCommand GetCommandToCreate(AvailableCommands commandType, string json)
         {
-            return Program.GetVersion();
+            var serializerOptions = new JsonSerializerOptions
+            {
+                Converters = { new DynamicJsonConverter() }
+            };
+            dynamic model = JsonSerializer.Deserialize<dynamic>(json, serializerOptions);
+
+            return commandType switch
+            {
+                AvailableCommands.ShutdownCommand => new ShutdownCommand(_publisher, model.Name),
+                AvailableCommands.RestartCommand => new RestartCommand(_publisher, model.Name),
+                AvailableCommands.LogOffCommand => new LogOffCommand(_publisher, model.Name),
+                AvailableCommands.CustomCommand => new CustomCommand(_publisher, model.Command, model.Name),
+                AvailableCommands.PlayPauseCommand => new MediaPlayPauseCommand(_publisher, model.Name),
+                AvailableCommands.NextCommand => new MediaNextCommand(_publisher, model.Name),
+                AvailableCommands.PreviousCommand => new MediaPreviousCommand(_publisher, model.Name),
+                AvailableCommands.VolumeUpCommand => new MediaVolumeUpCommand(_publisher, model.Name),
+                AvailableCommands.VolumeDownCommand => new MediaVolumeDownCommand(_publisher, model.Name),
+                AvailableCommands.MuteCommand => new MediaMuteCommand(_publisher, model.Name),
+                AvailableCommands.KeyCommand => new KeyCommand(_publisher, Convert.ToByte(model.Key, 16), model.Name),
+                _ => null
+            };
         }
     }
 }
