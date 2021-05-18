@@ -19,6 +19,8 @@ It will try to futher accomplish this goal in the future by:
 
 ![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
+Not convinced yet? Check out [this excellent video](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+
 ## Installation
 
 You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup. This is the recommended way to install for most users.
