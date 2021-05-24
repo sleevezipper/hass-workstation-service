@@ -184,22 +184,22 @@ namespace hass_workstation_service.Data
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPlayPauseCommand":
-                        command = new MediaPlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaNextCommand":
-                        command = new MediaNextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new NextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPreviousCommand":
-                        command = new MediaPreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeUpCommand":
-                        command = new MediaVolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeDownCommand":
-                        command = new MediaVolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaMuteCommand":
-                        command = new MediaMuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new MuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "KeyCommand":
                         command = new KeyCommand(publisher, configuredCommand.KeyCode, configuredCommand.Name, configuredCommand.Id);
@@ -385,6 +385,7 @@ namespace hass_workstation_service.Data
         public async void UpdateConfiguredCommand(Guid id, AbstractCommand command)
         {
             await DeleteCommand(id);
+            await Task.Delay(500);
             AddCommand(command);
             WriteCommandSettingsAsync();
         }

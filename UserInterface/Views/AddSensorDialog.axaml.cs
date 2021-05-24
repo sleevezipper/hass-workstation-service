@@ -57,7 +57,7 @@ namespace UserInterface.Views
 
         private async void GetSensorInfo(Guid sensorId)
         {
-            var sensor = await _client.InvokeAsync(x => x.GetConfiguredSensor(sensorId));
+            ConfiguredSensorModel sensor = await _client.InvokeAsync(x => x.GetConfiguredSensor(sensorId));
 
             ComboBox.SelectedItem = sensor.Type;
             FillDefaultValues();
@@ -66,8 +66,10 @@ namespace UserInterface.Views
             item.SelectedType = sensor.Type;
             item.Name = sensor.Name;
             item.UpdateInterval = sensor.UpdateInterval;
-            //item.WindowName =
-            //item.Query =
+            item.Query = sensor.Query;
+            item.WindowName = sensor.WindowName;
+
+            Title = $"Edit {sensor.Name}";
         }
 
         public async void Save(object sender, RoutedEventArgs args)
@@ -96,7 +98,6 @@ namespace UserInterface.Views
                 case AvailableSensors.UserNotificationStateSensor:
                     item.Description = "This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. \n ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usernotificationstate";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
@@ -104,7 +105,6 @@ namespace UserInterface.Views
                 case AvailableSensors.DummySensor:
                     item.Description = "This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#dummy";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 1;
@@ -112,7 +112,6 @@ namespace UserInterface.Views
                 case AvailableSensors.CPULoadSensor:
                     item.Description = "This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#cpuload";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
@@ -120,7 +119,6 @@ namespace UserInterface.Views
                 case AvailableSensors.CurrentClockSpeedSensor:
                     item.Description = "This sensor returns the BIOS configured baseclock for the processor.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentclockspeed";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 3600;
@@ -128,7 +126,6 @@ namespace UserInterface.Views
                 case AvailableSensors.WMIQuerySensor:
                     item.Description = "This advanced sensor executes a user defined WMI query and exposes the result. The query should return a single value.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#wmiquerysensor";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = true;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
@@ -136,7 +133,6 @@ namespace UserInterface.Views
                 case AvailableSensors.MemoryUsageSensor:
                     item.Description = "This sensor calculates the percentage of used memory.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemory";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
@@ -144,7 +140,6 @@ namespace UserInterface.Views
                 case AvailableSensors.ActiveWindowSensor:
                     item.Description = "This sensor exposes the name of the currently active window.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
@@ -152,14 +147,12 @@ namespace UserInterface.Views
                 case AvailableSensors.WebcamActiveSensor:
                     item.Description = "This sensor shows if the webcam is currently being used.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#webcamactive";
-                    item.ShowDetectionModeOptions = true;
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.MicrophoneActiveSensor:
                     item.Description = "This sensor shows if the microphone is currently in use.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#microphoneactive";
-                    item.ShowDetectionModeOptions = false;
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace hass_workstation_service.Domain.Commands
 {
-    public class MediaNextCommand : KeyCommand
+    public class VolumeUpCommand : KeyCommand
     {
-        public MediaNextCommand(MqttPublisher publisher, string name = "Next", Guid id = default(Guid)) : base(publisher, KeyCommand.VK_MEDIA_NEXT_TRACK, name ?? "Next", id) { }
+        public VolumeUpCommand(MqttPublisher publisher, string name = "VolumeUp", Guid id = default(Guid)) : base(publisher, KeyCommand.VK_VOLUME_UP, name ?? "VolumeUp", id) { }
     }
 }

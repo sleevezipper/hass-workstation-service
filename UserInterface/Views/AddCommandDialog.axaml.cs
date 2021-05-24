@@ -47,7 +47,7 @@ namespace UserInterface.Views
 
             // create client
             _client = clientFactory.CreateClient("addCommand");
-            Title = "Add sensor";
+            Title = "Add command";
 
         }
 
@@ -66,9 +66,9 @@ namespace UserInterface.Views
             var item = (AddCommandViewModel)DataContext;
             item.SelectedType = command.Type;
             item.Name = command.Name;
-            //item.UpdateInterval = command.UpdateInterval;
-            //item.WindowName =
-            //item.Query =
+            item.Command = command.Command;
+            item.Key = command.Key;
+            
         }
 
         public async void Save(object sender, RoutedEventArgs args)

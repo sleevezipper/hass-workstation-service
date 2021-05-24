@@ -59,15 +59,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 if (!Enum.TryParse(s.GetType().Name, out AvailableSensors type))
                     Log.Logger.Error("Unknown sensor");
 
-                return new ConfiguredSensorModel()
-                {
-                    Name = s.Name,
-                    Type = type,
-                    Value = s.PreviousPublishedState,
-                    Id = s.Id,
-                    UpdateInterval = s.UpdateInterval,
-                    UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement
-                };
+                return new ConfiguredSensorModel(s);
             }).ToList();
         }
 
@@ -82,31 +74,18 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 if (!Enum.TryParse(s.GetType().Name, out AvailableSensors type))
                     Log.Logger.Error("Unknown sensor");
 
-                return new ConfiguredSensorModel()
-                {
-                    Name = s.Name,
-                    Type = type,
-                    Value = s.PreviousPublishedState,
-                    Id = s.Id,
-                    UpdateInterval = s.UpdateInterval,
-                    UnitOfMeasurement = ((SensorDiscoveryConfigModel)s.GetAutoDiscoveryConfig()).Unit_of_measurement
-                };
+                return new ConfiguredSensorModel(s);
             }
         }
 
         public List<ConfiguredCommandModel> GetConfiguredCommands()
         {
-            return _configurationService.ConfiguredCommands.Select(s =>
+            return _configurationService.ConfiguredCommands.Select(c =>
             {
-                if (!Enum.TryParse(s.GetType().Name, out AvailableCommands type))
+                if (!Enum.TryParse(c.GetType().Name, out AvailableCommands type))
                     Log.Logger.Error("Unknown command");
 
-                return new ConfiguredCommandModel()
-                {
-                    Name = s.Name,
-                    Type = type,
-                    Id = s.Id
-                };
+                return new ConfiguredCommandModel(c);
             }).ToList();
         }
 
@@ -120,12 +99,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 if (!Enum.TryParse(c.GetType().Name, out AvailableCommands type))
                     Log.Logger.Error("Unknown command");
 
-                return new ConfiguredCommandModel()
-                {
-                    Name = c.Name,
-                    Type = type,
-                    Id = c.Id
-                };
+                return new ConfiguredCommandModel(c);
             }
         }
 
@@ -229,12 +203,12 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableCommands.RestartCommand => new RestartCommand(_publisher, model.Name),
                 AvailableCommands.LogOffCommand => new LogOffCommand(_publisher, model.Name),
                 AvailableCommands.CustomCommand => new CustomCommand(_publisher, model.Command, model.Name),
-                AvailableCommands.PlayPauseCommand => new MediaPlayPauseCommand(_publisher, model.Name),
-                AvailableCommands.NextCommand => new MediaNextCommand(_publisher, model.Name),
-                AvailableCommands.PreviousCommand => new MediaPreviousCommand(_publisher, model.Name),
-                AvailableCommands.VolumeUpCommand => new MediaVolumeUpCommand(_publisher, model.Name),
-                AvailableCommands.VolumeDownCommand => new MediaVolumeDownCommand(_publisher, model.Name),
-                AvailableCommands.MuteCommand => new MediaMuteCommand(_publisher, model.Name),
+                AvailableCommands.PlayPauseCommand => new PlayPauseCommand(_publisher, model.Name),
+                AvailableCommands.NextCommand => new NextCommand(_publisher, model.Name),
+                AvailableCommands.PreviousCommand => new PreviousCommand(_publisher, model.Name),
+                AvailableCommands.VolumeUpCommand => new VolumeUpCommand(_publisher, model.Name),
+                AvailableCommands.VolumeDownCommand => new VolumeDownCommand(_publisher, model.Name),
+                AvailableCommands.MuteCommand => new MuteCommand(_publisher, model.Name),
                 AvailableCommands.KeyCommand => new KeyCommand(_publisher, Convert.ToByte(model.Key, 16), model.Name),
                 _ => null
             };
