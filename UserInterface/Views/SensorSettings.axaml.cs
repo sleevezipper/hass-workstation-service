@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using System.Reactive.Linq;
 using UserInterface.ViewModels;
-using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,38 +17,41 @@ namespace UserInterface.Views
 {
     public class SensorSettings : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> _client;
+        private readonly IIpcClient<IServiceContractInterfaces> _client;
         private readonly DataGrid _dataGrid;
         private bool _sensorsNeedToRefresh;
 
         public SensorSettings()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("sensors", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("sensors", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
-            this._client = clientFactory.CreateClient("sensors");
-
+            _client = clientFactory.CreateClient("sensors");
+            _dataGrid = this.FindControl<DataGrid>("Grid");
 
             DataContext = new SensorSettingsViewModel();
             GetConfiguredSensors();
+        }
 
-            this._dataGrid = this.FindControl<DataGrid>("Grid");
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
         }
 
         public async void GetConfiguredSensors()
         {
             _sensorsNeedToRefresh = false;
-            List<ConfiguredSensorModel> status = await this._client.InvokeAsync(x => x.GetConfiguredSensors());
+            List<ConfiguredSensorModel> status = await _client.InvokeAsync(x => x.GetConfiguredSensors());
 
-            ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors = status.Select(s =>
+            ((SensorSettingsViewModel)DataContext).ConfiguredSensors = status.Select(s =>
                 new SensorViewModel()
                 {
                     Name = s.Name,
@@ -63,8 +65,8 @@ namespace UserInterface.Views
             while (!_sensorsNeedToRefresh)
             {
                 await Task.Delay(1000);
-                List<ConfiguredSensorModel> statusUpdated = await this._client.InvokeAsync(x => x.GetConfiguredSensors());
-                var configuredSensors = ((SensorSettingsViewModel)this.DataContext).ConfiguredSensors;
+                List<ConfiguredSensorModel> statusUpdated = await _client.InvokeAsync(x => x.GetConfiguredSensors());
+                var configuredSensors = ((SensorSettingsViewModel)DataContext).ConfiguredSensors;
                 // this is a workaround for the list showing before it has been completely loaded in the service
                 if (statusUpdated.Count != configuredSensors.Count)
                 {
@@ -95,9 +97,18 @@ namespace UserInterface.Views
             }
         }
 
-        public void EditSensor(object sender, RoutedEventArgs args)
+        public async void EditSensor(object sender, RoutedEventArgs args)
         {
+            if (_dataGrid.SelectedItem is not SensorViewModel item)
+                return;
 
+            var dialog = new AddSensorDialog(item.Id);
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await dialog.ShowDialog(desktop.MainWindow);
+                _sensorsNeedToRefresh = true;
+                GetConfiguredSensors();
+            }
         }
 
         public void DeleteSensor(object sender, RoutedEventArgs args)
@@ -105,7 +116,7 @@ namespace UserInterface.Views
             if (_dataGrid.SelectedItem is not SensorViewModel item)
                 return;
 
-            this._client.InvokeAsync(x => x.RemoveSensorById(item.Id));
+            _client.InvokeAsync(x => x.RemoveSensorById(item.Id));
 
             if (DataContext is not SensorSettingsViewModel viewModel)
                 return;
@@ -113,11 +124,6 @@ namespace UserInterface.Views
             viewModel.ConfiguredSensors.Remove(item);
             _dataGrid.SelectedIndex = -1;
             viewModel.TriggerUpdate();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

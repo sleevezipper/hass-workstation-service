@@ -15,19 +15,19 @@ namespace UserInterface.Views
 {
     public class BackgroundServiceSettings : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> _client;
+        private readonly IIpcClient<IServiceContractInterfaces> _client;
 
         public BackgroundServiceSettings()
         {
             this.InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("broker", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("broker", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
             this._client = clientFactory.CreateClient("broker");

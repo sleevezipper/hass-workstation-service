@@ -181,25 +181,25 @@ namespace hass_workstation_service.Data
                         command = new LogOffCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "CustomCommand":
-                        command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name,  configuredCommand.Id);
+                        command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPlayPauseCommand":
-                        command = new MediaPlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaNextCommand":
-                        command = new MediaNextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new NextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPreviousCommand":
-                        command = new MediaPreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeUpCommand":
-                        command = new MediaVolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeDownCommand":
-                        command = new MediaVolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaMuteCommand":
-                        command = new MediaMuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new MuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "KeyCommand":
                         command = new KeyCommand(publisher, configuredCommand.KeyCode, configuredCommand.Name, configuredCommand.Id);
@@ -340,54 +340,91 @@ namespace hass_workstation_service.Data
 
         public void AddConfiguredSensor(AbstractSensor sensor)
         {
-            this.ConfiguredSensors.Add(sensor);
-            sensor.PublishAutoDiscoveryConfigAsync();
+            AddSensor(sensor);
             WriteSensorSettingsAsync();
         }
 
         public void AddConfiguredCommand(AbstractCommand command)
         {
-            this.ConfiguredCommands.Add(command);
-            command.PublishAutoDiscoveryConfigAsync();
+            AddCommand(command);
+            WriteCommandSettingsAsync();
+        }
+
+        public void AddConfiguredSensors(List<AbstractSensor> sensors)
+        {
+            sensors.ForEach(sensor => AddSensor(sensor));
+            WriteSensorSettingsAsync();
+        }
+
+        public void AddConfiguredCommands(List<AbstractCommand> commands)
+        {
+            commands.ForEach(command => AddCommand(command));
             WriteCommandSettingsAsync();
         }
 
         public async void DeleteConfiguredSensor(Guid id)
         {
-            var sensorToRemove = this.ConfiguredSensors.FirstOrDefault(s => s.Id == id);
-            if (sensorToRemove != null)
-            {
-                await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
-                this.ConfiguredSensors.Remove(sensorToRemove);
-                WriteSensorSettingsAsync();
-            }
-            else
-            {
-                Log.Logger.Warning($"sensor with id {id} not found");
-            }
-
+            await DeleteSensor(id);
+            WriteSensorSettingsAsync();
         }
 
         public async void DeleteConfiguredCommand(Guid id)
         {
-            var commandToRemove = this.ConfiguredCommands.FirstOrDefault(s => s.Id == id);
-            if (commandToRemove != null)
-            {
-                await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
-                this.ConfiguredCommands.Remove(commandToRemove);
-                WriteCommandSettingsAsync();
-            }
-            else
-            {
-                Log.Logger.Warning($"command with id {id} not found");
-            }
-
+            await DeleteCommand(id);
+            WriteCommandSettingsAsync();
         }
 
-        public void AddConfiguredSensors(List<AbstractSensor> sensors)
+        public async void UpdateConfiguredSensor(Guid id, AbstractSensor sensor)
         {
-            sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));
+            await DeleteSensor(id);
+            await Task.Delay(500);
+            AddSensor(sensor);
             WriteSensorSettingsAsync();
+        }
+
+        public async void UpdateConfiguredCommand(Guid id, AbstractCommand command)
+        {
+            await DeleteCommand(id);
+            await Task.Delay(500);
+            AddCommand(command);
+            WriteCommandSettingsAsync();
+        }
+
+        private void AddSensor(AbstractSensor sensor)
+        {
+            ConfiguredSensors.Add(sensor);
+            sensor.PublishAutoDiscoveryConfigAsync();
+        }
+
+        private void AddCommand(AbstractCommand command)
+        {
+            ConfiguredCommands.Add(command);
+            command.PublishAutoDiscoveryConfigAsync();
+        }
+
+        private async Task DeleteSensor(Guid id)
+        {
+            var sensorToRemove = ConfiguredSensors.FirstOrDefault(s => s.Id == id);
+            if (sensorToRemove == null)
+            {
+                Log.Logger.Warning($"sensor with id {id} not found");
+                return;
+            }
+
+            await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
+            ConfiguredSensors.Remove(sensorToRemove);
+        }
+
+        private async Task DeleteCommand(Guid id)
+        {
+            var commandToRemove = ConfiguredCommands.FirstOrDefault(c => c.Id == id);
+            if (commandToRemove == null)
+            {
+                Log.Logger.Warning($"command with id {id} not found");
+                return;
+            }
+            await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
+            ConfiguredCommands.Remove(commandToRemove);
         }
 
         /// <summary>

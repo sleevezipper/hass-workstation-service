@@ -5,7 +5,6 @@
     <StartupObject>UserInterface.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>

@@ -17,19 +17,19 @@ namespace UserInterface.Views
 {
     public class BrokerSettings : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> client;
+        private readonly IIpcClient<IServiceContractInterfaces> client;
 
         public BrokerSettings()
         {
             this.InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("broker", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("broker", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
             this.client = clientFactory.CreateClient("broker");

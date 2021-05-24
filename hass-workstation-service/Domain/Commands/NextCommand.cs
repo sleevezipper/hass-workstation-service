@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace hass_workstation_service.Domain.Commands
 {
-    public class MediaMuteCommand : KeyCommand
+    public class NextCommand : KeyCommand
     {
-        public MediaMuteCommand(MqttPublisher publisher, string name = "Mute", Guid id = default(Guid)) : base(publisher, KeyCommand.VK_VOLUME_MUTE, name ?? "Mute", id) { }
+        public NextCommand(MqttPublisher publisher, string name = "Next", Guid id = default(Guid)) : base(publisher, KeyCommand.VK_MEDIA_NEXT_TRACK, name ?? "Next", id) { }
     }
 }

@@ -1,7 +1,6 @@
+using hass_workstation_service.Domain.Commands;
 using hass_workstation_service.Domain.Sensors;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace hass_workstation_service.Communication.InterProcesCommunication.Models
 {
@@ -23,19 +22,68 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
     public class ConfiguredSensorModel
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
+        public AvailableSensors Type { get; set; }
         public string Name { get; set; }
         public string Value { get; set; }
+        public string Query { get; set; }
+        public string WindowName { get; set; }
         public int UpdateInterval { get; set; }
         public string UnitOfMeasurement { get; set; }
+
+        public ConfiguredSensorModel(AbstractSensor sensor)
+        {
+            this.Id = sensor.Id;
+            this.Name = sensor.Name;
+            Enum.TryParse(sensor.GetType().Name, out AvailableSensors type);
+            this.Type = type;
+            this.Value = sensor.PreviousPublishedState;
+            if (sensor is WMIQuerySensor wMIQuerySensor)
+            {
+                this.Query = wMIQuerySensor.Query;
+            }
+            if (sensor is NamedWindowSensor namedWindowSensor)
+            {
+                this.WindowName = namedWindowSensor.WindowName;
+            }
+            this.UpdateInterval = sensor.UpdateInterval;  
+            this.UnitOfMeasurement = ((SensorDiscoveryConfigModel)sensor.GetAutoDiscoveryConfig()).Unit_of_measurement;
+        }
+        public ConfiguredSensorModel()
+        {
+
+        }
     }
+
     public class ConfiguredCommandModel
     {
         public Guid Id { get; set; }
-        public string Type { get; set; }
+        public AvailableCommands Type { get; set; }
         public string Name { get; set; }
         public string Command { get; set; }
+        public string Key { get; set; }
+
+        public ConfiguredCommandModel(AbstractCommand command)
+        {
+            this.Id = command.Id;
+            Enum.TryParse(command.GetType().Name, out AvailableCommands type);
+            this.Type = type;
+            this.Name = command.Name;
+            if (command is CustomCommand customCommand)
+            {
+                this.Command = customCommand.Command;
+            }
+            if (command is KeyCommand keyCommand)
+            {
+                this.Key = "0x" + Convert.ToString(keyCommand.KeyCode, 16);
+            }
+        }
+
+        public ConfiguredCommandModel()
+        {
+
+        }
     }
+
     public enum AvailableSensors
     {
         UserNotificationStateSensor,

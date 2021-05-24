@@ -11,7 +11,7 @@ namespace hass_workstation_service.Domain.Commands
     public class KeyCommand : AbstractCommand
     {
         public const int KEYEVENTF_EXTENTEDKEY = 1;
-        public const int KEYEVENTF_KEYUP = 0;
+        public const int KEYEVENTF_KEYUP = 0x0002;
         public const int VK_MEDIA_NEXT_TRACK = 0xB0;
         public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
         public const int VK_MEDIA_PREV_TRACK = 0xB1;
@@ -54,7 +54,8 @@ namespace hass_workstation_service.Domain.Commands
 
         public override void TurnOn()
         {
-            keybd_event(this.KeyCode, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+            keybd_event(this.KeyCode, 0, 0, IntPtr.Zero);
+            keybd_event(this.KeyCode, 0, KEYEVENTF_KEYUP, IntPtr.Zero);
         }
     }
 }
