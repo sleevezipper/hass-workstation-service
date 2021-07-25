@@ -163,13 +163,6 @@ This sensor returns the current session state. It has the following possible sta
 
 This sensor returns the volume of the currently playing audio. So if you're listening to music and you pause, this sensor will return 0 (or at least a very low value).
 
-|State|Explanation|
-|---|---|
-|Locked|All user sessions are locked.|
-|LoggedOff|No users are logged in.|
-|InUse|A user is currently logged in.|
-|Unknown|Something went wrong while getting the status.|
-
 ### Dummy
 
 This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.
