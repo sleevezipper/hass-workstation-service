@@ -83,4 +83,4 @@ The webcam active sensor returns the status of the webcam.
 
 ### WMIQuerySensor
 
-Please see the specific documentaion page [here]().
+Please see the specific documentaion page [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor).
