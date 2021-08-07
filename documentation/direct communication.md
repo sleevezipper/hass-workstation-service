@@ -23,7 +23,7 @@ We can execute the shutdown command, and turn off the media center PC.
 
 ## Reading sensor data
 
-Reading sensor data can be done by subscribing to an MQTT topic. For example, if I wanted to know the CPU load, i can subscribe to this topic :
+Reading sensor data can be done by subscribing to an MQTT topic. For example, if I wanted to know the CPU load, I can subscribe to this topic :
 ```
 homeassistant/sensor/DESKTOP-1/MediaCenterPC/State
 ```
