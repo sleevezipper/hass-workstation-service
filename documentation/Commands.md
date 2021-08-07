@@ -31,11 +31,13 @@ Sends a keystroke with the specified key. You can pick [any of these](https://do
 
 ### Media Commands
 
-There's several media commands available which are very self exlanatory.
+There's several media commands available that allow you to control media playback. You can combine them into a media player entity as shown [here](https://pastebin.com/1VdL5iQm).
 
-- Play/Pause
-- Next
-- Previous
-- Volume up
-- Volume down
-- Mute (toggle)
+|Command|use|
+|---|---|
+|Play/Pause|The same as pressing the play/pause media key|
+|Next|skip to next track|
+|Previous|skip to previous track|
+|Volume up|Increase system master volume|
+|Volume down|Decrease system master volume|
+|Mute (toggle)|Mute the system|
