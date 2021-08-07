@@ -64,7 +64,7 @@ Sensors publish their state on their own interval which you can configure and on
 
 Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md):
 
-|command|use|
+|sensor|use|
 |---|---|
 |ActiveWindow|Exposes the currently selected window|
 |WebcamActive|Exposes the microphone state|
@@ -75,6 +75,12 @@ Here is a list of the most commonly used sensors with the full documentation [he
 This application allows you to send commands over MQTT to control the host system, and will be exposed using [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/). Alternatively you can directly send a command from Home Assistant using this topic : `homeassistant/switch/{DeviceName}/{Name}/set`, with the payload `ON`.
 
 Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md)
+
+|command|use|
+|---|---|
+|ShutdownCommand|Shutdown the PC|
+|RestartCommand|Restart the PC|
+|MuteCommand|Mute the speakers|
 
 ## Credits
 
