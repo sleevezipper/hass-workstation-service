@@ -62,7 +62,7 @@ The application provides several sensors. Sensors can be configured with a name 
 
 Sensors publish their state on their own interval which you can configure and only publish when the state changes.
 
-Here is a list of the most commonly used sensors with the full documentation [here]():
+Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md):
 
 |command|use|
 |---|---|
@@ -72,44 +72,9 @@ Here is a list of the most commonly used sensors with the full documentation [he
 
 ## Commands
 
-Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel the running command.
+This application allows you to send commands over MQTT to control the host system, and will be exposed using [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/). Alternatively you can directly send a command from Home Assistant using this topic : `homeassistant/switch/{DeviceName}/{Name}/set`, with the payload `ON`.
 
-### ShutdownCommand
-
-This command shuts down the computer immediately. It runs `shutdown /s`.
-
-### RestartCommand
-
-This command restarts the computer immediately. It runs `shutdown /r`.
-
-### LogOffCommand
-
-This command logs off the current user. It runs `shutdown /l`.
-
-### CustomCommand
-
-This command allows you to run any Windows Commands. The command will be run in a hidden Command Prompt. Some examples:
-
-|Command|Explanation|
-|---|---|
-|Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|
-|shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
-|C:\path\to\your\batchfile.bat|Run the specified batch file.|
-
-### KeyCommand
-
-Sends a keystroke with the specified key. You can pick [any of these](https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes) key codes.
-
-### Media Commands
-
-There's several media commands available which are very self exlanatory.
-
-- Play/Pause
-- Next
-- Previous
-- Volume up
-- Volume down
-- Mute (toggle)
+Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md)
 
 ## Credits
 
