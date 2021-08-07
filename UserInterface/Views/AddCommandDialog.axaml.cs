@@ -57,67 +57,67 @@ namespace UserInterface.Views
             {
                 case AvailableCommands.CustomCommand:
                     item.Description = "This command lets you execute any command you want. It will run in a Windows Command Prompt silently. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#customcommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#customcommand";
                     item.ShowCommandInput = true;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.ShutdownCommand:
                     item.Description = "This command shuts down the PC immediately. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#shutdowncommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#shutdowncommand";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.RestartCommand:
                     item.Description = "This command restarts the PC immediately. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#restartcommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#restartcommand";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.LogOffCommand:
                     item.Description = "This command logs the current user off immediately. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#logoffcommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#logoffcommand";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.KeyCommand:
                     item.Description = "This command can be used to emulate a keystroke. It requires a key code which you can find by clicking the info button below.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#keycommand";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#keycommand";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = true;
                     break;
                 case AvailableCommands.PlayPauseCommand:
                     item.Description = "This command plays or pauses currently playing media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.NextCommand:
                     item.Description = "This command skips to the next media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.PreviousCommand:
                     item.Description = "This command plays previous media.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.VolumeDownCommand:
                     item.Description = "Lowers the system volume.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.VolumeUpCommand:
                     item.Description = "Raises the system volume.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
                 case AvailableCommands.MuteCommand:
                     item.Description = "Toggles muting the system volume.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#media-commands";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#media-commands";
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
