@@ -24,7 +24,7 @@ Not convinced yet? Check out [this excellent video](https://youtu.be/D5A7le79R5M
 ## Installation
 
 You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup. This is the recommended way to install for most users.
-Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing.
+Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing. If you get an error stating your system's settings not allowing installation, please refer to [this StackOverflow answer](https://superuser.com/a/1252757).
 
 ### Standalone
 
