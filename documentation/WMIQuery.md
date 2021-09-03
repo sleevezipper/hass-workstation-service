@@ -26,3 +26,4 @@ You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) 
 |Query|Explanation|Submitted by|
 |---|---|---|
 |`SELECT username FROM Win32_ComputerSystem`|Shows the current user|@grizzlyjere|
+|`Select * from Win32_Process Where Name = 'notepad.exe'`|Shows if the defined process is running|@lafferlaffer|
