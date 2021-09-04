@@ -32,6 +32,9 @@
     <Compile Update="Views\BackgroundServiceSettings.axaml.cs">
       <DependentUpon>BackgroundServiceSettings.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\GeneralSettings.axaml.cs">
+      <DependentUpon>GeneralSettings.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\CommandSettings.axaml.cs">
       <DependentUpon>CommandSettings.axaml</DependentUpon>
     </Compile>

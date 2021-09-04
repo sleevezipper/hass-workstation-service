@@ -48,9 +48,9 @@ namespace hass_workstation_service.Domain.Commands
             LastUpdated = DateTime.UtcNow;
         }
 
-        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain);
+        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this);
 
-        public async Task UnPublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain, true);
+        public async Task UnPublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, true);
 
         protected CommandDiscoveryConfigModel _autoDiscoveryConfigModel;
         protected CommandDiscoveryConfigModel SetAutoDiscoveryConfigModel(CommandDiscoveryConfigModel config)

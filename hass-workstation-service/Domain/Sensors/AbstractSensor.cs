@@ -48,9 +48,13 @@ namespace hass_workstation_service.Domain.Sensors
             LastUpdated = DateTime.UtcNow;
         }
 
-        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain);
+        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this);
 
-        public async Task UnPublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain, true);
+        public async Task UnPublishAutoDiscoveryConfigAsync()
+        {
+            await Publisher.AnnounceAutoDiscoveryConfig(this, true);
+            this._autoDiscoveryConfigModel = null;
+        }
 
         protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
         protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)

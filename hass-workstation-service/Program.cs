@@ -70,7 +70,6 @@ namespace hass_workstation_service
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-
                 .ConfigureLogging((hostContext, loggingBuilder) =>
                     loggingBuilder.AddSerilog(dispose: true))
                 .ConfigureServices((hostContext, services) =>

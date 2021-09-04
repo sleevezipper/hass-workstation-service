@@ -56,8 +56,8 @@ namespace hass_workstation_service.Domain.Commands
                 Name = this.Name,
                 Unique_id = this.Id.ToString(),
                 Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability",
-                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/set",
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
+                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{Publisher.NamePrefix}{this.ObjectId}/set",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{Publisher.NamePrefix}{this.ObjectId}/state",
                 Device = this.Publisher.DeviceConfigModel,
             };
         }

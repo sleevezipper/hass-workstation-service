@@ -213,5 +213,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 _ => null
             };
         }
+
+        public Task<GeneralSettings> GetGeneralSettings() => _configurationService.ReadGeneralSettings();
+
+
+        public void WriteGeneralSettings(GeneralSettings settings) => _configurationService.WriteGeneralSettingsAsync(settings);
     }
 }

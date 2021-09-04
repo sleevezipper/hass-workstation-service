@@ -31,6 +31,7 @@ namespace hass_workstation_service.Communication
         public DateTime LastAvailabilityAnnounce { get; private set; }
         public DeviceConfigModel DeviceConfigModel { get; private set; }
         public ICollection<AbstractCommand> Subscribers { get; private set; }
+        public string NamePrefix { get; private set; }
         public bool IsConnected
         {
             get
@@ -55,9 +56,11 @@ namespace hass_workstation_service.Communication
             this._logger = logger;
             this.DeviceConfigModel = deviceConfigModel;
             this._configurationService = configurationService;
+            this.NamePrefix = configurationService.GeneralSettings?.NamePrefix;
 
             var options = _configurationService.GetMqttClientOptionsAsync().Result;
             _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
+            _configurationService.NamePrefixChangedHandler = this.UpdateNamePrefix;
 
             var factory = new MqttFactory();
             this._mqttClient = factory.CreateManagedMqttClient();
@@ -96,9 +99,9 @@ namespace hass_workstation_service.Communication
                 this._logger.LogInformation($"Message dropped because mqtt not connected: {message}");
             }
         }
-        // TODO: This should take a sensor/command instead of a config. 
-        // Then we can ask the sensor about the topic based on ObjectId instead of referencing Name directly
-        public async Task AnnounceAutoDiscoveryConfig(AbstractDiscoverable discoverable, string domain, bool clearConfig = false)
+
+
+        public async Task AnnounceAutoDiscoveryConfig(AbstractDiscoverable discoverable, bool clearConfig = false)
         {
             if (this._mqttClient.IsConnected)
             {
@@ -111,11 +114,24 @@ namespace hass_workstation_service.Communication
                 };
 
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/{domain}/{this.DeviceConfigModel.Name}/{discoverable.ObjectId}/config")
+                .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{this.NamePrefix}{discoverable.ObjectId}/config")
                 .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(discoverable.GetAutoDiscoveryConfig(), discoverable.GetAutoDiscoveryConfig().GetType(), options))
                 .WithRetainFlag()
                 .Build();
                 await this.Publish(message);
+                // if clearconfig is true, also remove previous state messages
+                throw new NotImplementedException();
+                // TODO:
+                // The nameprefix we get here is already the new one so the old messages never get deleted
+                if (clearConfig)
+                {
+                    var stateMessage = new MqttApplicationMessageBuilder()
+                    .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{this.NamePrefix}{discoverable.ObjectId}/")
+                    .WithPayload("")
+                    .WithRetainFlag()
+                    .Build();
+                    await this.Publish(stateMessage);
+                }
                 LastConfigAnnounce = DateTime.UtcNow;
             }
         }
@@ -193,6 +209,11 @@ namespace hass_workstation_service.Communication
             }
             
             Subscribers.Add(command);
+        }
+
+        public void UpdateNamePrefix(string prefix)
+        {
+            this.NamePrefix = prefix;
         }
 
         private void HandleMessageReceived(MqttApplicationMessage applicationMessage)
