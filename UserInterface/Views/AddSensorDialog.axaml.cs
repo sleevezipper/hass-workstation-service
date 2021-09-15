@@ -97,110 +97,110 @@ namespace UserInterface.Views
             {
                 case AvailableSensors.UserNotificationStateSensor:
                     item.Description = "This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. \n ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usernotificationstate";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#usernotificationstate";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.DummySensor:
                     item.Description = "This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#dummy";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#dummysensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 1;
                     break;
                 case AvailableSensors.CPULoadSensor:
                     item.Description = "This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#cpuload";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#cpuloadsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.CurrentClockSpeedSensor:
                     item.Description = "This sensor returns the BIOS configured baseclock for the processor.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentclockspeed";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#currentclockspeedsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 3600;
                     break;
                 case AvailableSensors.WMIQuerySensor:
                     item.Description = "This advanced sensor executes a user defined WMI query and exposes the result. The query should return a single value.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#wmiquerysensor";
+                    item.MoreInfoLink = "https://github.com/sleevezipperhass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor";
                     item.ShowQueryInput = true;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.MemoryUsageSensor:
                     item.Description = "This sensor calculates the percentage of used memory.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#usedmemory";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#memoryusagesensorsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.ActiveWindowSensor:
                     item.Description = "This sensor exposes the name of the currently active window.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#activewindow";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#activewindowsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.WebcamActiveSensor:
                     item.Description = "This sensor shows if the webcam is currently being used.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#webcamactive";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#webcamactivesensor";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.MicrophoneActiveSensor:
                     item.Description = "This sensor shows if the microphone is currently in use.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#microphoneactive";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#microphoneactivesensor";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
                 case AvailableSensors.NamedWindowSensor:
                     item.Description = "This sensor returns true if a window was found with the name you search for. ";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#namedwindow";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#namedwindowsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = true;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.LastActiveSensor:
                     item.Description = "This sensor returns the date/time that the workstation was last active.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastactive";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#lastactivesensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.LastBootSensor:
                     item.Description = "This sensor returns the date/time that Windows was last booted";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#lastboot";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#lastbootsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.SessionStateSensor:
                     item.Description = "This sensor returns the state of the Windows session.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#sessionstate";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#sessionstatesensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.CurrentVolumeSensor:
                     item.Description = "This sensor returns the volume of currently playing audio.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#currentvolume";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#currentvolumesensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.GPUTemperatureSensor:
                     item.Description = "This sensor returns the current temperature of the GPU in °C.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#gputemperature";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#gputemperaturesensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
                 case AvailableSensors.GPULoadSensor:
                     item.Description = "This sensor returns the current GPU load.";
-                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service#gpuload";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#gpuloadsensor";
                     item.ShowQueryInput = false;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;

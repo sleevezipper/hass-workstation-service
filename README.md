@@ -19,10 +19,12 @@ It will try to futher accomplish this goal in the future by:
 
 ![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
+Not convinced yet? Check out [this excellent video](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+
 ## Installation
 
 You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup. This is the recommended way to install for most users.
-Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing.
+Note: You'll get a Windows Smartscreen warning because the code was self signed. You can click "More info" and then "Run anyway" to proceed with installing. If you get an error stating your system's settings not allowing installation, please refer to [this StackOverflow answer](https://superuser.com/a/1252757).
 
 ### Standalone
 
@@ -60,158 +62,25 @@ The application provides several sensors. Sensors can be configured with a name 
 
 Sensors publish their state on their own interval which you can configure and only publish when the state changes.
 
-### UserNotificationState
+Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md):
 
-This sensor watches the UserNotificationState. This is normally used in applications to determine if it is appropriate to send a notification but we can use it to expose this state. Notice that this status does not watch Focus Assist. It has the following possible states:
-
-|State|Explanation|
+|sensor|use|
 |---|---|
-|NotPresent|A screen saver is displayed, the machine is locked, or a nonactive Fast User Switching session is in progress.   |
-|Busy|A full-screen application is running or Presentation Settings are applied. Presentation Settings allow a user to put their machine into a state fit for an uninterrupted presentation, such as a set of PowerPoint slides, with a single click.|
-|RunningDirect3dFullScreen|A full-screen (exclusive mode) Direct3D application is running.|
-|PresentationMode|The user has activated Windows presentation settings to block notifications and pop-up messages.|
-|AcceptsNotifications|None of the other states are found, notifications can be freely sent.|
-|QuietTime|Introduced in Windows 7. The current user is in "quiet time", which is the first hour after a new user logs into his or her account for the first time. During this time, most notifications should not be sent or shown. This lets a user become accustomed to a new computer system without those distractions. Quiet time also occurs for each user after an operating system upgrade or clean installation.|
-|RunningWindowsStoreApp|A Windows Store app is running.|
-
-### ActiveWindow
-
-This sensor exposes the name of the currently focused window.
-
-### WebcamActive
-
-This sensor shows if the webcam is currently being used. It uses the Windows registry to check will work from Windows 10 version 1903 and higher.
-
-### MicrophoneActive
-
-This sensor shows if the microphone is currently being used. It uses the Windows registry to check and will work from Windows 10 version 1903 and higher.
-
-### CPULoad
-
-This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.
-
-### GPULoad
-
-This sensor returns the current GPU load. This should work for both NVidia and AMD GPU's.
-
-### GPUTemperature
-
-This sensor returns the current temperature of the GPU in °C. This should work for both NVidia and AMD GPU's.
-
-### UsedMemory
-
-This sensor calculates the percentage of used memory.
-
-### CurrentClockSpeed
-
-This sensor returns the BIOS configured baseclock for the processor.
-
-### WMIQuery
-
-This advanced sensor executes a user defined [WMI query](https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-and-sql) and exposes the result. The query should return a single value.
-
-For example:
-
-```sql
-SELECT * FROM Win32_Processor
-```
-
-returns
-
-`|64|9|To Be Filled By O.E.M.|3|Intel64 Family 6 Model 94 Stepping 3|252|1|Win32_Processor|4008|12|64|Intel64 Family 6 Model 94 Stepping 3|CPU0|100|198|1024|8192|0|6|4|GenuineIntel|4008|Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz|4|4|8|To Be Filled By O.E.M.|False|BFEBFBFF000506E3|3|24067|CPU|False|To Be Filled By O.E.M.|U3E1|OK|3|Win32_ComputerSystem|GAME-PC-2016|8|1|False|False|`
-
-This cannot not be used for this sensor. Instead try
-
-```sql
-SELECT CurrentClockSpeed FROM Win32_Processor
-```
-
-which results in `4008` for my PC.
-
-You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/tree/v2.0.0.2) to find see what data is available.
-
-Here's some queries from other users:
-
-|Query|Explanation|Thanks|
-|---|---|---|
-|`SELECT username FROM Win32_ComputerSystem`|Shows the current user|@grizzlyjere|
-
-Want to add you query here? Please create a pull request or open an issue.
-
-### LastActive
-
-This sensor returns the date/time that the workstation was last active. Typing or moving your mouse will reset the date/time.
-
-### LastBoot
-
-This sensor returns the date/time that Windows was last booted.
-
-### SessionState
-
-This sensor returns the current session state. It has the following possible states:
-
-|State|Explanation|
-|---|---|
-|Locked|All user sessions are locked.|
-|LoggedOff|No users are logged in.|
-|InUse|A user is currently logged in.|
-|Unknown|Something went wrong while getting the status.|
-
-### CurrentVolume
-
-This sensor returns the volume of the currently playing audio. So if you're listening to music and you pause, this sensor will return 0 (or at least a very low value).
-
-|State|Explanation|
-|---|---|
-|Locked|All user sessions are locked.|
-|LoggedOff|No users are logged in.|
-|InUse|A user is currently logged in.|
-|Unknown|Something went wrong while getting the status.|
-
-### Dummy
-
-This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.
+|ActiveWindow|Exposes the currently selected window|
+|WebcamActive|Exposes the microphone state|
+|MicrophoneActive|Exposes the webcam state|
 
 ## Commands
 
-Commands can be used to trigger certain things on the client. For each command, a switch will be available in Home Assistant. Turning on the switch fires the command on the client and it will turn the switch off when it's done. Turning it off will cancel the running command.
+This application allows you to send commands over MQTT to control the host system, and will be exposed using [MQTT discovery](https://www.home-assistant.io/docs/mqtt/discovery/). Alternatively you can directly send a command from Home Assistant using this topic : `homeassistant/switch/{DeviceName}/{Name}/set`, with the payload `ON`.
 
-### ShutdownCommand
+Here is a list of the most commonly used sensors with the full documentation [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md)
 
-This command shuts down the computer immediately. It runs `shutdown /s`.
-
-### RestartCommand
-
-This command restarts the computer immediately. It runs `shutdown /r`.
-
-### LogOffCommand
-
-This command logs off the current user. It runs `shutdown /l`.
-
-### CustomCommand
-
-This command allows you to run any Windows Commands. The command will be run in a hidden Command Prompt. Some examples:
-
-|Command|Explanation|
+|command|use|
 |---|---|
-|Rundll32.exe user32.dll,LockWorkStation|This locks the current session.|
-|shutdown /s /t 300|Shuts the PC down after 5 minutes (300 seconds).|
-|C:\path\to\your\batchfile.bat|Run the specified batch file.|
-
-### KeyCommand
-
-Sends a keystroke with the specified key. You can pick [any of these](https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes) key codes.
-
-### Media Commands
-
-There's several media commands available which are very self exlanatory.
-
-- Play/Pause
-- Next
-- Previous
-- Volume up
-- Volume down
-- Mute (toggle)
+|ShutdownCommand|Shutdown the PC|
+|RestartCommand|Restart the PC|
+|MuteCommand|Mute the speakers|
 
 ## Credits
 
