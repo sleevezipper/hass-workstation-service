@@ -177,6 +177,9 @@ namespace hass_workstation_service.Data
                     case "RestartCommand":
                         command = new RestartCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
+                    case "HibernateCommand":
+                        command = new HibernateCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
                     case "LogOffCommand":
                         command = new LogOffCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;

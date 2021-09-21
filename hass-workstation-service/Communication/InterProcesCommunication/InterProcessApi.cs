@@ -201,6 +201,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
             {
                 AvailableCommands.ShutdownCommand => new ShutdownCommand(_publisher, model.Name),
                 AvailableCommands.RestartCommand => new RestartCommand(_publisher, model.Name),
+                AvailableCommands.HibernateCommand => new HibernateCommand(_publisher, model.Name),
                 AvailableCommands.LogOffCommand => new LogOffCommand(_publisher, model.Name),
                 AvailableCommands.CustomCommand => new CustomCommand(_publisher, model.Command, model.Name),
                 AvailableCommands.PlayPauseCommand => new PlayPauseCommand(_publisher, model.Name),
