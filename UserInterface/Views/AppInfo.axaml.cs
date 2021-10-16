@@ -11,13 +11,16 @@ using UserInterface.ViewModels;
 using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using UserInterface.Util;
+using System;
+using System.IO;
+using System.Diagnostics;
 
 namespace UserInterface.Views
 {
     public class AppInfo : UserControl
     {
         private readonly IIpcClient<IServiceContractInterfaces> client;
-
+        private readonly string _basePath;
         public AppInfo()
         {
             this.InitializeComponent();
@@ -32,7 +35,7 @@ namespace UserInterface.Views
 
             // create client
             this.client = clientFactory.CreateClient("info");
-
+            this._basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
 
 
@@ -61,6 +64,17 @@ namespace UserInterface.Views
         public void Discord(object sender, RoutedEventArgs args)
         {
             BrowserUtil.OpenBrowser("https://discord.gg/VraYT2N3wd");
+        }
+
+        public void OpenLogDirectory(object sender, RoutedEventArgs args)
+        {
+            string path = Path.Combine(this._basePath, "logs");
+            Process.Start("explorer.exe", path);
+        }
+
+        public void OpenConfigDirectory(object sender, RoutedEventArgs args)
+        {
+            Process.Start("explorer.exe", this._basePath);
         }
 
         private void InitializeComponent()

@@ -13,6 +13,14 @@
         <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="GitHub">GitHub</Button>
         <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="Discord">Discord</Button>
       </StackPanel>
+      <TextBlock Margin="0 0 0 20">
+Having issues? Check out the log files. 
+Using the configuration files is recommended 
+for advanced users only.</TextBlock >
+      <StackPanel Margin="0 0 0 20" HorizontalAlignment="Left" Orientation="Horizontal">
+        <Button Width="75" HorizontalAlignment="Right" Margin="10 10" Click="OpenLogDirectory">Log files</Button>
+        <Button Width="75" HorizontalAlignment="Left" Margin="10 10" Click="OpenConfigDirectory">Config files</Button>
+      </StackPanel>
     </StackPanel>
   </StackPanel>
 </UserControl>
