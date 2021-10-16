@@ -38,11 +38,11 @@ namespace hass_workstation_service.Domain.Sensors
                 return;
 
             var message = new MqttApplicationMessageBuilder()
-                                                .WithTopic(GetAutoDiscoveryConfig().State_topic)
-                                                .WithPayload(state)
-                                                .WithExactlyOnceQoS()
-                                                .WithRetainFlag()
-                                                .Build();
+                .WithTopic(GetAutoDiscoveryConfig().State_topic)
+                .WithPayload(state)
+                .WithExactlyOnceQoS()
+                .WithRetainFlag()
+                .Build();
             await Publisher.Publish(message);
             PreviousPublishedState = state;
             LastUpdated = DateTime.UtcNow;

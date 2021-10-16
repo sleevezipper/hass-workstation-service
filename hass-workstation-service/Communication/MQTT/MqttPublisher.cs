@@ -114,19 +114,16 @@ namespace hass_workstation_service.Communication
                 };
 
                 var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{this.NamePrefix}{discoverable.ObjectId}/config")
+                .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(discoverable.GetAutoDiscoveryConfig().NamePrefix, discoverable.ObjectId)}/config")
                 .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(discoverable.GetAutoDiscoveryConfig(), discoverable.GetAutoDiscoveryConfig().GetType(), options))
                 .WithRetainFlag()
                 .Build();
                 await this.Publish(message);
                 // if clearconfig is true, also remove previous state messages
-                throw new NotImplementedException();
-                // TODO:
-                // The nameprefix we get here is already the new one so the old messages never get deleted
                 if (clearConfig)
                 {
                     var stateMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{this.NamePrefix}{discoverable.ObjectId}/")
+                    .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(discoverable.GetAutoDiscoveryConfig().NamePrefix, discoverable.ObjectId)}/state")
                     .WithPayload("")
                     .WithRetainFlag()
                     .Build();
