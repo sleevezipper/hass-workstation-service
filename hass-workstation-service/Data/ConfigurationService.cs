@@ -303,7 +303,8 @@ namespace hass_workstation_service.Data
                     .WithTls(new MqttClientOptionsBuilderTlsParameters()
                     {
                         UseTls = configuredBroker.UseTLS,
-                        AllowUntrustedCertificates = true
+                        AllowUntrustedCertificates = true,
+                        SslProtocol = configuredBroker.UseTLS ? System.Security.Authentication.SslProtocols.Tls12 : System.Security.Authentication.SslProtocols.None
                     })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
                     .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
