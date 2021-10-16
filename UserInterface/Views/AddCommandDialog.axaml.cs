@@ -112,6 +112,12 @@ namespace UserInterface.Views
                     item.ShowCommandInput = false;
                     item.ShowKeyInput = false;
                     break;
+                case AvailableCommands.HibernateCommand:
+                    item.Description = "This command hibernates the PC immediately. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#hibernatecommand";
+                    item.ShowCommandInput = false;
+                    item.ShowKeyInput = false;
+                    break;
                 case AvailableCommands.LogOffCommand:
                     item.Description = "This command logs the current user off immediately. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#logoffcommand";

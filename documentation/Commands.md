@@ -10,6 +10,10 @@ This command shuts down the computer immediately. It runs `shutdown /s`.
 
 This command restarts the computer immediately. It runs `shutdown /r`.
 
+### HibernateCommand
+
+This command hibernates the computer immediately. It runs `shutdown /h`.
+
 ### LogOffCommand
 
 This command logs off the current user. It runs `shutdown /l`.
