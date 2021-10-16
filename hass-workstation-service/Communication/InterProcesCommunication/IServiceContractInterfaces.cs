@@ -1,4 +1,5 @@
 ﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
+using hass_workstation_service.Data;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace hass_workstation_service.Communication.NamedPipe
     public interface IServiceContractInterfaces
     {
         Task<MqttSettings> GetMqttBrokerSettings();
+        Task<GeneralSettings> GetGeneralSettings();
+        void WriteGeneralSettings(GeneralSettings settings);
         public string Ping(string str);
         void WriteMqttBrokerSettingsAsync(MqttSettings settings);
         MqqtClientStatus GetMqqtClientStatus();

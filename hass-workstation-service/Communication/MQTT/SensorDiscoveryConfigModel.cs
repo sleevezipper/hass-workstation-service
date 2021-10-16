@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace hass_workstation_service.Communication
 {
@@ -14,12 +15,49 @@ namespace hass_workstation_service.Communication
         /// (Optional) The name of the MQTT sensor. Defaults to MQTT Sensor in hass.
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public string Name { get; set; }
+        /// <summary>
+        /// (Optional) The first part of the name. 
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public string NamePrefix { get; set; }
+
+        [JsonPropertyName("name")]
+        public string CompiledName { get => GetName(); }
+
         /// <summary>
         /// The MQTT topic subscribed to receive sensor values.
         /// </summary>
         /// <value></value>
         public string State_topic { get; set; }
+
+        /// <summary>
+        /// Gets the name including the prefix
+        /// </summary>
+        /// <returns></returns>
+        public string GetName()
+        {
+            if (string.IsNullOrWhiteSpace(NamePrefix))
+            {
+                return Name;
+            }
+            return $"{NamePrefix}-{Name}";
+        }
+
+        /// <summary>
+        /// Gets the name including the prefix if the class has not been instantiated yet.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetNameWithPrefix(string namePrefix, string name)
+        {
+            if (string.IsNullOrWhiteSpace(namePrefix))
+            {
+                return name;
+            }
+            return $"{namePrefix}-{name}";
+        }
     }
     public class SensorDiscoveryConfigModel : DiscoveryConfigModel
     {

@@ -38,19 +38,23 @@ namespace hass_workstation_service.Domain.Sensors
                 return;
 
             var message = new MqttApplicationMessageBuilder()
-                                                .WithTopic(GetAutoDiscoveryConfig().State_topic)
-                                                .WithPayload(state)
-                                                .WithExactlyOnceQoS()
-                                                .WithRetainFlag()
-                                                .Build();
+                .WithTopic(GetAutoDiscoveryConfig().State_topic)
+                .WithPayload(state)
+                .WithExactlyOnceQoS()
+                .WithRetainFlag()
+                .Build();
             await Publisher.Publish(message);
             PreviousPublishedState = state;
             LastUpdated = DateTime.UtcNow;
         }
 
-        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain);
+        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this);
 
-        public async Task UnPublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this, Domain, true);
+        public async Task UnPublishAutoDiscoveryConfigAsync()
+        {
+            await Publisher.AnnounceAutoDiscoveryConfig(this, true);
+            this._autoDiscoveryConfigModel = null;
+        }
 
         protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
         protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)
