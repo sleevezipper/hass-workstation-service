@@ -47,14 +47,14 @@ Find us on [Discord](https://discord.gg/VraYT2N3wd).
 
 ## Development
 
-Want to develop or build the application yourself? Make sure to install the .NET Runtime [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) and [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/current). Run the following commands from the `hass-workstation-service\hass-workstation-service` directory to get you started:
+If you want to help develop Hass Workstation service, make sure to install the .NET Runtime [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/current/runtime) and [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/current). Run the following commands from the `hass-workstation-service\hass-workstation-service` directory to get you started:
 
 ```` powershell
 dotnet build
 dotnet publish
 ````
 
-In case you are using Visual Studio Code, open the `hass-workstation-service\hass-workstation-service` folder to take advantage of the predefined build and publish tasks.
+If you are using [Visual Studio](https://visualstudio.microsoft.com/), open the `hass-workstation-service\hass-workstation-service` folder to take advantage of the predefined build and publish tasks, alternativly you can open the project directly from github using the green download button to use the integrated git tools.
 
 ## Sensors
 
