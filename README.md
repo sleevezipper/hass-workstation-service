@@ -54,7 +54,7 @@ dotnet build
 dotnet publish
 ````
 
-If you are using [Visual Studio](https://visualstudio.microsoft.com/), open the `hass-workstation-service\hass-workstation-service` folder to take advantage of the predefined build and publish tasks, alternativly you can open the project directly from github using the green download button to use the integrated git tools.
+If you are using [Visual Studio](https://visualstudio.microsoft.com/), open the `hass-workstation-service\hass-workstation-service` folder to take advantage of the predefined build and publish tasks, alternatively you can open the project directly from github using the green download button to use the integrated git tools.
 
 ## Sensors
 
