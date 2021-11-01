@@ -13,13 +13,20 @@ It will try to futher accomplish this goal in the future by:
 
 - Being platform independent
 
-## Screenshots
+## Hass Workstation Service in the press
+
+<details>
+<summary>View some screenshots</summary>
 
 ![The settings screen](https://i.imgur.com/RBQx807.png)
 
 ![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
-Not convinced yet? Check out [this excellent video](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+</details>
+
+If you would prefer a video, look at :
+ - [How to Control a PC from Home Assistant](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+ - [Mit Home-Assistant den Computer AN und AUS schalten!](https://www.youtube.com/watch?v=oDJHGEcV84A) by Fabsenet on YouTube.
 
 ## Installation
 
