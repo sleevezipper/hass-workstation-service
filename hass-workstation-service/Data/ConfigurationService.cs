@@ -138,6 +138,9 @@ namespace hass_workstation_service.Data
                     case "CurrentVolumeSensor":
                         sensor = new CurrentVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "MasterVolumeSensor":
+                        sensor = new MasterVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     case "GpuTemperatureSensor":
                         sensor = new GpuTemperatureSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;

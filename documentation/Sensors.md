@@ -20,6 +20,10 @@ The current clock speed sensor returns the base system clock as configured in th
 
 This sensor returns the current volume of playing audio. **It does not return the master volume.** If you have no sound playing the value will be 0.
 
+### MasterVolumeSensor
+
+This sensor returns the master volume for the currently selected default audio device.
+
 ###  DummySensor
 
 This sensor produces a random output every second, and is intended to test latency and connectivity.
