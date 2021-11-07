@@ -183,8 +183,8 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableSensors.LastBootSensor => new LastBootSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.SessionStateSensor => new SessionStateSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.CurrentVolumeSensor => new CurrentVolumeSensor(_publisher, (int)model.UpdateInterval, model.Name),
-                AvailableSensors.GPUTemperatureSensor => new GpuTemperatureSensor(_publisher, (int)model.UpdateInterval, model.Name),
-                AvailableSensors.GPULoadSensor => new GpuLoadSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.GPUTemperatureSensor => new GPUTemperatureSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.GPULoadSensor => new GPULoadSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 _ => null
             };
         }
@@ -203,6 +203,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableCommands.RestartCommand => new RestartCommand(_publisher, model.Name),
                 AvailableCommands.LogOffCommand => new LogOffCommand(_publisher, model.Name),
                 AvailableCommands.CustomCommand => new CustomCommand(_publisher, model.Command, model.Name),
+                AvailableCommands.CustomPowerShellCommand => new CustomPowerShellCommand(_publisher, model.Command, model.Name),
                 AvailableCommands.PlayPauseCommand => new PlayPauseCommand(_publisher, model.Name),
                 AvailableCommands.NextCommand => new NextCommand(_publisher, model.Name),
                 AvailableCommands.PreviousCommand => new PreviousCommand(_publisher, model.Name),

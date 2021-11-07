@@ -116,6 +116,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         PreviousCommand,
         VolumeUpCommand,
         VolumeDownCommand,
-        MuteCommand
+        MuteCommand,
+        CustomPowerShellCommand
     }
 }

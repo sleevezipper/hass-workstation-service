@@ -57,6 +57,19 @@ namespace UserInterface.Views
             ((GeneralSettingsViewModel)this.DataContext).Update(settings);
         }
 
+        public void InstallBurntToast(object sender, RoutedEventArgs args)
+        {
+            var process = new System.Diagnostics.Process();
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal,
+                FileName = "powershell.exe",
+                Arguments = $"-NoExit Start-Process 'powershell InstallBurntToast.ps1' -Verb runAs"
+            };
+            process.StartInfo = startInfo;
+            process.Start();
+        }
+
 
         private void InitializeComponent()
         {

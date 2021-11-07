@@ -9,11 +9,11 @@ using LibreHardwareMonitor.Hardware;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class GpuTemperatureSensor : AbstractSensor
+    public class GPUTemperatureSensor : AbstractSensor
     {
         private Computer _computer;
         private IHardware _gpu;
-        public GpuTemperatureSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPUTemperature", Guid id = default(Guid)) : base(publisher, name ?? "GPUTemperature", updateInterval ?? 10, id)
+        public GPUTemperatureSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPUTemperature", Guid id = default(Guid)) : base(publisher, name ?? "GPUTemperature", updateInterval ?? 10, id)
         {
             _computer = new Computer
             {

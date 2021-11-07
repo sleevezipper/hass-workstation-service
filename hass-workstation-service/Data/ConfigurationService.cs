@@ -138,11 +138,11 @@ namespace hass_workstation_service.Data
                     case "CurrentVolumeSensor":
                         sensor = new CurrentVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
-                    case "GpuTemperatureSensor":
-                        sensor = new GpuTemperatureSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                    case "GPUTemperatureSensor":
+                        sensor = new GPUTemperatureSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
-                    case "GpuLoadSensor":
-                        sensor = new GpuLoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                    case "GPULoadSensor":
+                        sensor = new GPULoadSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
                     // keep this one last!
                     case "WMIQuerySensor":
@@ -195,6 +195,9 @@ namespace hass_workstation_service.Data
                         break;
                     case "CustomCommand":
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
+                        break;
+                    case "CustomPowerShellCommand":
+                        command = new CustomPowerShellCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPlayPauseCommand":
                         command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);

@@ -9,11 +9,11 @@ using LibreHardwareMonitor.Hardware;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class GpuLoadSensor : AbstractSensor
+    public class GPULoadSensor : AbstractSensor
     {
         private Computer _computer;
         private IHardware _gpu;
-        public GpuLoadSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPULoad", Guid id = default(Guid)) : base(publisher, name ?? "GPULoad", updateInterval ?? 10, id)
+        public GPULoadSensor(MqttPublisher publisher, int? updateInterval = null, string name = "GPULoad", Guid id = default(Guid)) : base(publisher, name ?? "GPULoad", updateInterval ?? 10, id)
         {
             _computer = new Computer
             {

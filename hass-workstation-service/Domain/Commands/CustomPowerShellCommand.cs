@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace hass_workstation_service.Domain.Commands
 {
-    public class CustomCommand : AbstractCommand
+    public class CustomPowerShellCommand : AbstractCommand
     {
         public string Command { get; protected set; }
         public string State { get; protected set; }
         public Process Process { get; private set; }
-        public CustomCommand(MqttPublisher publisher, string command, string name = "Custom", Guid id = default(Guid)) : base(publisher, name ?? "Custom", id)
+        public CustomPowerShellCommand(MqttPublisher publisher, string command, string name = "CustomPowerShell", Guid id = default(Guid)) : base(publisher, name ?? "CustomPowerShell", id)
         {
             this.Command = command;
             this.State = "OFF";
@@ -27,8 +27,8 @@ namespace hass_workstation_service.Domain.Commands
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = $"/C {this.Command}";
+            startInfo.FileName = @"powershell.exe";
+            startInfo.Arguments = $"\"&' { this.Command } '\"";
             this.Process.StartInfo = startInfo;
             try
             {

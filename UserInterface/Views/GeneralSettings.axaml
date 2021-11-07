@@ -23,5 +23,8 @@ If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the
      </StackPanel>
     <TextBox Text="{Binding NamePrefix}" HorizontalAlignment="Left" Width="100"/>
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Configure">Save</Button>
+    <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
+      <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="InstallBurntToast">Install BurntToast</Button>
+    </StackPanel>
   </StackPanel>
 </UserControl>

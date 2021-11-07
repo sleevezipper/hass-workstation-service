@@ -100,6 +100,12 @@ namespace UserInterface.Views
                     item.ShowCommandInput = true;
                     item.ShowKeyInput = false;
                     break;
+                case AvailableCommands.CustomPowerShellCommand:
+                    item.Description = "This command lets you execute any command you want. It will run in a Powershell window silently. ";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#custompowershellcommand";
+                    item.ShowCommandInput = true;
+                    item.ShowKeyInput = false;
+                    break;
                 case AvailableCommands.ShutdownCommand:
                     item.Description = "This command shuts down the PC immediately. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Commands.md#shutdowncommand";
