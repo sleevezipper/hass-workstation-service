@@ -100,6 +100,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         LastBootSensor,
         SessionStateSensor,
         CurrentVolumeSensor,
+        MasterVolumeSensor,
         GPUTemperatureSensor,
         GPULoadSensor
     }
