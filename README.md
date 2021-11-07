@@ -43,7 +43,7 @@ If you used the installer, the app checks for updates on startup. If an update i
 
 ## Need help?
 
-Find us on [Discord](https://discord.gg/VraYT2N3wd).
+Find us on [Discord](https://discord.gg/VraYT2N3wd), or check out the [frequently asked questions](https://github.com/sleevezipper/hass-workstation-service/tree/develop).
 
 ## Development
 
