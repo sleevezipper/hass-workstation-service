@@ -30,6 +30,11 @@ namespace hass_workstation_service.Domain.Commands
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = $"/C {this.Command}";
             this.Process.StartInfo = startInfo;
+            
+            // turn off the sensor to guarantee disable the switch
+            // useful if command changes power state of device
+            this.State = "OFF";
+            
             try
             {
                 this.Process.Start();
@@ -39,12 +44,6 @@ namespace hass_workstation_service.Domain.Commands
                 Log.Logger.Error($"Sensor {this.Name} failed", e);
                 this.State = "FAILED";
             }
-            
-            while (!this.Process.HasExited)
-            {
-                await Task.Delay(1000);
-            }
-            this.State = "OFF";
         }
 
 
