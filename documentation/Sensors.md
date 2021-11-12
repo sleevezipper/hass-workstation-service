@@ -85,6 +85,10 @@ This sensor watches the UserNotificationState. This is normally used in applicat
 
 The webcam active sensor returns the status of the webcam.
 
+### WebcamProcessSensor
+
+The webcam process sensor returns the process which is using the webcam.
+
 ### WMIQuerySensor
 
 Please see the specific documentaion page [here](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor).
