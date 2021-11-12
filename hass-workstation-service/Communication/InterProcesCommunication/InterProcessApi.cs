@@ -177,6 +177,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableSensors.MemoryUsageSensor => new MemoryUsageSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.ActiveWindowSensor => new ActiveWindowSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.WebcamActiveSensor => new WebcamActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.WebcamProcessSensor => new WebcamProcessSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.MicrophoneActiveSensor => new MicrophoneActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.NamedWindowSensor => new NamedWindowSensor(_publisher, model.WindowName, model.Name, (int)model.UpdateInterval),
                 AvailableSensors.LastActiveSensor => new LastActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
