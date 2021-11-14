@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -42,6 +42,9 @@
     <Content Include="UserInterface.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="UserInterface.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -67,5 +70,11 @@
     <Reference Include="CoreAudio">
       <HintPath>..\lib\CoreAudio.dll</HintPath>
     </Reference>
+    <!--<Reference Include="libHarfBuzzSharp.dll">
+      <HintPath>..\lib\libHarfBuzzSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="libSkiaSharp.dll">
+      <HintPath>..\lib\libSkiaSharp.dll</HintPath>
+    </Reference>-->
   </ItemGroup>
 </Project>
