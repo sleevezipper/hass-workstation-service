@@ -1,0 +1,27 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             x:Class="UserInterface.Views.GeneralSettingsView">
+  <StackPanel Margin="30" HorizontalAlignment="Left">
+    <ContentControl FontSize="18" FontWeight="Bold">Settings</ContentControl>
+    <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
+      <ContentControl>Name prefix</ContentControl>
+      <TextBlock Cursor="Help" Margin="5 0 0 0" VerticalAlignment="Bottom" TextDecorations="Underline">(What's this?)
+      <ToolTip.Tip>
+        <StackPanel>
+          <TextBlock>
+[Experimental]
+This allows you to set a name which will be used to prefix all sensor- and command names. For example:
+If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the sensor will be named "laptop-ActiveWindow" and its entityId will be "laptop_activewindow".
+          </TextBlock>
+          
+        </StackPanel>
+      </ToolTip.Tip>
+    </TextBlock>
+     </StackPanel>
+    <TextBox Text="{Binding NamePrefix}" HorizontalAlignment="Left" Width="100"/>
+    <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Configure">Save</Button>
+  </StackPanel>
+</UserControl>

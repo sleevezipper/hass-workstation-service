@@ -11,28 +11,31 @@ using UserInterface.ViewModels;
 using System.Security;
 using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using UserInterface.Util;
+using System;
+using System.IO;
+using System.Diagnostics;
 
 namespace UserInterface.Views
 {
     public class AppInfo : UserControl
     {
-        private readonly IIpcClient<ServiceContractInterfaces> client;
-
+        private readonly IIpcClient<IServiceContractInterfaces> client;
+        private readonly string _basePath;
         public AppInfo()
         {
             this.InitializeComponent();
             // register IPC clients
             ServiceProvider serviceProvider = new ServiceCollection()
-                .AddNamedPipeIpcClient<ServiceContractInterfaces>("info", pipeName: "pipeinternal")
+                .AddNamedPipeIpcClient<IServiceContractInterfaces>("info", pipeName: "pipeinternal")
                 .BuildServiceProvider();
 
             // resolve IPC client factory
-            IIpcClientFactory<ServiceContractInterfaces> clientFactory = serviceProvider
-                .GetRequiredService<IIpcClientFactory<ServiceContractInterfaces>>();
+            IIpcClientFactory<IServiceContractInterfaces> clientFactory = serviceProvider
+                .GetRequiredService<IIpcClientFactory<IServiceContractInterfaces>>();
 
             // create client
             this.client = clientFactory.CreateClient("info");
-
+            this._basePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
 
 
@@ -61,6 +64,17 @@ namespace UserInterface.Views
         public void Discord(object sender, RoutedEventArgs args)
         {
             BrowserUtil.OpenBrowser("https://discord.gg/VraYT2N3wd");
+        }
+
+        public void OpenLogDirectory(object sender, RoutedEventArgs args)
+        {
+            string path = Path.Combine(this._basePath, "logs");
+            Process.Start("explorer.exe", path);
+        }
+
+        public void OpenConfigDirectory(object sender, RoutedEventArgs args)
+        {
+            Process.Start("explorer.exe", this._basePath);
         }
 
         private void InitializeComponent()

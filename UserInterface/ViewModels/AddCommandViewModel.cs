@@ -1,34 +1,26 @@
 ﻿using hass_workstation_service.Communication.InterProcesCommunication.Models;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace UserInterface.ViewModels
 {
     public class AddCommandViewModel : ViewModelBase
     {
-        private AvailableCommands selectedType;
-        private string description;
+        private AvailableCommands _selectedType;
+        private string _name;
+        private string _description;
+        private bool _showCommandInput;
+        private bool _showKeyInput;
+        private string _moreInfoLink;
+        private string _command;
+        private string _key;
 
-        public string Description { get => description; set => this.RaiseAndSetIfChanged(ref description, value); }
-        public bool ShowCommandInput { get => showCommandInput; set => this.RaiseAndSetIfChanged(ref showCommandInput, value); }
-        public bool ShowKeyInput { get => showKeyInput; set => this.RaiseAndSetIfChanged(ref showKeyInput, value); }
-
-        private string moreInfoLink;
-        private bool showCommandInput;
-        private bool showKeyInput;
-
-        public string MoreInfoLink
-        {
-            get { return moreInfoLink; }
-            set { this.RaiseAndSetIfChanged(ref moreInfoLink, value); }
-        }
-
-        public AvailableCommands SelectedType { get => selectedType; set => this.RaiseAndSetIfChanged(ref selectedType, value); }
-
-        public string Name { get; set; }
-        public string Command { get; set; }
-        public string Key { get; set; }
+        public AvailableCommands SelectedType { get => _selectedType; set => this.RaiseAndSetIfChanged(ref _selectedType, value); }
+        public string Name { get => _name; set => this.RaiseAndSetIfChanged(ref _name, value); }
+        public string Description { get => _description; set => this.RaiseAndSetIfChanged(ref _description, value); }
+        public bool ShowCommandInput { get => _showCommandInput; set => this.RaiseAndSetIfChanged(ref _showCommandInput, value); }
+        public bool ShowKeyInput { get => _showKeyInput; set => this.RaiseAndSetIfChanged(ref _showKeyInput, value); }
+        public string MoreInfoLink { get => _moreInfoLink; set => this.RaiseAndSetIfChanged(ref _moreInfoLink, value); }
+        public string Command { get => _command; set => this.RaiseAndSetIfChanged(ref _command, value); }
+        public string Key { get => _key; set => this.RaiseAndSetIfChanged(ref _key, value); }
     }
 }

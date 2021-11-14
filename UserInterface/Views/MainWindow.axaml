@@ -4,23 +4,24 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:UserInterface.Views"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="500"
         x:Class="UserInterface.Views.MainWindow"
         Icon="/Assets/hass-workstation-logo.ico"
-        SizeToContent="WidthAndHeight"
+        MinWidth="700"
+        MinHeight="500"
         Title="Settings">
-  <Design.DataContext>
-    <vm:MainWindowViewModel/>
-  </Design.DataContext>
-  <ScrollViewer Height="700" VerticalScrollBarVisibility="Visible">
-  <Grid ColumnDefinitions="Auto,1*,Auto" RowDefinitions="Auto,Auto,Auto" Margin="30" VerticalAlignment="Stretch">
-    <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10 0" Grid.RowSpan="2" Background="#2D2D30"/>
-    <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10 0" Background="#2D2D30"/>
-    <views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="0 10 0 0" Background="#2D2D30"/>
-    <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10 0" Background="#2D2D30"/>
-    <views:AppInfo Grid.Column="2" Grid.Row="1" Margin="10 10 10 0" Background="#2D2D30"/>
-  </Grid>
-  </ScrollViewer>
 
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="*, *" Margin="10">
+        <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
+        <views:GeneralSettingsView Grid.Column="0" Grid.Row="1" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
+        <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10" Background="#2D2D30"/>
+        <views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="10" Background="#2D2D30"/>
+        <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10" Background="#2D2D30"/>
+        <views:AppInfo Grid.Column="2" Grid.Row="1" Margin="10" Background="#2D2D30"/>
+    </Grid>
 
 </Window>

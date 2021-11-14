@@ -1,12 +1,10 @@
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
 using MQTTnet;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-
     public abstract class AbstractSensor : AbstractDiscoverable
     {
         /// <summary>
@@ -17,61 +15,52 @@ namespace hass_workstation_service.Domain.Sensors
         public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
         public override string Domain { get => "sensor"; }
-        public AbstractSensor(MqttPublisher publisher, string name, int updateInterval = 10, Guid id = default(Guid))
-        {
-            if (id == Guid.Empty)
-            {
-                this.Id = Guid.NewGuid();
-            }
-            else
-            {
-                this.Id = id;
-            }
-            this.Name = name;
-            this.Publisher = publisher;
-            this.UpdateInterval = updateInterval;
 
-        }
-        protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
-        protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)
+        public AbstractSensor(MqttPublisher publisher, string name, int updateInterval = 10, Guid id = default)
         {
-            this._autoDiscoveryConfigModel = config;
-            return config;
+            Id = id == Guid.Empty ? Guid.NewGuid() : id;
+            Name = name;
+            Publisher = publisher;
+            UpdateInterval = updateInterval;
         }
 
         public abstract string GetState();
 
         public async Task PublishStateAsync()
         {
-            if (LastUpdated.HasValue && LastUpdated.Value.AddSeconds(this.UpdateInterval) > DateTime.UtcNow)
-            {
-                // dont't even check the state if the update interval hasn't passed
+            // dont't even check the state if the update interval hasn't passed
+            if (LastUpdated.HasValue && LastUpdated.Value.AddSeconds(UpdateInterval) > DateTime.UtcNow)
                 return;
-            }
-            string state = this.GetState();
-            if (this.PreviousPublishedState == state)
-            {
-                // don't publish the state if it hasn't changed
+
+            string state = GetState();
+            // don't publish the state if it hasn't changed
+            if (PreviousPublishedState == state)
                 return;
-            }
+
             var message = new MqttApplicationMessageBuilder()
-            .WithTopic(this.GetAutoDiscoveryConfig().State_topic)
-            .WithPayload(state)
-            .WithExactlyOnceQoS()
-            .WithRetainFlag()
-            .Build();
+                .WithTopic(GetAutoDiscoveryConfig().State_topic)
+                .WithPayload(state)
+                .WithExactlyOnceQoS()
+                .WithRetainFlag()
+                .Build();
             await Publisher.Publish(message);
-            this.PreviousPublishedState = state;
-            this.LastUpdated = DateTime.UtcNow;
-        }
-        public async void PublishAutoDiscoveryConfigAsync()
-        {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain);
-        }
-        public async Task UnPublishAutoDiscoveryConfigAsync()
-        {
-            await this.Publisher.AnnounceAutoDiscoveryConfig(this, this.Domain, true);
+            PreviousPublishedState = state;
+            LastUpdated = DateTime.UtcNow;
         }
 
+        public async void PublishAutoDiscoveryConfigAsync() => await Publisher.AnnounceAutoDiscoveryConfig(this);
+
+        public async Task UnPublishAutoDiscoveryConfigAsync()
+        {
+            await Publisher.AnnounceAutoDiscoveryConfig(this, true);
+            this._autoDiscoveryConfigModel = null;
+        }
+
+        protected SensorDiscoveryConfigModel _autoDiscoveryConfigModel;
+        protected SensorDiscoveryConfigModel SetAutoDiscoveryConfigModel(SensorDiscoveryConfigModel config)
+        {
+            _autoDiscoveryConfigModel = config;
+            return config;
+        }
     }
 }

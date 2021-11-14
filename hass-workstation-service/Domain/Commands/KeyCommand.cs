@@ -11,7 +11,7 @@ namespace hass_workstation_service.Domain.Commands
     public class KeyCommand : AbstractCommand
     {
         public const int KEYEVENTF_EXTENTEDKEY = 1;
-        public const int KEYEVENTF_KEYUP = 0;
+        public const int KEYEVENTF_KEYUP = 0x0002;
         public const int VK_MEDIA_NEXT_TRACK = 0xB0;
         public const int VK_MEDIA_PLAY_PAUSE = 0xB3;
         public const int VK_MEDIA_PREV_TRACK = 0xB1;
@@ -30,10 +30,11 @@ namespace hass_workstation_service.Domain.Commands
             return new CommandDiscoveryConfigModel()
             {
                 Name = this.Name,
+                NamePrefix = Publisher.NamePrefix,
                 Unique_id = this.Id.ToString(),
                 Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability",
-                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/set",
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
+                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{Publisher.NamePrefix}{this.ObjectId}/set",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
                 Device = this.Publisher.DeviceConfigModel,
             };
         }
@@ -54,7 +55,8 @@ namespace hass_workstation_service.Domain.Commands
 
         public override void TurnOn()
         {
-            keybd_event(this.KeyCode, 0, KEYEVENTF_EXTENTEDKEY, IntPtr.Zero);
+            keybd_event(this.KeyCode, 0, 0, IntPtr.Zero);
+            keybd_event(this.KeyCode, 0, KEYEVENTF_KEYUP, IntPtr.Zero);
         }
     }
 }

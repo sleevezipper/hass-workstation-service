@@ -30,6 +30,11 @@ namespace hass_workstation_service.Domain.Commands
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = $"/C {this.Command}";
             this.Process.StartInfo = startInfo;
+            
+            // turn off the sensor to guarantee disable the switch
+            // useful if command changes power state of device
+            this.State = "OFF";
+            
             try
             {
                 this.Process.Start();
@@ -39,12 +44,6 @@ namespace hass_workstation_service.Domain.Commands
                 Log.Logger.Error($"Sensor {this.Name} failed", e);
                 this.State = "FAILED";
             }
-            
-            while (!this.Process.HasExited)
-            {
-                await Task.Delay(1000);
-            }
-            this.State = "OFF";
         }
 
 
@@ -54,10 +53,11 @@ namespace hass_workstation_service.Domain.Commands
             return new CommandDiscoveryConfigModel()
             {
                 Name = this.Name,
+                NamePrefix = Publisher.NamePrefix,
                 Unique_id = this.Id.ToString(),
                 Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability",
-                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/set",
-                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{this.ObjectId}/state",
+                Command_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{Publisher.NamePrefix}{this.ObjectId}/set",
+                State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
                 Device = this.Publisher.DeviceConfigModel,
             };
         }

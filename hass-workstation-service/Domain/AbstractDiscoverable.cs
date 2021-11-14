@@ -12,16 +12,8 @@ namespace hass_workstation_service.Domain
     {
         public abstract string Domain { get; }
         public string Name { get; protected set; }
-
-        public string ObjectId
-        {
-            get
-            {
-                return Regex.Replace(this.Name, "[^a-zA-Z0-9_-]", "_");
-            }
-        }
+        public string ObjectId => Regex.Replace(Name, "[^a-zA-Z0-9_-]", "_");
         public Guid Id { get; protected set; }
-
         public abstract DiscoveryConfigModel GetAutoDiscoveryConfig();
     }
 }

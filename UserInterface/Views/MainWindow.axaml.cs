@@ -11,7 +11,7 @@ namespace UserInterface.Views
         {
             InitializeComponent();
 
-            WindowsTrayIcon icon = new WindowsTrayIcon();
+            _ = new WindowsTrayIcon();
         }
 
         private void InitializeComponent()

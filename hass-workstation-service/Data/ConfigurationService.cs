@@ -26,36 +26,49 @@ namespace hass_workstation_service.Data
     {
         public ICollection<AbstractSensor> ConfiguredSensors { get; private set; }
         public ICollection<AbstractCommand> ConfiguredCommands { get; private set; }
+        public GeneralSettings GeneralSettings { get; private set; }
         public Action<IManagedMqttClientOptions> MqqtConfigChangedHandler { get; set; }
+        public Action<string> NamePrefixChangedHandler { get; set; }
         private readonly DeviceConfigModel _deviceConfigModel;
 
         private bool BrokerSettingsFileLocked { get; set; }
         private bool SensorsSettingsFileLocked { get; set; }
         private bool CommandSettingsFileLocked { get; set; }
+        private bool GeneralSettingsFileLocked { get; set; }
         private bool _sensorsLoading { get; set; }
 
         private readonly string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Hass Workstation Service");
 
+        private const string MQTT_SETTINGS_FILENAME = "mqttbroker.json";
+        private const string SENSORS_SETTINGS_FILENAME = "configured-sensors.json";
+        private const string COMMANDS_SETTINGS_FILENAME = "configured-commands.json";
+        private const string GENERAL_SETTINGS_FILENAME = "general-settings.json";
+
         public ConfigurationService(DeviceConfigModel deviceConfigModel)
         {
             this._deviceConfigModel = deviceConfigModel;
-            if (!File.Exists(Path.Combine(path, "mqttbroker.json")))
+            if (!File.Exists(Path.Combine(path, MQTT_SETTINGS_FILENAME)))
             {
-                File.Create(Path.Combine(path, "mqttbroker.json")).Close();
+                File.Create(Path.Combine(path, MQTT_SETTINGS_FILENAME)).Close();
             }
 
-            if (!File.Exists(Path.Combine(path, "configured-sensors.json")))
+            if (!File.Exists(Path.Combine(path, SENSORS_SETTINGS_FILENAME)))
             {
-                File.Create(Path.Combine(path, "configured-sensors.json")).Close();
+                File.Create(Path.Combine(path, SENSORS_SETTINGS_FILENAME)).Close();
             }
 
-            if (!File.Exists(Path.Combine(path, "configured-commands.json")))
+            if (!File.Exists(Path.Combine(path, COMMANDS_SETTINGS_FILENAME)))
             {
-                File.Create(Path.Combine(path, "configured-commands.json")).Close();
+                File.Create(Path.Combine(path, COMMANDS_SETTINGS_FILENAME)).Close();
+            }
+            if (!File.Exists(Path.Combine(path, GENERAL_SETTINGS_FILENAME)))
+            {
+                File.Create(Path.Combine(path, GENERAL_SETTINGS_FILENAME)).Close();
             }
 
             ConfiguredSensors = new List<AbstractSensor>();
             ConfiguredCommands = new List<AbstractCommand>();
+            this.ReadGeneralSettings();
         }
 
         public async void ReadSensorSettings(MqttPublisher publisher)
@@ -67,7 +80,7 @@ namespace hass_workstation_service.Data
             }
             this.SensorsSettingsFileLocked = true;
             List<ConfiguredSensor> sensors = new List<ConfiguredSensor>();
-            using (var stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
+            using (var stream = new FileStream(Path.Combine(path, SENSORS_SETTINGS_FILENAME), FileMode.Open))
             {
                 Log.Logger.Information($"reading configured sensors from: {stream.Name}");
                 if (stream.Length > 0)
@@ -125,6 +138,9 @@ namespace hass_workstation_service.Data
                     case "CurrentVolumeSensor":
                         sensor = new CurrentVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "MasterVolumeSensor":
+                        sensor = new MasterVolumeSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     case "GpuTemperatureSensor":
                         sensor = new GpuTemperatureSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
@@ -155,7 +171,7 @@ namespace hass_workstation_service.Data
             }
             this.CommandSettingsFileLocked = true;
             List<ConfiguredCommand> commands = new List<ConfiguredCommand>();
-            using (var stream = new FileStream(Path.Combine(path, "configured-commands.json"), FileMode.Open))
+            using (var stream = new FileStream(Path.Combine(path, COMMANDS_SETTINGS_FILENAME), FileMode.Open))
             {
                 Log.Logger.Information($"reading configured commands from: {stream.Name}");
                 if (stream.Length > 0)
@@ -177,29 +193,32 @@ namespace hass_workstation_service.Data
                     case "RestartCommand":
                         command = new RestartCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
+                    case "HibernateCommand":
+                        command = new HibernateCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        break;
                     case "LogOffCommand":
                         command = new LogOffCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "CustomCommand":
-                        command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name,  configuredCommand.Id);
+                        command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPlayPauseCommand":
-                        command = new MediaPlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaNextCommand":
-                        command = new MediaNextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new NextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaPreviousCommand":
-                        command = new MediaPreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new PreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeUpCommand":
-                        command = new MediaVolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaVolumeDownCommand":
-                        command = new MediaVolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new VolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "MediaMuteCommand":
-                        command = new MediaMuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
+                        command = new MuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "KeyCommand":
                         command = new KeyCommand(publisher, configuredCommand.KeyCode, configuredCommand.Name, configuredCommand.Id);
@@ -215,6 +234,70 @@ namespace hass_workstation_service.Data
             }
         }
 
+        public async Task<GeneralSettings> ReadGeneralSettings()
+        {
+            while (this.GeneralSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this.GeneralSettingsFileLocked = true;
+            GeneralSettings settings = new GeneralSettings();
+            using (var stream = new FileStream(Path.Combine(path, GENERAL_SETTINGS_FILENAME), FileMode.Open))
+            {
+                Log.Logger.Information($"reading general settings from: {stream.Name}");
+                if (stream.Length > 0)
+                {
+                    settings = await JsonSerializer.DeserializeAsync<GeneralSettings>(stream);
+                }
+                stream.Close();
+                this.GeneralSettings = settings;
+                this.GeneralSettingsFileLocked = false;
+                return settings;
+            }
+        }
+
+        /// <summary>
+        /// Writes provided settings to the config file and reconfigures all sensors and commands if the nameprefix changed
+        /// </summary>
+        /// <param name="settings"></param>
+        public async void WriteGeneralSettingsAsync(GeneralSettings settings)
+        {
+            while (this.GeneralSettingsFileLocked)
+            {
+                await Task.Delay(500);
+            }
+            this.GeneralSettingsFileLocked = true;
+            using (FileStream stream = new FileStream(Path.Combine(path, GENERAL_SETTINGS_FILENAME), FileMode.Open))
+            {
+                stream.SetLength(0);
+                Log.Logger.Information($"writing general settings to: {stream.Name}");
+
+
+                await JsonSerializer.SerializeAsync(stream, settings);
+                stream.Close();
+            }
+            this.GeneralSettingsFileLocked = false;
+
+            // if the nameprefix changed, we need to update all sensors and commands to reflect the new name
+            if (settings.NamePrefix != this.GeneralSettings.NamePrefix)
+            {
+                // notify the mqtt publisher of the new prefix
+                this.NamePrefixChangedHandler.Invoke(settings.NamePrefix);
+
+                foreach (AbstractSensor sensor in this.ConfiguredSensors)
+                {
+                    await sensor.UnPublishAutoDiscoveryConfigAsync();
+                    sensor.PublishAutoDiscoveryConfigAsync();
+                }
+
+                foreach (AbstractCommand command in this.ConfiguredCommands)
+                {
+                    await command.UnPublishAutoDiscoveryConfigAsync();
+                    command.PublishAutoDiscoveryConfigAsync();
+                }
+            }
+        }
+
         public async Task<IManagedMqttClientOptions> GetMqttClientOptionsAsync()
         {
             ConfiguredMqttBroker configuredBroker = await ReadMqttSettingsAsync();
@@ -226,7 +309,8 @@ namespace hass_workstation_service.Data
                     .WithTls(new MqttClientOptionsBuilderTlsParameters()
                     {
                         UseTls = configuredBroker.UseTLS,
-                        AllowUntrustedCertificates = true
+                        AllowUntrustedCertificates = true,
+                        SslProtocol = configuredBroker.UseTLS ? System.Security.Authentication.SslProtocols.Tls12 : System.Security.Authentication.SslProtocols.None
                     })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
                     .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
@@ -257,7 +341,7 @@ namespace hass_workstation_service.Data
             }
             this.BrokerSettingsFileLocked = true;
             ConfiguredMqttBroker configuredBroker = null;
-            using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, MQTT_SETTINGS_FILENAME), FileMode.Open))
             {
                 Log.Logger.Information($"reading configured mqttbroker from: {stream.Name}");
                 if (stream.Length > 0)
@@ -279,7 +363,7 @@ namespace hass_workstation_service.Data
             }
             this.SensorsSettingsFileLocked = true;
             List<ConfiguredSensor> configuredSensorsToSave = new List<ConfiguredSensor>();
-            using (FileStream stream = new FileStream(Path.Combine(path, "configured-sensors.json"), FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, SENSORS_SETTINGS_FILENAME), FileMode.Open))
             {
                 stream.SetLength(0);
                 Log.Logger.Information($"writing configured sensors to: {stream.Name}");
@@ -316,7 +400,7 @@ namespace hass_workstation_service.Data
             }
             this.CommandSettingsFileLocked = true;
             List<ConfiguredCommand> configuredCommandsToSave = new List<ConfiguredCommand>();
-            using (FileStream stream = new FileStream(Path.Combine(path, "configured-commands.json"), FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, COMMANDS_SETTINGS_FILENAME), FileMode.Open))
             {
                 stream.SetLength(0);
                 Log.Logger.Information($"writing configured commands to: {stream.Name}");
@@ -340,54 +424,96 @@ namespace hass_workstation_service.Data
 
         public void AddConfiguredSensor(AbstractSensor sensor)
         {
-            this.ConfiguredSensors.Add(sensor);
-            sensor.PublishAutoDiscoveryConfigAsync();
+            AddSensor(sensor);
             WriteSensorSettingsAsync();
         }
 
         public void AddConfiguredCommand(AbstractCommand command)
         {
-            this.ConfiguredCommands.Add(command);
-            command.PublishAutoDiscoveryConfigAsync();
+            AddCommand(command);
+            WriteCommandSettingsAsync();
+        }
+
+        public void AddConfiguredSensors(List<AbstractSensor> sensors)
+        {
+            sensors.ForEach(sensor => AddSensor(sensor));
+            WriteSensorSettingsAsync();
+        }
+
+        public void AddConfiguredCommands(List<AbstractCommand> commands)
+        {
+            commands.ForEach(command => AddCommand(command));
             WriteCommandSettingsAsync();
         }
 
         public async void DeleteConfiguredSensor(Guid id)
         {
-            var sensorToRemove = this.ConfiguredSensors.FirstOrDefault(s => s.Id == id);
-            if (sensorToRemove != null)
-            {
-                await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
-                this.ConfiguredSensors.Remove(sensorToRemove);
-                WriteSensorSettingsAsync();
-            }
-            else
-            {
-                Log.Logger.Warning($"sensor with id {id} not found");
-            }
-
+            await DeleteSensor(id);
+            WriteSensorSettingsAsync();
         }
 
         public async void DeleteConfiguredCommand(Guid id)
         {
-            var commandToRemove = this.ConfiguredCommands.FirstOrDefault(s => s.Id == id);
-            if (commandToRemove != null)
-            {
-                await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
-                this.ConfiguredCommands.Remove(commandToRemove);
-                WriteCommandSettingsAsync();
-            }
-            else
-            {
-                Log.Logger.Warning($"command with id {id} not found");
-            }
-
+            await DeleteCommand(id);
+            WriteCommandSettingsAsync();
         }
 
-        public void AddConfiguredSensors(List<AbstractSensor> sensors)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">The Id of the sensor to replace</param>
+        /// <param name="sensor">The new sensor</param>
+        public async void UpdateConfiguredSensor(Guid id, AbstractSensor sensor)
         {
-            sensors.ForEach((sensor) => this.ConfiguredSensors.Add(sensor));
+            await DeleteSensor(id);
+            await Task.Delay(500);
+            AddSensor(sensor);
             WriteSensorSettingsAsync();
+        }
+
+        public async void UpdateConfiguredCommand(Guid id, AbstractCommand command)
+        {
+            await DeleteCommand(id);
+            await Task.Delay(500);
+            AddCommand(command);
+            WriteCommandSettingsAsync();
+        }
+
+        private void AddSensor(AbstractSensor sensor)
+        {
+            ConfiguredSensors.Add(sensor);
+            sensor.PublishAutoDiscoveryConfigAsync();
+        }
+
+        private void AddCommand(AbstractCommand command)
+        {
+            ConfiguredCommands.Add(command);
+            command.PublishAutoDiscoveryConfigAsync();
+        }
+
+        private async Task DeleteSensor(Guid id)
+        {
+            var sensorToRemove = ConfiguredSensors.FirstOrDefault(s => s.Id == id);
+            if (sensorToRemove == null)
+            {
+                Log.Logger.Warning($"sensor with id {id} not found");
+                return;
+            }
+
+            await sensorToRemove.UnPublishAutoDiscoveryConfigAsync();
+            ConfiguredSensors.Remove(sensorToRemove);
+        }
+
+        private async Task DeleteCommand(Guid id)
+        {
+            var commandToRemove = ConfiguredCommands.FirstOrDefault(c => c.Id == id);
+            if (commandToRemove == null)
+            {
+                Log.Logger.Warning($"command with id {id} not found");
+                return;
+            }
+            await commandToRemove.UnPublishAutoDiscoveryConfigAsync();
+            ConfiguredCommands.Remove(commandToRemove);
         }
 
         /// <summary>
@@ -401,7 +527,7 @@ namespace hass_workstation_service.Data
                 await Task.Delay(500);
             }
             this.BrokerSettingsFileLocked = true;
-            using (FileStream stream = new FileStream(Path.Combine(path, "mqttbroker.json"), FileMode.Open))
+            using (FileStream stream = new FileStream(Path.Combine(path, MQTT_SETTINGS_FILENAME), FileMode.Open))
             {
                 stream.SetLength(0);
                 Log.Logger.Information($"writing configured mqttbroker to: {stream.Name}");
