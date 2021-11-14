@@ -93,6 +93,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         WMIQuerySensor,
         MemoryUsageSensor,
         WebcamActiveSensor,
+        WebcamProcessSensor,
         MicrophoneActiveSensor,
         ActiveWindowSensor,
         NamedWindowSensor,
