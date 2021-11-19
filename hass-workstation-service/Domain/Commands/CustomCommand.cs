@@ -27,13 +27,9 @@ namespace hass_workstation_service.Domain.Commands
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.FileName = "cmd.exe";
+            startInfo.FileName = "start cmd.exe";
             startInfo.Arguments = $"/C {this.Command}";
             this.Process.StartInfo = startInfo;
-            
-            // turn off the sensor to guarantee disable the switch
-            // useful if command changes power state of device
-            this.State = "OFF";
             
             try
             {
@@ -44,6 +40,8 @@ namespace hass_workstation_service.Domain.Commands
                 Log.Logger.Error($"Sensor {this.Name} failed", e);
                 this.State = "FAILED";
             }
+            
+            this.State = "OFF";
         }
 
 
