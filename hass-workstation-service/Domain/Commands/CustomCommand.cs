@@ -27,7 +27,7 @@ namespace hass_workstation_service.Domain.Commands
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.FileName = "start cmd.exe";
+            startInfo.FileName = "cmd.exe";
             startInfo.Arguments = $"/C {this.Command}";
             this.Process.StartInfo = startInfo;
             
