@@ -28,6 +28,10 @@ If you would prefer a video, look at :
  - [How to Control a PC from Home Assistant](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
  - [Mit Home-Assistant den Computer AN und AUS schalten!](https://www.youtube.com/watch?v=oDJHGEcV84A) by Fabsenet on YouTube.
 
+Or a written article : 
+ - [How to Setup HASS Workstation Service in Home Assistant](https://smarthomepursuits.com/how-to-setup-hass-workstation-service-in-home-assistant/) by Danny @ smarthomepursuits.com
+ - [Control your Windows PC with HASS Workstation Service](https://home-assistant-guide.com/2021/01/18/control-your-windows-pc-with-hass-workstation-service/) by home-assistant-guide.com
+
 ## Installation
 
 You can get the installer from [here](https://hassworkstationstorage.z6.web.core.windows.net/publish/setup.exe). When using the installer, the application checks for updates on startup. This is the recommended way to install for most users.
