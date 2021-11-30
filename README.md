@@ -74,8 +74,8 @@ Here is a list of the most commonly used sensors with the full documentation [he
 |sensor|use|
 |---|---|
 |ActiveWindow|Exposes the currently selected window|
-|WebcamActive|Exposes the microphone state|
-|MicrophoneActive|Exposes the webcam state|
+|WebcamActive|Exposes the webcam state|
+|MicrophoneActive|Exposes the microphone state|
 
 ## Commands
 
