@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:UserInterface.ViewModels;assembly=UserInterface"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -15,8 +15,12 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="*, *" Margin="10">
-        <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
+    <Grid ColumnDefinitions="Auto, *, Auto" Margin="10">
+      <Grid.RowDefinitions>
+        <RowDefinition MinHeight="500"></RowDefinition>
+        <RowDefinition></RowDefinition>
+      </Grid.RowDefinitions>
+        <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" MinHeight="500" Background="#2D2D30"/>
         <views:GeneralSettingsView Grid.Column="0" Grid.Row="1" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
         <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10" Background="#2D2D30"/>
         <views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="10" Background="#2D2D30"/>
