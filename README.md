@@ -42,7 +42,7 @@ If you don't want to use the installer, standalone is what you need. Make sure t
 As a prerequisite, make sure you have an MQTT username and password available. Using Home Assistant in combination with the Mosquitto broker add-on and integration? You can both use a Home Assistant account and a local account. From a security perspective, we recommend a local account as this only provides access to the MQTT Broker and not to your Home Assistant instance.
 
 Now that you are all set, make sure to run the `hass-workstation-service.exe` executable first. This executable is responsible for setting up the sensors and talking with your MQTT Broker. To configure the service, start the `UserInterface.exe` executable.
-Add your `hostname` or `IP address`, `port`, `username` and `password` and click on Save. In case you use the Mosquitto add-in, provide port `8883` and check `Use TLS`. The application will mention "All good" when configured correctly.
+Add your `hostname` or `IP address`, `port`, `username` and `password` and click on Save. In case you use the Mosquitto add-in, provide port `8883` and check `Use TLS`. If you don;t want to use TLS the default port is `1883`. The application will mention "All good" when configured correctly.
 
 ### Updating
 
