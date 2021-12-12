@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.BrokerSettings">
-  <StackPanel Margin="30" HorizontalAlignment="Left">
+  <StackPanel Margin="30" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto">
     <ContentControl FontSize="18" FontWeight="Bold">MQTT Broker</ContentControl>
     <TextBlock IsVisible="{Binding IsConnected}" Foreground="Green" Text="{Binding Message}"></TextBlock >
     <TextBlock IsVisible="{Binding !IsConnected}" Foreground="Red" Text="{Binding Message}"></TextBlock >

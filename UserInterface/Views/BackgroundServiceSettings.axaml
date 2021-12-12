@@ -9,10 +9,7 @@
       <ContentControl FontSize="18" FontWeight="Bold">Background service</ContentControl>
       <TextBlock IsVisible="{Binding IsRunning}" Foreground="Green" Text="{Binding Message}"></TextBlock >
       <TextBlock IsVisible="{Binding !IsRunning}" Foreground="Red" Text="{Binding Message}"></TextBlock >
-
-      <Button IsVisible="{Binding !IsRunning}" Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Start">Start</Button>
-
-
+      <TextBlock TextWrapping="Wrap" IsVisible="{Binding !IsRunning}" Text="The UI will crash after a while if the service wasn't started first. Please make sure the service is running. If you used the installer and you are seeing this message, please check if your antivirus might be interfering. "></TextBlock >
     </StackPanel>
     <StackPanel HorizontalAlignment="Stretch">
       <ContentControl FontSize="14" FontWeight="Bold">Autostart</ContentControl>

@@ -27,5 +27,4 @@
         <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10" Background="#2D2D30"/>
         <views:AppInfo Grid.Column="2" Grid.Row="1" Margin="10" Background="#2D2D30"/>
     </Grid>
-
 </Window>
