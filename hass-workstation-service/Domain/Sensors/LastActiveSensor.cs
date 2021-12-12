@@ -25,7 +25,7 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-            return GetLastInputTime().ToString("s");
+            return GetLastInputTime().ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
         
 

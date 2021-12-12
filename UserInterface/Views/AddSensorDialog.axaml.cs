@@ -158,6 +158,13 @@ namespace UserInterface.Views
                     item.UpdateInterval = 10;
                     break;
                     
+                case AvailableSensors.WebcamProcessSensor:
+                    item.Description = "This sensor shows which process is using the webcam.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#webcamprocesssensor";
+                    item.ShowQueryInput = false;
+                    item.UpdateInterval = 10;
+                    break;
+                    
                 case AvailableSensors.MicrophoneActiveSensor:
                     item.Description = "This sensor shows if the microphone is currently in use.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#microphoneactivesensor";
