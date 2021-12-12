@@ -29,7 +29,7 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-            return (DateTime.Now - TimeSpan.FromMilliseconds(GetTickCount64())).ToString("s");
+            return (DateTime.Now - TimeSpan.FromMilliseconds(GetTickCount64())).ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         [DllImport("kernel32")]
