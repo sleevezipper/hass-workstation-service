@@ -73,6 +73,9 @@ namespace hass_workstation_service.Domain.Sensors
         [SupportedOSPlatform("windows")]
         private string IsMicrophoneInUseRegistry()
         {
+            // Clear old values
+            this.processes.Clear();
+            
             using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone"))
             {
                CheckLastUsed(key);

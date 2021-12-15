@@ -73,6 +73,9 @@ namespace hass_workstation_service.Domain.Sensors
         [SupportedOSPlatform("windows")]
         private string IsWebCamInUseRegistry()
         {
+            // Clear old values
+            this.processes.Clear();
+            
             using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"))
             {
                CheckLastUsed(key);
