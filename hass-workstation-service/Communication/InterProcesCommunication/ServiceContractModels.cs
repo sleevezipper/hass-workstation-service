@@ -45,7 +45,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
             {
                 this.WindowName = namedWindowSensor.WindowName;
             }
-            this.UpdateInterval = sensor.UpdateInterval;  
+            this.UpdateInterval = sensor.UpdateInterval;
             this.UnitOfMeasurement = ((SensorDiscoveryConfigModel)sensor.GetAutoDiscoveryConfig()).Unit_of_measurement;
         }
         public ConfiguredSensorModel()
@@ -95,6 +95,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         WebcamActiveSensor,
         WebcamProcessSensor,
         MicrophoneActiveSensor,
+        MicrophoneProcessSensor,
         ActiveWindowSensor,
         NamedWindowSensor,
         LastActiveSensor,

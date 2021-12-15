@@ -135,6 +135,9 @@ namespace hass_workstation_service.Data
                     case "MicrophoneActiveSensor":
                         sensor = new MicrophoneActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "MicrophoneProcessSensor":
+                        sensor = new MicrophoneProcessSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     case "SessionStateSensor":
                         sensor = new SessionStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
@@ -462,7 +465,7 @@ namespace hass_workstation_service.Data
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="id">The Id of the sensor to replace</param>
         /// <param name="sensor">The new sensor</param>
