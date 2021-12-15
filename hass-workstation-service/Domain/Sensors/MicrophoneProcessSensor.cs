@@ -10,7 +10,7 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class MicrophoneProcessSensor : AbstractSensor
     {
-        private List<string> processes = new List<string>();
+        private HashSet<string> processes = new HashSet<string>();
 
         public MicrophoneProcessSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneProcess", Guid id = default) : base(publisher, name ?? "MicrophoneProcess", updateInterval ?? 10, id)
         {

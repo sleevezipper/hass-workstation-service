@@ -10,7 +10,7 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class WebcamProcessSensor : AbstractSensor
     {
-        private List<string> processes = new List<string>();
+        private HashSet<string> processes = new HashSet<string>();
 
         public WebcamProcessSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamProcess", Guid id = default) : base(publisher, name ?? "WebcamProcess", updateInterval ?? 10, id)
         {
