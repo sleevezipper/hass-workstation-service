@@ -30,7 +30,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
 
         /// <summary>
         /// You can use this to check if the application responds.
-        /// </summary> 
+        /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         public string Ping(string str) => str == "ping" ? "pong" : "what?";
@@ -44,7 +44,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         public void WriteMqttBrokerSettingsAsync(MqttSettings settings) => _configurationService.WriteMqttBrokerSettingsAsync(settings);
 
         /// <summary>
-        /// Enables or disables autostart. 
+        /// Enables or disables autostart.
         /// </summary>
         /// <param name="enable"></param>
         public void EnableAutostart(bool enable) => _configurationService.EnableAutoStart(enable);
@@ -108,7 +108,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         public void RemoveCommandById(Guid id) => _configurationService.DeleteConfiguredCommand(id);
 
         /// <summary>
-        /// Adds a command to the configured commands. This properly initializes the class and writes it to the config file. 
+        /// Adds a command to the configured commands. This properly initializes the class and writes it to the config file.
         /// </summary>
         /// <param name="sensorType"></param>
         /// <param name="json"></param>
@@ -123,7 +123,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
         }
 
         /// <summary>
-        /// Adds a command to the configured commands. This properly initializes the class, subscribes to the command topic and writes it to the config file. 
+        /// Adds a command to the configured commands. This properly initializes the class, subscribes to the command topic and writes it to the config file.
         /// </summary>
         /// <param name="commandType"></param>
         /// <param name="json"></param>
@@ -179,6 +179,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableSensors.WebcamActiveSensor => new WebcamActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.WebcamProcessSensor => new WebcamProcessSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.MicrophoneActiveSensor => new MicrophoneActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.MicrophoneProcessSensor => new MicrophoneProcessSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.NamedWindowSensor => new NamedWindowSensor(_publisher, model.WindowName, model.Name, (int)model.UpdateInterval),
                 AvailableSensors.LastActiveSensor => new LastActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.LastBootSensor => new LastBootSensor(_publisher, (int)model.UpdateInterval, model.Name),

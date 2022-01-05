@@ -24,7 +24,7 @@ This sensor returns the current volume of playing audio. **It does not return th
 
 This sensor returns the master volume for the currently selected default audio device.
 
-###  DummySensor
+### DummySensor
 
 This sensor produces a random output every second, and is intended to test latency and connectivity.
 
@@ -88,6 +88,10 @@ The webcam active sensor returns the status of the webcam.
 ### WebcamProcessSensor
 
 The webcam process sensor returns the process which is using the webcam.
+
+### MicrophoneProcessSensor
+
+The microphone process sensor returns the process which is using the microphone.
 
 ### WMIQuerySensor
 
