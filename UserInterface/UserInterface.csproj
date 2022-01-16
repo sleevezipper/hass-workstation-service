@@ -17,7 +17,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.8" />
     <PackageReference Include="Avalonia.Win32" Version="0.10.8" />
     <PackageReference Include="JKang.IpcServiceFramework.Client.NamedPipe" Version="3.1.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\hass-workstation-service\hass-workstation-service.csproj" />
