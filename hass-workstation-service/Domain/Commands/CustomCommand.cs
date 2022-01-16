@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace hass_workstation_service.Domain.Commands
 {
@@ -27,8 +28,19 @@ namespace hass_workstation_service.Domain.Commands
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = $"/C {this.Command}";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            { 
+                startInfo.FileName = "/bin/bash";
+                startInfo.Arguments = $"-c {this.Command}";
+            }
+           
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {
+                startInfo.FileName = "cmd.exe";
+                startInfo.Arguments = $"/C {this.Command}";
+            }
+           
             this.Process.StartInfo = startInfo;
             
             // turn off the sensor to guarantee disable the switch
