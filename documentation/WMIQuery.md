@@ -13,7 +13,7 @@ The command ```sql SELECT * FROM Win32_Processor``` cannot be used because it re
 
 
 You can use [WMI Explorer](https://github.com/vinaypamnani/wmie2/releases) to construct a query, or alternatively look at the user submitted sensors below
-
+If a class or value cannot be found in the default scope, you can use the "Scope" setting when adding or editing the sensor. 
 ---
 
 ## User Submitted Sensor Examples
