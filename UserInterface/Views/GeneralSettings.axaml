@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.GeneralSettingsView">
-  <StackPanel Margin="30" HorizontalAlignment="Left">
+  <StackPanel Margin="30" HorizontalAlignment="Left" MinWidth="250">
     <ContentControl FontSize="18" FontWeight="Bold">Settings</ContentControl>
     <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
       <ContentControl>Name prefix</ContentControl>
@@ -12,9 +12,9 @@
           <ToolTip.Tip>
             <StackPanel>
               <TextBlock>
-    [Experimental]
-    This allows you to set a name which will be used to prefix all sensor- and command names. For example:
-    If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the sensor will be named "laptop-ActiveWindow" and its entityId will be "laptop_activewindow".
+[Experimental]
+This allows you to set a name which will be used to prefix all sensor- and command names. For example:
+If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the sensor will be named "laptop-ActiveWindow" and its entityId will be "laptop_activewindow".
               </TextBlock>
           
             </StackPanel>

@@ -15,14 +15,13 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
   <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-    <Grid ColumnDefinitions="Auto, *, Auto" Margin="10">
-      <Grid.RowDefinitions>
-        <RowDefinition MinHeight="500"></RowDefinition>
-        <RowDefinition></RowDefinition>
-      </Grid.RowDefinitions>
-
-      <views:BrokerSettings Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" MinHeight="500" Background="#2D2D30"/>
-      <views:GeneralSettingsView Grid.Column="0" Grid.Row="1" Margin="10" Grid.RowSpan="2" Background="#2D2D30"/>
+    <Grid ColumnDefinitions="Auto, *, Auto" RowDefinitions="Auto, *" Margin="10">
+      <ScrollViewer Grid.Column="0" Grid.Row="0" Margin="10" Grid.RowSpan="2" >
+        <StackPanel>
+          <views:BrokerSettings Background="#2D2D30"/>
+          <views:GeneralSettingsView Margin="0 20 0 0" Background="#2D2D30"/>
+        </StackPanel>
+      </ScrollViewer>
       <views:SensorSettings Grid.Column="1" Grid.Row="0" Margin="10" Background="#2D2D30"/>
       <views:CommandSettings Grid.Column="1" Grid.Row="1" Margin="10" Background="#2D2D30"/>
       <views:BackgroundServiceSettings Grid.Column="2" Grid.Row="0" Margin="10" Background="#2D2D30"/>

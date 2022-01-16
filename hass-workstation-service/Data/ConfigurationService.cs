@@ -342,11 +342,11 @@ namespace hass_workstation_service.Data
 
                 var certs = new List<X509Certificate>();
 
-                if (configuredBroker.RootCAPath != null) {
+                if (!string.IsNullOrEmpty(configuredBroker.RootCAPath)) {
                     certs.Add(new X509Certificate2(configuredBroker.RootCAPath));
                 }
 
-                if (configuredBroker.ClientCertPath != null)
+                if (!string.IsNullOrEmpty(configuredBroker.ClientCertPath))
                 {
                     certs.Add(new X509Certificate2(configuredBroker.ClientCertPath));
                 }
