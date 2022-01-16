@@ -11,6 +11,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Password { get; set; }
         public int? Port { get; set; }
         public bool UseTLS { get; set; }
+
+        public bool RetainLWT { get; set; }
+        public string RootCAPath { get; set; }
+        public string ClientCertPath { get; set; }
     }
 
     public class MqqtClientStatus
@@ -26,6 +30,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Name { get; set; }
         public string Value { get; set; }
         public string Query { get; set; }
+        public string Scope { get; set; }
         public string WindowName { get; set; }
         public int UpdateInterval { get; set; }
         public string UnitOfMeasurement { get; set; }
@@ -40,12 +45,13 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
             if (sensor is WMIQuerySensor wMIQuerySensor)
             {
                 this.Query = wMIQuerySensor.Query;
+                this.Scope = wMIQuerySensor.Scope;
             }
             if (sensor is NamedWindowSensor namedWindowSensor)
             {
                 this.WindowName = namedWindowSensor.WindowName;
             }
-            this.UpdateInterval = sensor.UpdateInterval;  
+            this.UpdateInterval = sensor.UpdateInterval;
             this.UnitOfMeasurement = ((SensorDiscoveryConfigModel)sensor.GetAutoDiscoveryConfig()).Unit_of_measurement;
         }
         public ConfiguredSensorModel()
@@ -95,6 +101,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         WebcamActiveSensor,
         WebcamProcessSensor,
         MicrophoneActiveSensor,
+        MicrophoneProcessSensor,
         ActiveWindowSensor,
         NamedWindowSensor,
         LastActiveSensor,

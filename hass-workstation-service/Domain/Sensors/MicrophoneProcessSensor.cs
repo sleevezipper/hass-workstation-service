@@ -8,11 +8,11 @@ using System.Collections.Generic;
 
 namespace hass_workstation_service.Domain.Sensors
 {
-    public class WebcamProcessSensor : AbstractSensor
+    public class MicrophoneProcessSensor : AbstractSensor
     {
         private HashSet<string> processes = new HashSet<string>();
 
-        public WebcamProcessSensor(MqttPublisher publisher, int? updateInterval = null, string name = "WebcamProcess", Guid id = default) : base(publisher, name ?? "WebcamProcess", updateInterval ?? 10, id)
+        public MicrophoneProcessSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneProcess", Guid id = default) : base(publisher, name ?? "MicrophoneProcess", updateInterval ?? 10, id)
         {
         }
 
@@ -20,7 +20,7 @@ namespace hass_workstation_service.Domain.Sensors
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return IsWebCamInUseRegistry();
+                return IsMicrophoneInUseRegistry();
             }
             else
             {
@@ -71,17 +71,17 @@ namespace hass_workstation_service.Domain.Sensors
         }
 
         [SupportedOSPlatform("windows")]
-        private string IsWebCamInUseRegistry()
+        private string IsMicrophoneInUseRegistry()
         {
             // Clear old values
             this.processes.Clear();
             
-            using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"))
+            using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone"))
             {
                CheckLastUsed(key);
             }
 
-            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam"))
+            using (var key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone"))
             {
                 CheckLastUsed(key);
             }

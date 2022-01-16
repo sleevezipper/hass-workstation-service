@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Threading.Tasks;
 using hass_workstation_service.Communication;
@@ -19,6 +20,7 @@ using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
 using Serilog;
+
 
 namespace hass_workstation_service.Data
 {
@@ -135,6 +137,9 @@ namespace hass_workstation_service.Data
                     case "MicrophoneActiveSensor":
                         sensor = new MicrophoneActiveSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
+                    case "MicrophoneProcessSensor":
+                        sensor = new MicrophoneProcessSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        break;
                     case "SessionStateSensor":
                         sensor = new SessionStateSensor(publisher, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
                         break;
@@ -152,7 +157,7 @@ namespace hass_workstation_service.Data
                         break;
                     // keep this one last!
                     case "WMIQuerySensor":
-                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id, configuredSensor.Scope);
                         break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
@@ -205,22 +210,22 @@ namespace hass_workstation_service.Data
                     case "CustomCommand":
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaPlayPauseCommand":
+                    case "PlayPauseCommand":
                         command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaNextCommand":
+                    case "NextCommand":
                         command = new NextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaPreviousCommand":
+                    case "PreviousCommand":
                         command = new PreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaVolumeUpCommand":
+                    case "VolumeUpCommand":
                         command = new VolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaVolumeDownCommand":
+                    case "VolumeDownCommand":
                         command = new VolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaMuteCommand":
+                    case "MuteCommand":
                         command = new MuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "KeyCommand":
@@ -307,22 +312,54 @@ namespace hass_workstation_service.Data
             if (configuredBroker != null && configuredBroker.Host != null)
             {
 
-                var mqttClientOptions = new MqttClientOptionsBuilder()
+
+                var mqttClientOptionsBuilder = new MqttClientOptionsBuilder()
                     .WithTcpServer(configuredBroker.Host, configuredBroker.Port)
-                    .WithTls(new MqttClientOptionsBuilderTlsParameters()
-                    {
-                        UseTls = configuredBroker.UseTLS,
-                        AllowUntrustedCertificates = true,
-                        SslProtocol = configuredBroker.UseTLS ? System.Security.Authentication.SslProtocols.Tls12 : System.Security.Authentication.SslProtocols.None
-                    })
                     .WithCredentials(configuredBroker.Username, configuredBroker.Password.ToString())
-                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(30))
-                    .WithWillMessage(new MqttApplicationMessageBuilder()
-                        .WithRetainFlag()
+                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(30));
+
+
+                /* Start LWT  */
+                var lwtMessage = new MqttApplicationMessageBuilder()
                         .WithTopic($"homeassistant/sensor/{_deviceConfigModel.Name}/availability")
-                        .WithPayload("offline")
-                        .Build())
-                    .Build();
+                        .WithPayload("offline");
+                if (configuredBroker.RetainLWT) {
+                    lwtMessage.WithRetainFlag();
+                }                   
+
+                mqttClientOptionsBuilder.WithWillMessage(lwtMessage.Build());
+                /* End LWT */
+
+
+                /* Start TLS/Certificate configuration */
+
+                var tlsParameters = new MqttClientOptionsBuilderTlsParameters()
+                {
+                    UseTls = configuredBroker.UseTLS,
+                    AllowUntrustedCertificates = true,
+                    SslProtocol = configuredBroker.UseTLS ? System.Security.Authentication.SslProtocols.Tls12 : System.Security.Authentication.SslProtocols.None
+                };
+
+                var certs = new List<X509Certificate>();
+
+                if (!string.IsNullOrEmpty(configuredBroker.RootCAPath)) {
+                    certs.Add(new X509Certificate2(configuredBroker.RootCAPath));
+                }
+
+                if (!string.IsNullOrEmpty(configuredBroker.ClientCertPath))
+                {
+                    certs.Add(new X509Certificate2(configuredBroker.ClientCertPath));
+                }
+                if (certs.Count > 0) {
+                    // IF certs are configured, let's add them here
+                    tlsParameters.Certificates = certs;
+                }
+                mqttClientOptionsBuilder.WithTls(tlsParameters);
+
+                /* End TLS/Certificate Configuration */
+
+
+                var mqttClientOptions = mqttClientOptionsBuilder.Build();
                 return new ManagedMqttClientOptionsBuilder().WithClientOptions(mqttClientOptions).Build();
             }
             else
@@ -375,7 +412,7 @@ namespace hass_workstation_service.Data
                     if (sensor is WMIQuerySensor wmiSensor)
                     {
 #pragma warning disable CA1416 // Validate platform compatibility. We ignore it here because this would never happen. A cleaner solution may be implemented later.
-                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query, Scope = wmiSensor.Scope });
 #pragma warning restore CA1416 // Validate platform compatibility
                     }
                     else if (sensor is NamedWindowSensor namedWindowSensor)
@@ -462,7 +499,7 @@ namespace hass_workstation_service.Data
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="id">The Id of the sensor to replace</param>
         /// <param name="sensor">The new sensor</param>
@@ -541,7 +578,10 @@ namespace hass_workstation_service.Data
                     Username = settings.Username,
                     Password = settings.Password ?? "",
                     Port = settings.Port ?? 1883,
-                    UseTLS = settings.UseTLS
+                    UseTLS = settings.UseTLS,
+                    RetainLWT = settings.RetainLWT,
+                    RootCAPath = settings.RootCAPath,
+                    ClientCertPath = settings.ClientCertPath
                 };
 
                 await JsonSerializer.SerializeAsync(stream, configuredBroker);
@@ -560,7 +600,10 @@ namespace hass_workstation_service.Data
                 Username = broker?.Username,
                 Password = broker?.Password,
                 Port = broker?.Port,
-                UseTLS = broker?.UseTLS ?? false
+                UseTLS = broker?.UseTLS ?? false,
+                RetainLWT = broker?.RetainLWT ?? true,
+                RootCAPath = broker?.RootCAPath,
+                ClientCertPath = broker?.RootCAPath
             };
         }
 

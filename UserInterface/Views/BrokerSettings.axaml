@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
              x:Class="UserInterface.Views.BrokerSettings">
-  <StackPanel Margin="30" HorizontalAlignment="Left" ScrollViewer.VerticalScrollBarVisibility="Auto">
+  <StackPanel Margin="30" HorizontalAlignment="Left" MinWidth="250">
     <ContentControl FontSize="18" FontWeight="Bold">MQTT Broker</ContentControl>
     <TextBlock IsVisible="{Binding IsConnected}" Foreground="Green" Text="{Binding Message}"></TextBlock >
     <TextBlock IsVisible="{Binding !IsConnected}" Foreground="Red" Text="{Binding Message}"></TextBlock >
@@ -25,6 +25,65 @@
     <TextBox Text="{Binding Username}" MinWidth="150"/>
     <ContentControl  Margin="0 20 0 10">Password</ContentControl>
     <TextBox Text="{Binding Password}" MinWidth="150" PasswordChar="•"/>
+
+    <Expander Header="Advanced" Margin="0 20 0 0">
+      <StackPanel>
+        <StackPanel>
+          <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
+            <ContentControl>Retain LastWillAndTestament</ContentControl>
+            <TextBlock Cursor="Help" Margin="5 0 0 0" VerticalAlignment="Bottom" TextDecorations="Underline">
+              (What's this?)
+              <ToolTip.Tip>
+                <StackPanel>
+                  <TextBlock>
+[Experimental]
+If set, sets Retain on the Last Will and Testament message.
+Only turn this off if you use a broker that does not support this(e.g. AWS IoT Core)
+Defaults to True
+                  </TextBlock>
+                </StackPanel>
+              </ToolTip.Tip>
+            </TextBlock>
+          </StackPanel>
+          <CheckBox IsChecked="{Binding RetainLWT}" HorizontalAlignment="Left" Margin="0 0 0 0"/>
+        </StackPanel>
+        <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
+
+          <ContentControl>Root Cert Path (.pem/.crt)</ContentControl>
+          <TextBlock Cursor="Help" Margin="5 0 0 0" VerticalAlignment="Bottom" TextDecorations="Underline">
+            (What's this?)
+            <ToolTip.Tip>
+              <StackPanel>
+                <TextBlock>
+[Experimental]
+If set, use this certificate in the TLS configuration for the MQTT connection.
+This will be a pem or crt file provided by your broker.
+                </TextBlock>
+              </StackPanel>
+            </ToolTip.Tip>
+          </TextBlock>
+        </StackPanel>
+        <TextBox Text="{Binding RootCAPath}" MinWidth="150"/>
+
+        <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
+          <ContentControl>Client Cert Path (.pfx)</ContentControl>
+          <TextBlock Cursor="Help" Margin="5 0 0 0" VerticalAlignment="Bottom" TextDecorations="Underline">
+            (What's this?)
+            <ToolTip.Tip>
+              <StackPanel>
+                <TextBlock>
+[Experimental]
+If set, use this certificate in the TLS configuration for the MQTT connection.
+This should be the private key .pfx file for a device created in your broker corresponding to this Windows PC.
+                </TextBlock>
+              </StackPanel>
+            </ToolTip.Tip>
+          </TextBlock>
+        </StackPanel>
+        <TextBox Text="{Binding ClientCertPath}" MinWidth="150"/>
+      </StackPanel>
+    </Expander>
+
     <Button Width="75" HorizontalAlignment="Right" Margin="0 40 0 10" Click="Configure">Save</Button>
   </StackPanel>
 </UserControl>

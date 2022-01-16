@@ -40,8 +40,8 @@ namespace hass_workstation_service.Domain.Sensors
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(GetAutoDiscoveryConfig().State_topic)
                 .WithPayload(state)
-                .WithExactlyOnceQoS()
-                .WithRetainFlag()
+                //.WithExactlyOnceQoS()
+                //.WithRetainFlag()
                 .Build();
             await Publisher.Publish(message);
             PreviousPublishedState = state;

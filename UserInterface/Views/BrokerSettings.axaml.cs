@@ -50,7 +50,7 @@ namespace UserInterface.Views
             ICollection<ValidationResult> results;
             if (model.IsValid(model, out results))
             {
-                var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password ?? "", Port = model.Port, UseTLS = model.UseTLS }));
+                var result = this.client.InvokeAsync(x => x.WriteMqttBrokerSettingsAsync(new MqttSettings() { Host = model.Host, Username = model.Username, Password = model.Password ?? "", Port = model.Port, UseTLS = model.UseTLS, RootCAPath = model.RootCAPath, ClientCertPath = model.ClientCertPath, RetainLWT = model.RetainLWT }));
             }
         }
 

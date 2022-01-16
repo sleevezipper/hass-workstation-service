@@ -67,6 +67,7 @@ namespace UserInterface.Views
             item.Name = sensor.Name;
             item.UpdateInterval = sensor.UpdateInterval;
             item.Query = sensor.Query;
+            item.Scope = sensor.Scope;
             item.WindowName = sensor.WindowName;
 
             Title = $"Edit {sensor.Name}";
@@ -75,7 +76,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = (AddSensorViewModel)DataContext;
-            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName };
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName, item.Scope };
             string json = JsonSerializer.Serialize(model);
             if (SensorId == Guid.Empty)
                 await _client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
@@ -102,7 +103,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.DummySensor:
                     item.Description = "This sensor spits out a random number every second. Useful for testing, maybe you'll find some other use for it.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#dummysensor";
@@ -110,7 +111,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 1;
                     break;
-                    
+
                 case AvailableSensors.CPULoadSensor:
                     item.Description = "This sensor checks the current CPU load. It averages the load on all logical cores every second and rounds the output to two decimals.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#cpuloadsensor";
@@ -118,7 +119,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.CurrentClockSpeedSensor:
                     item.Description = "This sensor returns the BIOS configured baseclock for the processor.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#currentclockspeedsensor";
@@ -126,7 +127,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 3600;
                     break;
-                    
+
                 case AvailableSensors.WMIQuerySensor:
                     item.Description = "This advanced sensor executes a user defined WMI query and exposes the result. The query should return a single value.";
                     item.MoreInfoLink = "https://github.com/sleevezipperhass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor";
@@ -134,7 +135,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
-                    
+
                 case AvailableSensors.MemoryUsageSensor:
                     item.Description = "This sensor calculates the percentage of used memory.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#memoryusagesensorsensor";
@@ -142,7 +143,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
                     break;
-                    
+
                 case AvailableSensors.ActiveWindowSensor:
                     item.Description = "This sensor exposes the name of the currently active window.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#activewindowsensor";
@@ -150,28 +151,35 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.WebcamActiveSensor:
                     item.Description = "This sensor shows if the webcam is currently being used.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#webcamactivesensor";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
-                    
+
                 case AvailableSensors.WebcamProcessSensor:
                     item.Description = "This sensor shows which process is using the webcam.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#webcamprocesssensor";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
-                    
+
                 case AvailableSensors.MicrophoneActiveSensor:
                     item.Description = "This sensor shows if the microphone is currently in use.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#microphoneactivesensor";
                     item.ShowQueryInput = false;
                     item.UpdateInterval = 10;
                     break;
-                    
+
+                case AvailableSensors.MicrophoneProcessSensor:
+                    item.Description = "This sensor shows which process is using the microphone.";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#microphoneprocesssensor";
+                    item.ShowQueryInput = false;
+                    item.UpdateInterval = 10;
+                    break;
+
                 case AvailableSensors.NamedWindowSensor:
                     item.Description = "This sensor returns true if a window was found with the name you search for. ";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#namedwindowsensor";
@@ -179,7 +187,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = true;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.LastActiveSensor:
                     item.Description = "This sensor returns the date/time that the workstation was last active.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#lastactivesensor";
@@ -187,7 +195,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.LastBootSensor:
                     item.Description = "This sensor returns the date/time that Windows was last booted";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#lastbootsensor";
@@ -195,7 +203,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.SessionStateSensor:
                     item.Description = "This sensor returns the state of the Windows session.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#sessionstatesensor";
@@ -203,7 +211,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.CurrentVolumeSensor:
                     item.Description = "This sensor returns the volume of currently playing audio.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#currentvolumesensor";
@@ -211,7 +219,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-               
+
                 case AvailableSensors.MasterVolumeSensor:
                     item.Description = "This sensor returns the master volume of the currently selected default audio device as a percentage value.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#mastervolumesensor";
@@ -219,7 +227,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.GPUTemperatureSensor:
                     item.Description = "This sensor returns the current temperature of the GPU in °C.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#gputemperaturesensor";
@@ -227,7 +235,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 case AvailableSensors.GPULoadSensor:
                     item.Description = "This sensor returns the current GPU load.";
                     item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/Sensors.md#gpuloadsensor";
@@ -235,7 +243,7 @@ namespace UserInterface.Views
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 5;
                     break;
-                    
+
                 default:
                     item.Description = null;
                     item.MoreInfoLink = null;

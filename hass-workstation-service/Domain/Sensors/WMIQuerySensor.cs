@@ -12,13 +12,26 @@ namespace hass_workstation_service.Domain.Sensors
     public class WMIQuerySensor : AbstractSensor
     {
         public string Query { get; private set; }
+        public string Scope { get; private set; }
         protected readonly ObjectQuery _objectQuery;
         protected readonly ManagementObjectSearcher _searcher;
-        public WMIQuerySensor(MqttPublisher publisher, string query, int? updateInterval = null, string name = "WMIQuerySensor", Guid id = default) : base(publisher, name ?? "WMIQuerySensor", updateInterval ?? 10, id)
+        public WMIQuerySensor(MqttPublisher publisher, string query, int? updateInterval = null, string name = "WMIQuerySensor", Guid id = default, string scope = "") : base(publisher, name ?? "WMIQuerySensor", updateInterval ?? 10, id)
         {
             this.Query = query;
+            this.Scope = scope;
             _objectQuery = new ObjectQuery(this.Query);
-            _searcher = new ManagementObjectSearcher(query);
+            ManagementScope managementscope;
+            // if we have a custom scope, use that
+            if (!string.IsNullOrWhiteSpace(scope))
+            {
+                managementscope = new ManagementScope(scope);
+            }
+            // otherwise, use the default
+            else
+            {
+                managementscope = new ManagementScope(@"\\localhost\");
+            }
+            _searcher = new ManagementObjectSearcher(managementscope, _objectQuery);
         }
         public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig()
         {
