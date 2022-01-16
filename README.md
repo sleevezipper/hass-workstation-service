@@ -13,13 +13,25 @@ It will try to futher accomplish this goal in the future by:
 
 - Being platform independent
 
-## Screenshots
+## Hass Workstation Service in the press
+
+<details>
+<summary>View some screenshots</summary>
 
 ![The settings screen](https://i.imgur.com/RBQx807.png)
 
 ![The resulting sensors and commands in Home Assistant](https://i.imgur.com/jXRU2cu.png)
 
-Not convinced yet? Check out [this excellent video](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+</details>
+
+If you would prefer a video, look at :
+ - [How to Control a PC from Home Assistant](https://youtu.be/D5A7le79R5M) by GeekToolkit on YouTube.
+ - [Mit Home-Assistant den Computer AN und AUS schalten!](https://www.youtube.com/watch?v=oDJHGEcV84A) by Fabsenet on YouTube.
+ - [The Butter, What?! show's review](https://youtu.be/wBTKfwkV-vs?t=376) by Pat and Brian on youtube.
+
+Or a written article : 
+ - [How to Setup HASS Workstation Service in Home Assistant](https://smarthomepursuits.com/how-to-setup-hass-workstation-service-in-home-assistant/) by Danny @ smarthomepursuits.com
+ - [Control your Windows PC with HASS Workstation Service](https://home-assistant-guide.com/2021/01/18/control-your-windows-pc-with-hass-workstation-service/) by home-assistant-guide.com
 
 ## Installation
 
@@ -35,7 +47,7 @@ If you don't want to use the installer, standalone is what you need. Make sure t
 As a prerequisite, make sure you have an MQTT username and password available. Using Home Assistant in combination with the Mosquitto broker add-on and integration? You can both use a Home Assistant account and a local account. From a security perspective, we recommend a local account as this only provides access to the MQTT Broker and not to your Home Assistant instance.
 
 Now that you are all set, make sure to run the `hass-workstation-service.exe` executable first. This executable is responsible for setting up the sensors and talking with your MQTT Broker. To configure the service, start the `UserInterface.exe` executable.
-Add your `hostname` or `IP address`, `port`, `username` and `password` and click on Save. In case you use the Mosquitto add-in, provide port `8883` and check `Use TLS`. The application will mention "All good" when configured correctly.
+Add your `hostname` or `IP address`, `port`, `username` and `password` and click on Save. In case you use the Mosquitto add-in, provide port `8883` and check `Use TLS`. If you don't want to use TLS the default port is `1883`. The application will mention "All good" when configured correctly.
 
 ### Updating
 
@@ -43,7 +55,7 @@ If you used the installer, the app checks for updates on startup. If an update i
 
 ## Need help?
 
-Find us on [Discord](https://discord.gg/VraYT2N3wd).
+Find us on [Discord](https://discord.gg/VraYT2N3wd), or check out the [frequently asked questions](https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/FAQ.md#frequently-asked-questions).
 
 ## Development
 
@@ -67,8 +79,8 @@ Here is a list of the most commonly used sensors with the full documentation [he
 |sensor|use|
 |---|---|
 |ActiveWindow|Exposes the currently selected window|
-|WebcamActive|Exposes the microphone state|
-|MicrophoneActive|Exposes the webcam state|
+|WebcamActive|Exposes the webcam state|
+|MicrophoneActive|Exposes the microphone state|
 
 ## Commands
 

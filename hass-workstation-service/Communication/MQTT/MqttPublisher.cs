@@ -116,7 +116,7 @@ namespace hass_workstation_service.Communication
                 var message = new MqttApplicationMessageBuilder()
                 .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(discoverable.GetAutoDiscoveryConfig().NamePrefix, discoverable.ObjectId)}/config")
                 .WithPayload(clearConfig ? "" : JsonSerializer.Serialize(discoverable.GetAutoDiscoveryConfig(), discoverable.GetAutoDiscoveryConfig().GetType(), options))
-                .WithRetainFlag()
+                //.WithRetainFlag()
                 .Build();
                 await this.Publish(message);
                 // if clearconfig is true, also remove previous state messages
@@ -125,7 +125,7 @@ namespace hass_workstation_service.Communication
                     var stateMessage = new MqttApplicationMessageBuilder()
                     .WithTopic($"homeassistant/{discoverable.Domain}/{this.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(discoverable.GetAutoDiscoveryConfig().NamePrefix, discoverable.ObjectId)}/state")
                     .WithPayload("")
-                    .WithRetainFlag()
+                   // .WithRetainFlag()
                     .Build();
                     await this.Publish(stateMessage);
                 }

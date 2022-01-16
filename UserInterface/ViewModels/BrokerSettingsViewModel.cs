@@ -16,6 +16,9 @@ namespace UserInterface.ViewModels
         private bool isConnected;
         private int? port;
         private bool useTLS;
+        private bool retainLWT = true;
+        private string rootCaPath;
+        private string clientCertPath;
 
         public bool IsConnected { get => isConnected; set => this.RaiseAndSetIfChanged(ref isConnected, value); }
         public string Message { get => message; set => this.RaiseAndSetIfChanged(ref message, value); }
@@ -29,6 +32,13 @@ namespace UserInterface.ViewModels
         public bool UseTLS { get => useTLS; set => this.RaiseAndSetIfChanged(ref useTLS, value); }
 
 
+        public bool RetainLWT { get => retainLWT; set => this.RaiseAndSetIfChanged(ref retainLWT, value); }
+
+        public string RootCAPath { get => rootCaPath; set => this.RaiseAndSetIfChanged(ref rootCaPath, value); }
+
+        public string ClientCertPath { get => clientCertPath; set => this.RaiseAndSetIfChanged(ref clientCertPath, value); }
+
+
         public void Update(MqttSettings settings)
         {
             this.Host = settings.Host;
@@ -36,6 +46,9 @@ namespace UserInterface.ViewModels
             this.Password = settings.Password;
             this.Port = settings.Port;
             this.UseTLS = settings.UseTLS;
+            this.RetainLWT = settings.RetainLWT;
+            this.RootCAPath = settings.RootCAPath;
+            this.ClientCertPath = settings.ClientCertPath;
         }
 
         public void UpdateStatus(MqqtClientStatus status)

@@ -11,6 +11,10 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Password { get; set; }
         public int? Port { get; set; }
         public bool UseTLS { get; set; }
+
+        public bool RetainLWT { get; set; }
+        public string RootCAPath { get; set; }
+        public string ClientCertPath { get; set; }
     }
 
     public class MqqtClientStatus
