@@ -26,7 +26,7 @@
     <ContentControl  Margin="0 20 0 10">Password</ContentControl>
     <TextBox Text="{Binding Password}" MinWidth="150" PasswordChar="•"/>
 
-    <Expander Header="Advanced">
+    <Expander Header="Advanced" Margin="0 20 0 0">
       <StackPanel>
         <StackPanel>
           <StackPanel Margin="0 20 0 10" HorizontalAlignment="Left" Orientation="Horizontal">
