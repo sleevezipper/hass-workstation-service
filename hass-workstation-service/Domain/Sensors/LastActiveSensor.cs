@@ -6,7 +6,7 @@ namespace hass_workstation_service.Domain.Sensors
 {
     public class LastActiveSensor : AbstractSensor
     {
-        
+        private DateTime _lastActive = DateTime.MinValue;
         public LastActiveSensor(MqttPublisher publisher, int? updateInterval = 10, string name = "LastActive", Guid id = default) : base(publisher, name ?? "LastActive", updateInterval ?? 10, id){}
 
         public override SensorDiscoveryConfigModel GetAutoDiscoveryConfig()
@@ -25,7 +25,12 @@ namespace hass_workstation_service.Domain.Sensors
 
         public override string GetState()
         {
-            return GetLastInputTime().ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+            var lastInput = GetLastInputTime();
+            if ((_lastActive - lastInput).Duration().TotalSeconds > 1)
+            {
+                _lastActive = lastInput;
+            }
+            return _lastActive.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
         }
         
 
