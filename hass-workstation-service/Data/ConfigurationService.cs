@@ -342,11 +342,11 @@ namespace hass_workstation_service.Data
 
                 var certs = new List<X509Certificate>();
 
-                if (configuredBroker.RootCAPath != null) {
+                if (!string.IsNullOrEmpty(configuredBroker.RootCAPath)) {
                     certs.Add(new X509Certificate2(configuredBroker.RootCAPath));
                 }
 
-                if (configuredBroker.ClientCertPath != null)
+                if (!string.IsNullOrEmpty(configuredBroker.ClientCertPath))
                 {
                     certs.Add(new X509Certificate2(configuredBroker.ClientCertPath));
                 }
@@ -354,10 +354,10 @@ namespace hass_workstation_service.Data
                     // IF certs are configured, let's add them here
                     tlsParameters.Certificates = certs;
                 }
+                
                 mqttClientOptionsBuilder.WithTls(tlsParameters);
 
                 /* End TLS/Certificate Configuration */
-
 
                 var mqttClientOptions = mqttClientOptionsBuilder.Build();
                 return new ManagedMqttClientOptionsBuilder().WithClientOptions(mqttClientOptions).Build();

@@ -47,14 +47,13 @@ namespace hass_workstation_service
             {
                 try
                 {
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         await CreateHostBuilder(args).RunConsoleAsync();
-
                     }
                     else
                     {
-                        // we only support MS Windows for now
+                        // we only support MS Windows (and, experimentally, linux) for now
                         throw new NotImplementedException("Your platform is not yet supported");
                     }
                 }
@@ -104,8 +103,17 @@ namespace hass_workstation_service
 
         public static void StartUI()
         {
-            Log.Logger.Information(Environment.CurrentDirectory + "\\UserInterface.exe");
-            Process.Start(Environment.CurrentDirectory + "\\UserInterface.exe");
+            string location = Assembly.GetEntryAssembly().Location;
+            string path = System.IO.Path.GetDirectoryName(location);
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                Log.Logger.Information(Environment.CurrentDirectory + "/UserInterface");
+                Process.Start(Environment.CurrentDirectory + "/UserInterface");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                Log.Logger.Information(Environment.CurrentDirectory + "\\UserInterface.exe");
+                Process.Start(Environment.CurrentDirectory + "\\UserInterface.exe");
+            }
         }
     }
 }
