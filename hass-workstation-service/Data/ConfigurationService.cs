@@ -157,7 +157,7 @@ namespace hass_workstation_service.Data
                         break;
                     // keep this one last!
                     case "WMIQuerySensor":
-                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id);
+                        sensor = new WMIQuerySensor(publisher, configuredSensor.Query, configuredSensor.UpdateInterval, configuredSensor.Name, configuredSensor.Id, configuredSensor.Scope);
                         break;
                     default:
                         Log.Logger.Error("unsupported sensor type in config");
@@ -210,22 +210,22 @@ namespace hass_workstation_service.Data
                     case "CustomCommand":
                         command = new CustomCommand(publisher, configuredCommand.Command, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaPlayPauseCommand":
+                    case "PlayPauseCommand":
                         command = new PlayPauseCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaNextCommand":
+                    case "NextCommand":
                         command = new NextCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaPreviousCommand":
+                    case "PreviousCommand":
                         command = new PreviousCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaVolumeUpCommand":
+                    case "VolumeUpCommand":
                         command = new VolumeUpCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaVolumeDownCommand":
+                    case "VolumeDownCommand":
                         command = new VolumeDownCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
-                    case "MediaMuteCommand":
+                    case "MuteCommand":
                         command = new MuteCommand(publisher, configuredCommand.Name, configuredCommand.Id);
                         break;
                     case "KeyCommand":
@@ -412,7 +412,7 @@ namespace hass_workstation_service.Data
                     if (sensor is WMIQuerySensor wmiSensor)
                     {
 #pragma warning disable CA1416 // Validate platform compatibility. We ignore it here because this would never happen. A cleaner solution may be implemented later.
-                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query });
+                        configuredSensorsToSave.Add(new ConfiguredSensor() { Id = wmiSensor.Id, Name = wmiSensor.Name, Type = wmiSensor.GetType().Name, UpdateInterval = wmiSensor.UpdateInterval, Query = wmiSensor.Query, Scope = wmiSensor.Scope });
 #pragma warning restore CA1416 // Validate platform compatibility
                     }
                     else if (sensor is NamedWindowSensor namedWindowSensor)

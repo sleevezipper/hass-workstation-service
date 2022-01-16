@@ -13,6 +13,7 @@ namespace UserInterface.ViewModels
         private bool _showWindowNameInput;
         private string _moreInfoLink;
         private string _query;
+        private string _scope;
         private string _windowName;
 
         public AvailableSensors SelectedType { get => _selectedType; set => this.RaiseAndSetIfChanged(ref _selectedType, value); }
@@ -23,6 +24,7 @@ namespace UserInterface.ViewModels
         public bool ShowWindowNameInput { get => _showWindowNameInput; set => this.RaiseAndSetIfChanged(ref _showWindowNameInput, value); }
         public string MoreInfoLink { get => _moreInfoLink; set => this.RaiseAndSetIfChanged(ref _moreInfoLink, value); }
         public string Query { get => _query; set => this.RaiseAndSetIfChanged(ref _query, value); }
+        public string Scope { get => _scope; set => this.RaiseAndSetIfChanged(ref _scope, value); }
         public string WindowName { get => _windowName; set => this.RaiseAndSetIfChanged(ref _windowName, value); }
     }
 }

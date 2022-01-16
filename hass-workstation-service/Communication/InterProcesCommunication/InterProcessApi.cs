@@ -173,7 +173,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication
                 AvailableSensors.DummySensor => new DummySensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.CurrentClockSpeedSensor => new CurrentClockSpeedSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.CPULoadSensor => new CPULoadSensor(_publisher, (int)model.UpdateInterval, model.Name),
-                AvailableSensors.WMIQuerySensor => new WMIQuerySensor(_publisher, model.Query, (int)model.UpdateInterval, model.Name),
+                AvailableSensors.WMIQuerySensor => new WMIQuerySensor(_publisher, model.Query, (int)model.UpdateInterval, model.Name, scope: model.Scope),
                 AvailableSensors.MemoryUsageSensor => new MemoryUsageSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.ActiveWindowSensor => new ActiveWindowSensor(_publisher, (int)model.UpdateInterval, model.Name),
                 AvailableSensors.WebcamActiveSensor => new WebcamActiveSensor(_publisher, (int)model.UpdateInterval, model.Name),

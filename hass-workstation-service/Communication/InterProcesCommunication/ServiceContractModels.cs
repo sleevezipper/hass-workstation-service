@@ -30,6 +30,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
         public string Name { get; set; }
         public string Value { get; set; }
         public string Query { get; set; }
+        public string Scope { get; set; }
         public string WindowName { get; set; }
         public int UpdateInterval { get; set; }
         public string UnitOfMeasurement { get; set; }
@@ -44,6 +45,7 @@ namespace hass_workstation_service.Communication.InterProcesCommunication.Models
             if (sensor is WMIQuerySensor wMIQuerySensor)
             {
                 this.Query = wMIQuerySensor.Query;
+                this.Scope = wMIQuerySensor.Scope;
             }
             if (sensor is NamedWindowSensor namedWindowSensor)
             {

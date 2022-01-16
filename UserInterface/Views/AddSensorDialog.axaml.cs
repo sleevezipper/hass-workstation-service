@@ -67,6 +67,7 @@ namespace UserInterface.Views
             item.Name = sensor.Name;
             item.UpdateInterval = sensor.UpdateInterval;
             item.Query = sensor.Query;
+            item.Scope = sensor.Scope;
             item.WindowName = sensor.WindowName;
 
             Title = $"Edit {sensor.Name}";
@@ -75,7 +76,7 @@ namespace UserInterface.Views
         public async void Save(object sender, RoutedEventArgs args)
         {
             var item = (AddSensorViewModel)DataContext;
-            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName };
+            dynamic model = new { item.Name, item.Query, item.UpdateInterval, item.WindowName, item.Scope };
             string json = JsonSerializer.Serialize(model);
             if (SensorId == Guid.Empty)
                 await _client.InvokeAsync(x => x.AddSensor(item.SelectedType, json));
