@@ -12,17 +12,14 @@ namespace hass_workstation_service.Domain.Commands
     public class CustomCommand : AbstractCommand
     {
         public string Command { get; protected set; }
-        public string State { get; protected set; }
         public Process Process { get; private set; }
         public CustomCommand(MqttPublisher publisher, string command, string name = "Custom", Guid id = default(Guid)) : base(publisher, name ?? "Custom", id)
         {
             this.Command = command;
-            this.State = "OFF";
         }
 
-        public override async void TurnOn()
+        public override async void Press()
         {
-            this.State = "ON";
             this.Process = new Process();
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -33,7 +30,6 @@ namespace hass_workstation_service.Domain.Commands
             
             // turn off the sensor to guarantee disable the switch
             // useful if command changes power state of device
-            this.State = "OFF";
             
             try
             {
@@ -42,7 +38,6 @@ namespace hass_workstation_service.Domain.Commands
             catch (Exception e)
             {
                 Log.Logger.Error($"Sensor {this.Name} failed", e);
-                this.State = "FAILED";
             }
         }
 
@@ -60,16 +55,6 @@ namespace hass_workstation_service.Domain.Commands
                 State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
                 Device = this.Publisher.DeviceConfigModel,
             };
-        }
-
-        public override string GetState()
-        {
-            return this.State;
-        }
-
-        public override void TurnOff()
-        {
-            this.Process.Kill();
         }
     }
 }

@@ -42,18 +42,7 @@ namespace hass_workstation_service.Domain.Commands
         [DllImport("user32.dll")]
         public static extern void keybd_event(byte virtualKey, byte scanCode, uint flags, IntPtr extraInfo);
 
-
-        public override string GetState()
-        {
-            return "OFF";
-        }
-
-        public override void TurnOff()
-        {
-            
-        }
-
-        public override void TurnOn()
+        public sealed override void Press()
         {
             keybd_event(this.KeyCode, 0, 0, IntPtr.Zero);
             keybd_event(this.KeyCode, 0, KEYEVENTF_KEYUP, IntPtr.Zero);
