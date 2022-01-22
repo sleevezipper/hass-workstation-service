@@ -43,7 +43,7 @@ namespace hass_workstation_service.Communication
             {
                 return Name;
             }
-            return $"{NamePrefix}-{Name}";
+            return $"{NamePrefix} {Name}";
         }
 
         /// <summary>

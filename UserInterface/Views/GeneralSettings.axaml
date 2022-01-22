@@ -14,7 +14,7 @@
               <TextBlock>
 [Experimental]
 This allows you to set a name which will be used to prefix all sensor- and command names. For example:
-If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the sensor will be named "laptop-ActiveWindow" and its entityId will be "laptop_activewindow".
+If a sensor is called "ActiveWindow" and the name prefix is set to "laptop", the sensor will be named "laptop ActiveWindow" and its entityId will be "laptop_activewindow".
               </TextBlock>
           
             </StackPanel>
