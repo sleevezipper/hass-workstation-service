@@ -25,7 +25,6 @@ namespace hass_workstation_service.Communication
     {
         private readonly IManagedMqttClient _mqttClient;
         private readonly ILogger<MqttPublisher> _logger;
-        private readonly IConfigurationService _configurationService;
         private string _mqttClientMessage { get; set; }
         public DateTime LastConfigAnnounce { get; private set; }
         public DateTime LastAvailabilityAnnounce { get; private set; }
@@ -55,12 +54,13 @@ namespace hass_workstation_service.Communication
             this.Subscribers = new List<AbstractCommand>();
             this._logger = logger;
             this.DeviceConfigModel = deviceConfigModel;
-            this._configurationService = configurationService;
-            this.NamePrefix = configurationService.GeneralSettings?.NamePrefix;
 
-            var options = _configurationService.GetMqttClientOptionsAsync().Result;
-            _configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
-            _configurationService.NamePrefixChangedHandler = this.UpdateNamePrefix;
+            var generalSettings = configurationService.ReadGeneralSettings().Result;
+            this.NamePrefix = generalSettings?.NamePrefix;
+
+            var options = configurationService.GetMqttClientOptionsAsync().Result;
+            configurationService.MqqtConfigChangedHandler = this.ReplaceMqttClient;
+            configurationService.NamePrefixChangedHandler = this.UpdateNamePrefix;
 
             var factory = new MqttFactory();
             this._mqttClient = factory.CreateManagedMqttClient();
