@@ -11,7 +11,6 @@ namespace hass_workstation_service.Domain.Commands
     {
         public HibernateCommand(MqttPublisher publisher, string name = "Hibernate", Guid id = default(Guid)) : base(publisher, "shutdown /h", name ?? "Hibernate", id)
         {
-            this.State = "OFF";
         }
     }
 }

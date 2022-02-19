@@ -40,6 +40,7 @@ If a class or value cannot be found in the default scope, you can use the "Scope
 | Logical Processors | `SELECT NumberOfLogicalProcessors FROM Win32_ComputerSystem` | `8` (Processors * Cores * Threads) | [:link:](https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-computersystem) | @deftnerd |
 | System Type | `SELECT PCSystemType FROM Win32_ComputerSystem` | `1` (0=Unspecified, 1=Desktop, 2=Laptop, 3=Workstation, etc) | [:link:](https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-computersystem) | @deftnerd |
 | Processor Architecture | `SELECT SystemType FROM Win32_ComputerSystem` | `64-bit Intel PC` | [:link:](https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-computersystem) | @deftnerd |
+| Free Disk Space | `SELECT FreeSpace FROM Win32_LogicalDisk WHERE DeviceID='C:'` | `299329323008` (bytes) | [:link:](https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-logicaldisk) | @sleevezipper |
 
 ### Power & Thermal Information
 | Data | Query | Example Response | Info | Contributor | 

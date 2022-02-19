@@ -11,7 +11,6 @@ namespace hass_workstation_service.Domain.Commands
     {
         public LogOffCommand(MqttPublisher publisher, string name = "Shutdown", Guid id = default(Guid)) : base(publisher, "shutdown /l", name ?? "LogOff", id)
         {
-            this.State = "OFF";
         }
     }
 }
