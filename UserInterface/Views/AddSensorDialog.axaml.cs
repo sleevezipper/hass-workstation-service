@@ -130,7 +130,7 @@ namespace UserInterface.Views
 
                 case AvailableSensors.WMIQuerySensor:
                     item.Description = "This advanced sensor executes a user defined WMI query and exposes the result. The query should return a single value.";
-                    item.MoreInfoLink = "https://github.com/sleevezipperhass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor";
+                    item.MoreInfoLink = "https://github.com/sleevezipper/hass-workstation-service/blob/master/documentation/WMIQuery.md#wmiquerysensor";
                     item.ShowQueryInput = true;
                     item.ShowWindowNameInput = false;
                     item.UpdateInterval = 10;
