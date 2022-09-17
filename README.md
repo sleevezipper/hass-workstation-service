@@ -1,5 +1,8 @@
 # HASS Workstation Service
 
+> **Note**
+> This project is not being actively developed anymore. Although things work quite well I recommend you to have a look at [HASS.Agent](https://github.com/LAB02-Research/HASS.Agent). Thanks a lot for using this software! It has been a great honour. ❤️
+
 This goal of this project is to provide useful sensors and services from your workstation to [Home Assistant](https://www.home-assistant.io/) through MQTT. It accomplishes this goal by:
 
 - Running in the background as a service
