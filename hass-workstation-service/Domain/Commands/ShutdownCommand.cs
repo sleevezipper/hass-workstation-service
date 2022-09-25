@@ -11,7 +11,6 @@ namespace hass_workstation_service.Domain.Commands
     {
         public ShutdownCommand(MqttPublisher publisher, string name = "Shutdown", Guid id = default(Guid)) : base(publisher, "shutdown /s", name ?? "Shutdown", id)
         {
-            this.State = "OFF";
         }
     }
 }

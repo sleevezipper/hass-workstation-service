@@ -14,7 +14,7 @@ namespace hass_workstation_service.Domain.Commands
         public DateTime? LastUpdated { get; protected set; }
         public string PreviousPublishedState { get; protected set; }
         public MqttPublisher Publisher { get; protected set; }
-        public override string Domain { get => "switch"; }
+        public override string Domain { get => "button"; }
 
         public AbstractCommand(MqttPublisher publisher, string name, Guid id = default)
         {
@@ -24,15 +24,13 @@ namespace hass_workstation_service.Domain.Commands
             publisher.Subscribe(this);
         }
 
-        public abstract string GetState();
-
         public async Task PublishStateAsync()
         {
             // dont't even check the state if the update interval hasn't passed
             if (LastUpdated.HasValue && LastUpdated.Value.AddSeconds(UpdateInterval) > DateTime.UtcNow)
                 return;
 
-            string state = GetState();
+            string state = "";
             // don't publish the state if it hasn't changed
             if (PreviousPublishedState == state)
                 return;
@@ -59,7 +57,6 @@ namespace hass_workstation_service.Domain.Commands
             return config;
         }
 
-        public abstract void TurnOn();
-        public abstract void TurnOff();
+        public abstract void Press();
     }
 }

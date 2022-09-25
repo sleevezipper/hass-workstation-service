@@ -219,13 +219,11 @@ namespace hass_workstation_service.Communication
             {
                 if (((CommandDiscoveryConfigModel)command.GetAutoDiscoveryConfig()).Command_topic == applicationMessage.Topic)
                 {
-                    if (Encoding.UTF8.GetString(applicationMessage?.Payload) == "ON")
+                    switch (Encoding.UTF8.GetString(applicationMessage?.Payload))
                     {
-                        command.TurnOn();
-                    }
-                    else if (Encoding.UTF8.GetString(applicationMessage?.Payload) == "OFF")
-                    {
-                        command.TurnOff();
+                        case "PRESS":
+                            command.Press();
+                            break;
                     }
                     
                 }
