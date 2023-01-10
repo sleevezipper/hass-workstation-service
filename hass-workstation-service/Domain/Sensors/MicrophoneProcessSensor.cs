@@ -5,12 +5,19 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace hass_workstation_service.Domain.Sensors
 {
     public class MicrophoneProcessSensor : AbstractSensor
     {
         private HashSet<string> processes = new HashSet<string>();
+        private Dictionary<string, string> state = new Dictionary<string, string>()
+        {
+            { "state", "off" }
+        };
 
         public MicrophoneProcessSensor(MqttPublisher publisher, int? updateInterval = null, string name = "MicrophoneProcess", Guid id = default) : base(publisher, name ?? "MicrophoneProcess", updateInterval ?? 10, id)
         {
@@ -20,7 +27,7 @@ namespace hass_workstation_service.Domain.Sensors
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return IsMicrophoneInUseRegistry();
+                return JsonConvert.SerializeObject(IsMicrophoneInUseRegistry());
             }
             else
             {
@@ -36,7 +43,10 @@ namespace hass_workstation_service.Domain.Sensors
                 Unique_id = this.Id.ToString(),
                 Device = this.Publisher.DeviceConfigModel,
                 State_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
-                Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability"
+                Availability_topic = $"homeassistant/sensor/{Publisher.DeviceConfigModel.Name}/availability",
+                Value_template = "{{ value_json.state }}",
+                Json_attributes_topic = $"homeassistant/{this.Domain}/{Publisher.DeviceConfigModel.Name}/{DiscoveryConfigModel.GetNameWithPrefix(Publisher.NamePrefix, this.ObjectId)}/state",
+                Json_attributes_template = "{{ value_json | tojson }}"
             });
         }
 
@@ -62,7 +72,8 @@ namespace hass_workstation_service.Domain.Sensors
                             var endTime = subKey.GetValue("LastUsedTimeStop") is long ? (long)subKey.GetValue("LastUsedTimeStop") : -1;
                             if (endTime <= 0)
                             {
-                                this.processes.Add(subKeyName);
+                                var processName = subKeyName.Split("#").Last();
+                                this.processes.Add(processName);
                             }
                         }
                     }
@@ -71,11 +82,12 @@ namespace hass_workstation_service.Domain.Sensors
         }
 
         [SupportedOSPlatform("windows")]
-        private string IsMicrophoneInUseRegistry()
+        private Dictionary<string, string> IsMicrophoneInUseRegistry()
         {
             // Clear old values
             this.processes.Clear();
-            
+            this.state.Clear();
+
             using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone"))
             {
                CheckLastUsed(key);
@@ -88,9 +100,13 @@ namespace hass_workstation_service.Domain.Sensors
 
             if (this.processes.Count() > 0)
             {
-                return String.Join(",", this.processes.ToArray());
+                this.state.Add("state", "on");
+                this.state.Add("processes", String.Join(",", this.processes.ToArray()));
+            } else
+            {
+                this.state.Add("state", "off");
             }
-            return "off";
+            return state;
         }
     }
 }
